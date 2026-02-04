@@ -156,6 +156,21 @@
             font-size: 0.9em;
         }
         .pause-btn:hover { background: #14F195; color: #000; }
+        .game-canvas-wrap {
+            max-width: 90vmin;
+            max-height: 90vmin;
+            width: 100%;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .game-canvas-wrap canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
         canvas {
             border: 2px solid #1a1a1a;
             border-radius: 12px;
@@ -342,6 +357,159 @@
             font-size: 0.9em;
             margin-top: 15px;
         }
+        /* Wallet Selection Modal */
+        .wallet-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .wallet-modal {
+            background: #fff;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+        .wallet-modal-header {
+            padding: 24px 24px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e5e5;
+        }
+        .wallet-modal-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #000;
+            margin: 0;
+        }
+        .wallet-modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: #666;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .wallet-modal-close:hover {
+            background: #f0f0f0;
+        }
+        .wallet-modal-icon {
+            text-align: center;
+            padding: 20px 0;
+            font-size: 3em;
+        }
+        .wallet-modal-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            padding: 0 24px 20px;
+            margin: 0;
+        }
+        .wallet-modal-search {
+            padding: 0 24px 16px;
+        }
+        .wallet-modal-search input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-family: 'Space Grotesk';
+            color: #000;
+        }
+        .wallet-modal-search input:focus {
+            outline: none;
+            border-color: #14F195;
+        }
+        .wallet-modal-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 16px 16px;
+        }
+        .wallet-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        .wallet-item:hover {
+            background: #f5f5f5;
+        }
+        .wallet-item-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .wallet-item-icon.phantom {
+            background: linear-gradient(135deg, #AB9FF2 0%, #8C6CF7 100%);
+            color: #fff;
+        }
+        .wallet-item-icon.mwa {
+            background: #fff;
+            border: 2px solid #AB9FF2;
+            color: #8C6CF7;
+        }
+        .wallet-item-info {
+            flex: 1;
+        }
+        .wallet-item-name {
+            font-weight: 600;
+            color: #000;
+            font-size: 1em;
+            margin-bottom: 4px;
+        }
+        .wallet-item-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .wallet-item-status {
+            font-size: 0.85em;
+            color: #666;
+        }
+        .wallet-item-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #14F195;
+            display: inline-block;
+        }
+        .wallet-modal-footer {
+            padding: 16px 24px;
+            text-align: center;
+            border-top: 1px solid #e5e5e5;
+            color: #999;
+            font-size: 0.85em;
+        }
     </style>
 </head>
 <body>
@@ -361,7 +529,11 @@
         const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 
         const GRID_SIZE = 20;
-        const CELL_SIZE = 24;
+        const CELL_SIZE = (() => {
+            if (typeof window === 'undefined') return 20;
+            const side = Math.min(window.innerWidth, window.innerHeight);
+            return Math.min(24, Math.max(14, Math.floor(side / 22)));
+        })();
         const INITIAL_SNAKE = [{x: 10, y: 10}];
         const INITIAL_DIRECTION = {x: 1, y: 0};
 
@@ -410,6 +582,9 @@
 
             const [wallet, setWallet] = useState(null);
             const [snsName, setSnsName] = useState(null);
+            const [showWalletModal, setShowWalletModal] = useState(false);
+            const [walletSearch, setWalletSearch] = useState('');
+            const [availableWallets, setAvailableWallets] = useState([]);
             const [leaderboard, setLeaderboard] = useState([]);
             const [leaderboardFilter, setLeaderboardFilter] = useState({ mode: 'classic', difficulty: 'medium' });
             const [submittingScore, setSubmittingScore] = useState(false);
@@ -484,54 +659,81 @@
                 loadLeaderboard();
             }, [leaderboardFilter]);
 
-            const connectWallet = async () => {
-                try {
-                    let pubkey = null;
-                    let adapter = window.__snakeWalletAdapter;
-                    console.log('[Snake] connectWallet called, adapter:', adapter ? { ready: adapter.ready, hasConnect: !!adapter.connect } : 'missing');
-
-                    // On Android, give MWA (Seeker / Seed Vault) a moment to register
-                    if (/android/i.test(navigator.userAgent) && adapter && !adapter.connect) {
-                        console.log('[Snake] Waiting for MWA to initialize...');
-                        for (let i = 0; i < 15 && (!adapter.connect || !adapter.ready); i++) {
-                            await new Promise(r => setTimeout(r, 200));
-                            adapter = window.__snakeWalletAdapter;
-                        }
-                        console.log('[Snake] After wait, adapter:', adapter ? { ready: adapter.ready, hasConnect: !!adapter.connect } : 'missing');
+            // Detect available wallets
+            const detectWallets = async () => {
+                const wallets = [];
+                
+                // Check for Mobile Wallet Adapter (Seeker / Seed Vault)
+                let adapter = window.__snakeWalletAdapter;
+                if (/android/i.test(navigator.userAgent) && adapter && !adapter.connect) {
+                    // Wait for MWA to initialize
+                    for (let i = 0; i < 15 && (!adapter.connect || !adapter.ready); i++) {
+                        await new Promise(r => setTimeout(r, 200));
+                        adapter = window.__snakeWalletAdapter;
                     }
+                }
+                
+                if (adapter && adapter.connect) {
+                    wallets.push({
+                        id: 'mwa',
+                        name: 'Mobile Wallet Adapter',
+                        icon: 'mwa',
+                        available: true,
+                        description: 'Seeker / Seed Vault'
+                    });
+                }
+                
+                // Check for Phantom
+                if (window.solana?.isPhantom) {
+                    wallets.push({
+                        id: 'phantom',
+                        name: 'Phantom',
+                        icon: 'phantom',
+                        available: true,
+                        description: 'Browser extension'
+                    });
+                }
+                
+                return wallets;
+            };
 
-                    // 1) Prefer Mobile Wallet Adapter (Seeker / Seed Vault internal wallet)
-                    if (adapter && adapter.connect) {
-                        console.log('[Snake] Attempting MWA connect...');
-                        try {
+            const openWalletModal = async () => {
+                const wallets = await detectWallets();
+                setAvailableWallets(wallets);
+                if (wallets.length === 0) {
+                    alert('No wallets available. Please install Phantom from phantom.app or use Seeker device wallet.');
+                    return;
+                }
+                setShowWalletModal(true);
+            };
+
+            const connectWallet = async (walletId) => {
+                try {
+                    setShowWalletModal(false);
+                    let pubkey = null;
+                    
+                    if (walletId === 'mwa') {
+                        const adapter = window.__snakeWalletAdapter;
+                        if (adapter && adapter.connect) {
+                            console.log('[Snake] Attempting MWA connect...');
                             pubkey = await adapter.connect();
                             console.log('[Snake] MWA connected, pubkey:', pubkey);
-                        } catch (mwaErr) {
-                            console.error('[Snake] MWA connect failed:', mwaErr);
-                            alert('MWA connection failed: ' + (mwaErr.message || String(mwaErr)));
-                            // Don't fall back to Phantom if MWA was detected - let user retry
-                            if (mwaWallet) {
-                                return;
-                            }
+                        } else {
+                            throw new Error('Mobile Wallet Adapter not available');
+                        }
+                    } else if (walletId === 'phantom') {
+                        if (window.solana?.isPhantom) {
+                            const response = await window.solana.connect();
+                            pubkey = response.publicKey.toString();
+                        } else {
+                            throw new Error('Phantom wallet not installed');
                         }
                     } else {
-                        console.log('[Snake] MWA adapter not available (ready:', adapter?.ready, ', hasConnect:', !!adapter?.connect, ')');
-                    }
-
-                    // 2) Fallback: Phantom (browser extension or in-app browser)
-                    if (!pubkey && window.solana?.isPhantom) {
-                        const response = await window.solana.connect();
-                        pubkey = response.publicKey.toString();
+                        throw new Error('Unknown wallet');
                     }
 
                     if (!pubkey) {
-                        if (/android/i.test(navigator.userAgent)) {
-                            alert('Connect with the device wallet (Seeker) or install Phantom from phantom.app');
-                        } else {
-                            alert('Please install Phantom wallet from phantom.app');
-                            window.open('https://phantom.app/', '_blank');
-                        }
-                        return;
+                        throw new Error('Failed to connect');
                     }
 
                     setWallet(pubkey);
@@ -749,6 +951,8 @@
             }, [screen, settings.gameMode, foodEaten]);
 
             useEffect(() => {
+                const inApp = !!window.__SNAKE_IN_APP;
+                const isMobileOrWebView = inApp || /Android|iPhone|iPad|iPod|wv|WebView/i.test(navigator.userAgent);
                 const handleKeyPress = (e) => {
                     if (screen === 'playing') {
                         const currentDir = directionRef.current;
@@ -773,8 +977,10 @@
                         setScreen('playing');
                     }
                 };
-                window.addEventListener('keydown', handleKeyPress);
-                return () => window.removeEventListener('keydown', handleKeyPress);
+                if (!isMobileOrWebView) {
+                    window.addEventListener('keydown', handleKeyPress);
+                    return () => window.removeEventListener('keydown', handleKeyPress);
+                }
             }, [screen]);
 
             useEffect(() => {
@@ -853,7 +1059,7 @@
                                 LEADERBOARD
                             </button>
                             {!wallet ? (
-                                <button className="menu-button secondary" onClick={connectWallet}>
+                                <button className="menu-button secondary" onClick={openWalletModal}>
                                     CONNECT WALLET
                                 </button>
                             ) : (
@@ -865,6 +1071,52 @@
                             {wallet && (
                                 <div className="wallet-display">
                                     {snsName || '...loading'}
+                                </div>
+                            )}
+
+                            {showWalletModal && (
+                                <div className="wallet-modal-overlay" onClick={() => setShowWalletModal(false)}>
+                                    <div className="wallet-modal" onClick={(e) => e.stopPropagation()}>
+                                        <div className="wallet-modal-header">
+                                            <h2 className="wallet-modal-title">Select your wallet</h2>
+                                            <button className="wallet-modal-close" onClick={() => setShowWalletModal(false)}>×</button>
+                                        </div>
+                                        <div className="wallet-modal-icon">💼</div>
+                                        <p className="wallet-modal-subtitle">Connect a wallet to your Snake account</p>
+                                        <div className="wallet-modal-search">
+                                            <input
+                                                type="text"
+                                                placeholder={`Search through ${availableWallets.length} wallet${availableWallets.length !== 1 ? 's' : ''}`}
+                                                value={walletSearch}
+                                                onChange={(e) => setWalletSearch(e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="wallet-modal-list">
+                                            {availableWallets
+                                                .filter(w => w.name.toLowerCase().includes(walletSearch.toLowerCase()))
+                                                .map((wallet) => (
+                                                    <div
+                                                        key={wallet.id}
+                                                        className="wallet-item"
+                                                        onClick={() => connectWallet(wallet.id)}
+                                                    >
+                                                        <div className={`wallet-item-icon ${wallet.icon}`}>
+                                                            {wallet.icon === 'phantom' ? '👻' : '📱'}
+                                                        </div>
+                                                        <div className="wallet-item-info">
+                                                            <div className="wallet-item-name">{wallet.name}</div>
+                                                            <div className="wallet-item-badge">
+                                                                <span className="wallet-item-status-dot"></span>
+                                                                <span className="wallet-item-status">{wallet.description}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                        </div>
+                                        <div className="wallet-modal-footer">
+                                            Protected by Solana
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -1023,11 +1275,13 @@
                             )}
                         </div>
 
-                        <canvas
-                            ref={canvasRef}
-                            width={GRID_SIZE * CELL_SIZE}
-                            height={GRID_SIZE * CELL_SIZE}
-                        />
+                        <div className="game-canvas-wrap">
+                            <canvas
+                                ref={canvasRef}
+                                width={GRID_SIZE * CELL_SIZE}
+                                height={GRID_SIZE * CELL_SIZE}
+                            />
+                        </div>
 
                         {screen === 'paused' && (
                             <div className="overlay">
