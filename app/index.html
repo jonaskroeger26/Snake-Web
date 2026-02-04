@@ -600,10 +600,8 @@
                     const h = window.innerHeight || document.documentElement.clientHeight || 600;
                     const minSide = Math.min(w, h);
                     let refSize = 420;
-                    if (window.__SNAKE_IN_APP && minSide > 500) {
-                        refSize = minSide / 0.7;
-                    } else if (/sdk_gphone|emulator|Android SDK built for|generic.*android/i.test(navigator.userAgent)) {
-                        refSize = 900;
+                    if (window.__SNAKE_IN_APP) {
+                        refSize = minSide / 0.88;
                     }
                     const s = Math.max(0.4, Math.min(1, w / refSize, h / refSize));
                     setGameScale(s);
