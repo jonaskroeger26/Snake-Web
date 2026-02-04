@@ -23,6 +23,25 @@
         if (typeof window.__snakeWalletAdapter === 'undefined') {
             window.__snakeWalletAdapter = { ready: false, connect: null, disconnect: null };
         }
+        
+        // Debug helper - run window.checkMWA() in console
+        window.checkMWA = function() {
+            const adapter = window.__snakeWalletAdapter;
+            const info = {
+                adapterExists: !!adapter,
+                ready: adapter?.ready,
+                hasConnect: typeof adapter?.connect === 'function',
+                hasDisconnect: typeof adapter?.disconnect === 'function',
+                connected: adapter?.connected || !!adapter?.connectedAccount,
+                connectedAccount: adapter?.connectedAccount?.address || null,
+                inApp: window.__SNAKE_IN_APP,
+                userAgent: navigator.userAgent,
+                mwaBundleLoaded: typeof window.SeekerMWA !== 'undefined'
+            };
+            console.table(info);
+            return info;
+        };
+        console.log('💡 Run window.checkMWA() to debug MWA adapter state');
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -688,21 +707,38 @@
                 
                 // Check for Mobile Wallet Adapter (Seeker / Seed Vault)
                 let adapter = window.__snakeWalletAdapter;
+                console.log('[Snake] Checking for MWA adapter:', {
+                    exists: !!adapter,
+                    ready: adapter?.ready,
+                    hasConnect: typeof adapter?.connect === 'function',
+                    inApp: window.__SNAKE_IN_APP,
+                    userAgent: navigator.userAgent
+                });
+                
                 if (/android/i.test(navigator.userAgent) && adapter && !adapter.connect) {
                     // Wait for MWA to initialize
+                    console.log('[Snake] Waiting for MWA to initialize...');
                     for (let i = 0; i < 15 && (!adapter.connect || !adapter.ready); i++) {
                         await new Promise(r => setTimeout(r, 200));
                         adapter = window.__snakeWalletAdapter;
+                        if (adapter?.connect) break;
                     }
                 }
                 
-                if (adapter && adapter.connect) {
+                if (adapter && typeof adapter.connect === 'function') {
+                    console.log('[Snake] ✅ MWA adapter found and ready');
                     wallets.push({
                         id: 'mwa',
                         name: 'Mobile Wallet Adapter',
                         icon: 'mwa',
                         available: true,
                         description: 'Seeker / Seed Vault'
+                    });
+                } else {
+                    console.warn('[Snake] ⚠️ MWA adapter not available:', {
+                        adapter: !!adapter,
+                        connect: typeof adapter?.connect,
+                        ready: adapter?.ready
                     });
                 }
                 
@@ -737,12 +773,26 @@
                     
                     if (walletId === 'mwa') {
                         const adapter = window.__snakeWalletAdapter;
-                        if (adapter && adapter.connect) {
-                            console.log('[Snake] Attempting MWA connect...');
-                            pubkey = await adapter.connect();
-                            console.log('[Snake] MWA connected, pubkey:', pubkey);
+                        console.log('[Snake] MWA connect attempt:', {
+                            adapter: !!adapter,
+                            hasConnect: typeof adapter?.connect === 'function',
+                            ready: adapter?.ready,
+                            inApp: window.__SNAKE_IN_APP
+                        });
+                        
+                        if (adapter && typeof adapter.connect === 'function') {
+                            console.log('[Snake] Calling adapter.connect()...');
+                            try {
+                                pubkey = await adapter.connect();
+                                console.log('[Snake] ✅ MWA connected, pubkey:', pubkey);
+                            } catch (connectErr) {
+                                console.error('[Snake] ❌ MWA connect error:', connectErr);
+                                throw connectErr;
+                            }
                         } else {
-                            throw new Error('Mobile Wallet Adapter not available');
+                            const errorMsg = `Mobile Wallet Adapter not available. Adapter: ${!!adapter}, Connect: ${typeof adapter?.connect}, Ready: ${adapter?.ready}`;
+                            console.error('[Snake]', errorMsg);
+                            throw new Error(errorMsg);
                         }
                     } else if (walletId === 'phantom') {
                         if (window.solana?.isPhantom) {
