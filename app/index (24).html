@@ -2,14 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Snake">
     <title>Snake - Solana</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
     <script src="https://unpkg.com/@bonfida/spl-name-service@2.1.0/dist/index.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Mobile Wallet Adapter (Seeker / Seed Vault) - bundled for WebView/Expo -->
+    <script src="mwa-bundle.js"></script>
+    <script>
+        if (typeof window.__snakeWalletAdapter === 'undefined') {
+            window.__snakeWalletAdapter = { ready: false, connect: null, disconnect: null };
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
         
@@ -379,12 +393,42 @@
             const [direction, setDirection] = useState(INITIAL_DIRECTION);
             const [food, setFood] = useState({x: 15, y: 15});
             const [foodEaten, setFoodEaten] = useState(0);
-            const [highScore, setHighScore] = useState(() => {
-                const saved = localStorage.getItem('snakeHighScore');
-                if (!saved) return 0;
-                const n = parseInt(saved, 10);
-                return n >= 10 ? Math.round(n / 10) : n;
+            const HIGH_SCORE_KEY = 'snakeHighScores';
+            const getHighScoreKey = (mode, difficulty) => `${mode}_${difficulty}`;
+            const [highScores, setHighScores] = useState(() => {
+                try {
+                    const raw = localStorage.getItem(HIGH_SCORE_KEY);
+                    if (raw) {
+                        const obj = JSON.parse(raw);
+                        if (obj && typeof obj === 'object') {
+                            const migrated = {};
+                            for (const k of Object.keys(obj)) {
+                                const v = Number(obj[k]);
+                                if (v >= 10) migrated[k] = Math.round(v / 10);
+                                else migrated[k] = v;
+                            }
+                            try { localStorage.setItem(HIGH_SCORE_KEY, JSON.stringify(migrated)); } catch (_) {}
+                            return migrated;
+                        }
+                    }
+                    const legacy = localStorage.getItem('snakeHighScore');
+                    if (legacy) {
+                        const n = parseInt(legacy, 10);
+                        const val = n >= 10 ? Math.round(n / 10) : n;
+                        return { classic_medium: val };
+                    }
+                    return {};
+                } catch (_) { return {}; }
             });
+            const getHighScore = (mode, difficulty) => highScores[getHighScoreKey(mode, difficulty)] || 0;
+            const setHighScoreFor = (mode, difficulty, score) => {
+                const key = getHighScoreKey(mode, difficulty);
+                setHighScores(prev => {
+                    const next = { ...prev, [key]: Math.max(prev[key] || 0, score) };
+                    try { localStorage.setItem(HIGH_SCORE_KEY, JSON.stringify(next)); } catch (_) {}
+                    return next;
+                });
+            };
             const [obstacles, setObstacles] = useState([]);
             const [speedBoost, setSpeedBoost] = useState(false);
             const [timer, setTimer] = useState(60);
@@ -409,6 +453,12 @@
             const gameSessionRef = useRef({ gameMode: 'classic', difficulty: 'medium' });
 
             const GAME_SPEEDS = { easy: 200, medium: 150, hard: 100 };
+
+            // Display: 1 point per apple. Old DB rows may be stored ×10, so convert for display only.
+            const scoreToApples = (s) => {
+                const n = Number(s);
+                return n >= 10 ? Math.round(n / 10) : n;
+            };
 
             // Load leaderboard from Supabase
             const loadLeaderboard = async () => {
@@ -447,21 +497,22 @@
                             .map((entry, idx) => ({
                                 rank: idx + 1,
                                 name: entry.skr_name || `${entry.wallet_address.slice(0, 4)}...${entry.wallet_address.slice(-4)}`,
-                                score: entry.score >= 10 ? Math.round(entry.score / 10) : entry.score,
+                                score: scoreToApples(entry.score),
                                 wallet: entry.wallet_address
                             }));
 
                         setLeaderboard(formatted);
                     } else {
                         const formatted = data
-                            .sort((a, b) => (b.best_score || 0) - (a.best_score || 0))
+                            .sort((a, b) => b.best_score - a.best_score)
                             .slice(0, 100)
                             .map((entry, idx) => ({
                                 rank: idx + 1,
                                 name: entry.skr_name || `${entry.wallet_address.slice(0, 4)}...${entry.wallet_address.slice(-4)}`,
-                                score: entry.best_score >= 10 ? Math.round(entry.best_score / 10) : entry.best_score,
+                                score: scoreToApples(entry.best_score),
                                 wallet: entry.wallet_address
                             }));
+
                         setLeaderboard(formatted);
                     }
                 } catch (err) {
@@ -477,32 +528,69 @@
 
             const connectWallet = async () => {
                 try {
-                    if (!window.solana?.isPhantom) {
-                        alert('Please install Phantom wallet from phantom.app');
-                        window.open('https://phantom.app/', '_blank');
+                    let pubkey = null;
+                    let adapter = window.__snakeWalletAdapter;
+                    console.log('[Snake] connectWallet called, adapter:', adapter ? { ready: adapter.ready, hasConnect: !!adapter.connect } : 'missing');
+
+                    // On Android, give MWA (Seeker / Seed Vault) a moment to register
+                    if (/android/i.test(navigator.userAgent) && adapter && !adapter.connect) {
+                        console.log('[Snake] Waiting for MWA to initialize...');
+                        for (let i = 0; i < 15 && (!adapter.connect || !adapter.ready); i++) {
+                            await new Promise(r => setTimeout(r, 200));
+                            adapter = window.__snakeWalletAdapter;
+                        }
+                        console.log('[Snake] After wait, adapter:', adapter ? { ready: adapter.ready, hasConnect: !!adapter.connect } : 'missing');
+                    }
+
+                    // 1) Prefer Mobile Wallet Adapter (Seeker / Seed Vault internal wallet)
+                    if (adapter && adapter.connect) {
+                        console.log('[Snake] Attempting MWA connect...');
+                        try {
+                            pubkey = await adapter.connect();
+                            console.log('[Snake] MWA connected, pubkey:', pubkey);
+                        } catch (mwaErr) {
+                            console.warn('[Snake] MWA connect failed, trying Phantom:', mwaErr.message, mwaErr);
+                        }
+                    } else {
+                        console.log('[Snake] MWA adapter not available (ready:', adapter?.ready, ', hasConnect:', !!adapter?.connect, ')');
+                    }
+
+                    // 2) Fallback: Phantom (browser extension or in-app browser)
+                    if (!pubkey && window.solana?.isPhantom) {
+                        const response = await window.solana.connect();
+                        pubkey = response.publicKey.toString();
+                    }
+
+                    if (!pubkey) {
+                        if (/android/i.test(navigator.userAgent)) {
+                            alert('Connect with the device wallet (Seeker) or install Phantom from phantom.app');
+                        } else {
+                            alert('Please install Phantom wallet from phantom.app');
+                            window.open('https://phantom.app/', '_blank');
+                        }
                         return;
                     }
 
-                    const response = await window.solana.connect();
-                    const pubkey = response.publicKey.toString();
-                    
                     setWallet(pubkey);
                     const displayName = await getDisplayName(pubkey);
                     setSnsName(displayName);
-                    
                     console.log('✅ Wallet connected:', displayName);
                 } catch (err) {
                     console.error('Connection error:', err);
-                    alert('Connection failed: ' + err.message);
+                    alert('Connection failed: ' + (err.message || String(err)));
                 }
             };
 
-            const disconnectWallet = () => {
-                if (window.solana) {
-                    window.solana.disconnect();
-                    setWallet(null);
-                    setSnsName(null);
+            const disconnectWallet = async () => {
+                const adapter = window.__snakeWalletAdapter;
+                if (adapter && adapter.disconnect) {
+                    try { await adapter.disconnect(); } catch (_) {}
                 }
+                if (window.solana) {
+                    try { window.solana.disconnect(); } catch (_) {}
+                }
+                setWallet(null);
+                setSnsName(null);
             };
 
             const generateFood = useCallback(() => {
@@ -582,15 +670,18 @@
             const submitScore = async (finalFoodCount) => {
                 const apples = finalFoodCount;
                 const session = gameSessionRef.current;
-                if (apples > highScore) {
-                    setHighScore(apples);
-                    localStorage.setItem('snakeHighScore', String(apples));
+
+                if (apples > getHighScore(session.gameMode, session.difficulty)) {
+                    setHighScoreFor(session.gameMode, session.difficulty, apples);
                 }
+
                 if (apples === 0 || !wallet) {
                     console.log('No score to submit or no wallet connected');
                     return;
                 }
+
                 setSubmittingScore(true);
+
                 try {
                     const { error } = await supabase
                         .from('leaderboards')
@@ -606,7 +697,7 @@
 
                     console.log('Score submitted successfully!');
                     setLeaderboardFilter(prev => ({ ...prev, mode: session.gameMode, difficulty: session.difficulty }));
-                    setTimeout(() => loadLeaderboard(), 400);
+                    setTimeout(async () => { await loadLeaderboard(); }, 500);
                 } catch (err) {
                     console.error('Failed to submit score:', err);
                 } finally {
@@ -887,8 +978,8 @@
                             <div className="leaderboard-subtitle">
                                 {leaderboardFilter.mode.toUpperCase()} • {leaderboardFilter.difficulty.toUpperCase()}
                             </div>
-                            <p style={{ fontSize: '0.85em', color: '#888', marginTop: 4, marginBottom: 8 }}>
-                                Separate board for each game mode and difficulty.
+                            <p style={{ fontSize: '0.85em', color: '#888', marginTop: 4 }}>
+                                Global rankings from Supabase. Each mode + difficulty has its own board.
                             </p>
                             <div className="leaderboard-filters">
                                 <select 
@@ -914,7 +1005,7 @@
                                 </select>
                             </div>
                             
-                            <div key={`lb-${leaderboardFilter.mode}-${leaderboardFilter.difficulty}`} className="leaderboard-list">
+                            <div key={`leaderboard-${leaderboardFilter.mode}-${leaderboardFilter.difficulty}`} className="leaderboard-list">
                                 {loadingLeaderboard ? (
                                     <div style={{textAlign: 'center', color: '#666', padding: '40px 20px'}}>
                                         Loading...
@@ -948,13 +1039,13 @@
                     <div className="game-screen">
                         <div className="game-hud">
                             <div className="hud-left">
-                                <div className="stat-pill">
+                                <div className="stat-pill" data-score-type="apples">
                                     <span className="label">SCORE</span>
-                                    {foodEaten}
+                                    <span>{Number(foodEaten)}</span>
                                 </div>
                                 <div className="stat-pill">
                                     <span className="label">HIGH SCORE</span>
-                                    {highScore}
+                                    {getHighScore(settings.gameMode, settings.difficulty)}
                                 </div>
                                 {settings.gameMode === 'survival' && (
                                     <div className="stat-pill">
@@ -995,7 +1086,7 @@
                                 <div className="overlay-title">GAME OVER</div>
                                 <div className="overlay-score">
                                     FINAL SCORE
-                                    <span>{foodEaten}</span>
+                                    <span>{Number(foodEaten)}</span>
                                 </div>
                                 {submittingScore && (
                                     <div className="loading-message">
@@ -1026,6 +1117,12 @@
         }
 
         ReactDOM.render(<SnakeGame />, document.getElementById('root'));
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {});
+            });
+        }
     </script>
 </body>
 </html>

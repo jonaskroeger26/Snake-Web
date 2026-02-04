@@ -1196,7 +1196,7 @@
                                 SETTINGS
                             </button>
                             <button className="menu-button secondary" onClick={() => setScreen('leaderboard')}>
-                                WORLD LEADERBOARD
+                                LEADERBOARD
                             </button>
                             {!wallet ? (
                                 <button className="menu-button secondary" onClick={openWalletModal}>
@@ -1330,7 +1330,7 @@
                 return (
                     <div className="fullscreen">
                         <div className="leaderboard-container">
-                            <div className="leaderboard-title">WORLD LEADERBOARD</div>
+                            <div className="leaderboard-title">LEADERBOARD</div>
                             <div className="leaderboard-subtitle">
                                 {leaderboardFilter.mode.toUpperCase()} • {leaderboardFilter.difficulty.toUpperCase()}
                             </div>
@@ -1396,7 +1396,7 @@
                         <div className="game-hud">
                             <div className="hud-left">
                                 <div className="stat-pill" data-score-type="apples">
-                                    <span className="label">SCORE (1 per apple)</span>
+                                    <span className="label">SCORE</span>
                                     <span>{Number(foodEaten)}</span>
                                 </div>
                                 <div className="stat-pill">
@@ -1443,7 +1443,7 @@
                             <div className="overlay">
                                 <div className="overlay-title">GAME OVER</div>
                                 <div className="overlay-score">
-                                    FINAL SCORE (apples)
+                                    FINAL SCORE
                                     <span>{Number(foodEaten)}</span>
                                 </div>
                                 {submittingScore && (
