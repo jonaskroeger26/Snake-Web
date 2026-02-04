@@ -1,10 +1,13 @@
 {
   "buildCommand": "npm run build:mwa",
-  "outputDirectory": "app",
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/",
       "destination": "/index (24).html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
     }
   ],
   "headers": [
