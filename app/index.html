@@ -596,15 +596,21 @@
 
             useEffect(() => {
                 const updateScale = () => {
-                    const w = window.innerWidth;
-                    const h = window.innerHeight;
+                    const w = window.innerWidth || document.documentElement.clientWidth || 400;
+                    const h = window.innerHeight || document.documentElement.clientHeight || 600;
                     const refSize = 420;
-                    const s = Math.min(1, w / refSize, h / refSize);
+                    const s = Math.max(0.4, Math.min(1, w / refSize, h / refSize));
                     setGameScale(s);
                 };
                 updateScale();
+                const t = setTimeout(updateScale, 100);
+                const t2 = setTimeout(updateScale, 500);
                 window.addEventListener('resize', updateScale);
-                return () => window.removeEventListener('resize', updateScale);
+                return () => {
+                    clearTimeout(t);
+                    clearTimeout(t2);
+                    window.removeEventListener('resize', updateScale);
+                };
             }, []);
 
             // Load leaderboard from Supabase
