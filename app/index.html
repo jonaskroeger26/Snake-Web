@@ -507,7 +507,12 @@
                             pubkey = await adapter.connect();
                             console.log('[Snake] MWA connected, pubkey:', pubkey);
                         } catch (mwaErr) {
-                            console.warn('[Snake] MWA connect failed, trying Phantom:', mwaErr.message, mwaErr);
+                            console.error('[Snake] MWA connect failed:', mwaErr);
+                            alert('MWA connection failed: ' + (mwaErr.message || String(mwaErr)));
+                            // Don't fall back to Phantom if MWA was detected - let user retry
+                            if (mwaWallet) {
+                                return;
+                            }
                         }
                     } else {
                         console.log('[Snake] MWA adapter not available (ready:', adapter?.ready, ', hasConnect:', !!adapter?.connect, ')');

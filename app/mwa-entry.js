@@ -52,12 +52,22 @@ function init() {
       if (!connectFeature || !connectFeature.connect) {
         throw new Error('Wallet does not support connect.');
       }
-      const result = await connectFeature.connect({ silent: false });
+      console.log('[MWA] Calling connect() on wallet:', wallet.name);
+      let result;
+      try {
+        result = await connectFeature.connect({ silent: false });
+        console.log('[MWA] Connect result:', result);
+      } catch (connectErr) {
+        console.error('[MWA] Connect error:', connectErr);
+        throw new Error(`Failed to connect to ${wallet.name}: ${connectErr.message || String(connectErr)}`);
+      }
       const accounts = result && result.accounts;
+      console.log('[MWA] Accounts from connect:', accounts);
       if (!accounts || accounts.length === 0) {
         throw new Error('No account selected.');
       }
       const account = accounts[0];
+      console.log('[MWA] Selected account:', account.address);
       adapter.connectedWallet = wallet;
       adapter.connectedAccount = account;
       return account.address;
