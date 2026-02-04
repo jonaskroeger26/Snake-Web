@@ -598,8 +598,13 @@
                 const updateScale = () => {
                     const w = window.innerWidth || document.documentElement.clientWidth || 400;
                     const h = window.innerHeight || document.documentElement.clientHeight || 600;
-                    const isEmulator = /sdk_gphone|emulator|Android SDK built for|generic.*android/i.test(navigator.userAgent);
-                    const refSize = isEmulator ? 640 : 420;
+                    const minSide = Math.min(w, h);
+                    let refSize = 420;
+                    if (window.__SNAKE_IN_APP && minSide > 500) {
+                        refSize = minSide / 0.7;
+                    } else if (/sdk_gphone|emulator|Android SDK built for|generic.*android/i.test(navigator.userAgent)) {
+                        refSize = 900;
+                    }
                     const s = Math.max(0.4, Math.min(1, w / refSize, h / refSize));
                     setGameScale(s);
                 };
