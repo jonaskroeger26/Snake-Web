@@ -1,54 +1,6 @@
 {
   "buildCommand": "npm run build:mwa",
-  "public": false,
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/app/index (24).html"
-    },
-    {
-      "source": "/manifest.json",
-      "destination": "/app/manifest.json"
-    },
-    {
-      "source": "/sw.js",
-      "destination": "/app/sw.js"
-    },
-    {
-      "source": "/mwa-bundle.js",
-      "destination": "/app/mwa-bundle.js"
-    },
-    {
-      "source": "/icons/(.*)",
-      "destination": "/app/icons/$1"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/app/$1"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/app/manifest.json",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/manifest+json"
-        }
-      ]
-    },
-    {
-      "source": "/app/sw.js",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        },
-        {
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }
-      ]
-    }
-  ]
+  "installCommand": "npm install",
+  "framework": null,
+  "outputDirectory": "app"
 }
