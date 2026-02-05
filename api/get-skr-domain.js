@@ -1,8 +1,5 @@
 // api/get-skr-domain.js
-// FIXED VERSION - handles errors properly and uses correct Solana connection
-
-import { TldParser } from '@onsol/tldparser';
-import { Connection, PublicKey } from '@solana/web3.js';
+// SIMPLE VERSION - Better error handling for FUNCTION_INVOCATION_FAILED
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -28,6 +25,31 @@ export default async function handler(req, res) {
   }
   
   try {
+    // Try to import dependencies - this will fail if they're missing
+    let TldParser, Connection, PublicKey;
+    
+    try {
+      const tldParserModule = await import('@onsol/tldparser');
+      TldParser = tldParserModule.TldParser;
+      
+      const web3Module = await import('@solana/web3.js');
+      Connection = web3Module.Connection;
+      PublicKey = web3Module.PublicKey;
+    } catch (importError) {
+      console.error('Import error:', importError);
+      return res.status(500).json({
+        success: false,
+        error: 'Failed to load dependencies',
+        details: importError.message,
+        wallet: wallet,
+        domain: null,
+        isSeeker: false,
+        debug: {
+          message: 'Check if @onsol/tldparser and @solana/web3.js are in package.json dependencies'
+        }
+      });
+    }
+    
     // Validate wallet address format
     let ownerPublicKey;
     try {
@@ -43,7 +65,6 @@ export default async function handler(req, res) {
     }
     
     // Use a reliable RPC endpoint
-    // You can replace this with your own RPC URL if you have one
     const RPC_URL = process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com';
     
     const connection = new Connection(RPC_URL, {
@@ -91,7 +112,8 @@ export default async function handler(req, res) {
       wallet: wallet,
       domain: null,
       isSeeker: false,
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined,
+      errorType: error.constructor.name
     });
   }
 }
