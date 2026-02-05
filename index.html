@@ -375,7 +375,54 @@
                 // QuickNode SNS API support
                 const QUICKNODE_ENDPOINT = 'https://bold-boldest-knowledge.solana-mainnet.quiknode.pro/d31ebc9ab7a456235231f62ce1b43c447712538f/';
                 
-                // Try SNS API v2 endpoint first (most reliable for finding domains owned by wallet)
+                // Try Solana Mobile API for .skr domains first (Seeker ID system)
+                try {
+                    console.log('[SNS Lookup] Trying Solana Mobile API for .skr domains...');
+                    const solanaMobileEndpoints = [
+                        `https://api.solanamobile.com/v1/wallet/${walletAddress}/domains`,
+                        `https://api.solanamobile.com/v1/seeker/${walletAddress}`,
+                        `https://api.solanamobile.com/wallet/${walletAddress}/domains`,
+                        `https://solanamobile.com/api/wallet/${walletAddress}/domains`
+                    ];
+                    
+                    for (const endpoint of solanaMobileEndpoints) {
+                        try {
+                            console.log('[SNS Lookup] Trying Solana Mobile endpoint:', endpoint);
+                            const response = await fetch(endpoint, {
+                                method: 'GET',
+                                headers: { 'Content-Type': 'application/json' }
+                            });
+                            
+                            if (response.ok) {
+                                const data = await response.json();
+                                console.log('[SNS Lookup] Solana Mobile API response:', data);
+                                
+                                // Check for .skr domain in response
+                                let skrDomain = null;
+                                if (data && typeof data === 'object') {
+                                    if (data.domain && data.domain.endsWith('.skr')) {
+                                        skrDomain = data.domain;
+                                    } else if (data.seekerId && data.seekerId.endsWith('.skr')) {
+                                        skrDomain = data.seekerId;
+                                    } else if (Array.isArray(data.domains)) {
+                                        skrDomain = data.domains.find(d => d && d.endsWith('.skr'));
+                                    }
+                                }
+                                
+                                if (skrDomain) {
+                                    console.log('[SNS Lookup] ✅ Returning .skr domain from Solana Mobile API:', skrDomain);
+                                    return skrDomain;
+                                }
+                            }
+                        } catch (e) {
+                            continue;
+                        }
+                    }
+                } catch (solanaMobileError) {
+                    console.log('[SNS Lookup] Solana Mobile API exception:', solanaMobileError.message);
+                }
+                
+                // Try SNS API v2 endpoint (for standard SNS domains)
                 try {
                     console.log('[SNS Lookup] Trying SNS API v2 /user/domains endpoint...');
                     const snsApiResponse = await fetch(`https://api.sns.id/v2/user/domains/${walletAddress}`, {
