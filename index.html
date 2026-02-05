@@ -509,10 +509,10 @@
                     const availableWidth = window.innerWidth - 40; // Side padding
                     
                     // Use the smaller dimension to ensure it fits
-                    const maxSize = Math.min(availableHeight, availableWidth);
+                    const maxDimension = Math.min(availableHeight, availableWidth);
                     
                     // Calculate cell size to fit GRID_SIZE cells
-                    const calculatedSize = Math.floor(maxSize / GRID_SIZE);
+                    const calculatedSize = Math.floor(maxDimension / GRID_SIZE);
                     
                     // Set minimum and maximum cell sizes for playability
                     const minSize = 12;
