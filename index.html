@@ -636,12 +636,13 @@
                 if (QUICKNODE_ENDPOINT && window.solanaWeb3) {
                     try {
                         console.log('[SNS Lookup] 🔍 Trying QuickNode on-chain query for .skr domains...');
-                        const connection = new window.solanaWeb3.Connection(QUICKNODE_ENDPOINT, 'confirmed');
-                        const walletPubkey = new window.solanaWeb3.PublicKey(walletAddress);
+                        const connection = new Connection(QUICKNODE_ENDPOINT, 'confirmed');
+                        const walletPubkey = new PublicKey(walletAddress);
                         console.log('[SNS Lookup] Wallet PublicKey created:', walletPubkey.toString());
                         
                         // SNS Name Program ID (mainnet)
-                        const NAME_PROGRAM_ID = new window.solanaWeb3.PublicKey('namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8c2R1r');
+                        const NAME_PROGRAM_ID = new PublicKey('namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8c2R1r');
+                        console.log('[SNS Lookup] NAME_PROGRAM_ID created:', NAME_PROGRAM_ID.toString());
                         console.log('[SNS Lookup] Querying SNS program for name accounts owned by wallet...');
                         
                         // Convert wallet pubkey to bytes for filtering
@@ -789,17 +790,18 @@
                             throw new Error(`Invalid wallet address length: ${walletAddress.length}`);
                         }
                         
-                        const connection = new window.solanaWeb3.Connection(
+                        const connection = new Connection(
                             'https://api.mainnet-beta.solana.com',
                             { commitment: 'confirmed' }
                         );
                         
                         console.log('[SNS Lookup] Creating PublicKey from:', walletAddress);
-                        const walletPubkey = new window.solanaWeb3.PublicKey(walletAddress);
+                        const walletPubkey = new PublicKey(walletAddress);
                         console.log('[SNS Lookup] Created PublicKey:', walletPubkey.toString());
                         
                         // SNS Name Program ID (mainnet)
-                        const NAME_PROGRAM_ID = new window.solanaWeb3.PublicKey('namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8c2R1r');
+                        const NAME_PROGRAM_ID = new PublicKey('namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8c2R1r');
+                        console.log('[SNS Lookup] NAME_PROGRAM_ID created:', NAME_PROGRAM_ID.toString());
                         
                         // Get all name accounts owned by this wallet
                         console.log('[SNS Lookup] Converting walletPubkey to bytes...');
