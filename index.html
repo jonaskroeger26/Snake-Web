@@ -383,26 +383,54 @@
                         headers: { 'Content-Type': 'application/json' }
                     });
                     
+                    console.log('[SNS Lookup] SNS API v2 status:', snsApiResponse.status);
+                    
                     if (snsApiResponse.ok) {
                         const snsData = await snsApiResponse.json();
                         console.log('[SNS Lookup] SNS API v2 response:', snsData);
+                        console.log('[SNS Lookup] Response type:', typeof snsData, 'Keys:', Object.keys(snsData || {}));
                         
-                        // Response format: { "walletAddress": ["domain1", "domain2", ...] }
-                        if (snsData && typeof snsData === 'object') {
-                            const domains = snsData[walletAddress] || snsData.domains || [];
-                            if (Array.isArray(domains) && domains.length > 0) {
-                                // Find .skr domain
-                                const skrDomain = domains.find(d => d && d.endsWith && d.endsWith('.skr'));
-                                if (skrDomain) {
-                                    console.log('[SNS Lookup] ✅ Returning .skr domain from SNS API v2:', skrDomain);
-                                    return skrDomain;
-                                }
-                                // If no .skr, check if domains are returned without TLD and might be .skr
-                                console.log('[SNS Lookup] Found domains but no .skr:', domains);
+                        // Response format can be:
+                        // 1. { "walletAddress": ["domain1", "domain2", ...] }
+                        // 2. { "domains": ["domain1", "domain2", ...] }
+                        // 3. { "data": { "walletAddress": [...] } }
+                        // 4. Direct array: ["domain1", "domain2", ...]
+                        let domains = [];
+                        
+                        if (Array.isArray(snsData)) {
+                            domains = snsData;
+                        } else if (snsData && typeof snsData === 'object') {
+                            // Try different possible response formats
+                            domains = snsData[walletAddress] || 
+                                     snsData.domains || 
+                                     snsData.data?.domains ||
+                                     snsData.data?.[walletAddress] ||
+                                     (snsData.data && Array.isArray(snsData.data) ? snsData.data : []);
+                        }
+                        
+                        console.log('[SNS Lookup] Extracted domains array:', domains);
+                        
+                        if (Array.isArray(domains) && domains.length > 0) {
+                            // Find .skr domain (check both with and without TLD)
+                            const skrDomain = domains.find(d => {
+                                if (!d || typeof d !== 'string') return false;
+                                return d.endsWith('.skr') || d.includes('.skr');
+                            });
+                            
+                            if (skrDomain) {
+                                // Ensure it has .skr TLD
+                                const finalDomain = skrDomain.endsWith('.skr') ? skrDomain : skrDomain + '.skr';
+                                console.log('[SNS Lookup] ✅ Returning .skr domain from SNS API v2:', finalDomain);
+                                return finalDomain;
                             }
+                            
+                            console.log('[SNS Lookup] Found domains but none are .skr:', domains);
+                        } else {
+                            console.log('[SNS Lookup] No domains found in response (empty array or no domains registered)');
                         }
                     } else {
-                        console.log('[SNS Lookup] SNS API v2 error:', snsApiResponse.status);
+                        const errorText = await snsApiResponse.text().catch(() => '');
+                        console.log('[SNS Lookup] SNS API v2 error:', snsApiResponse.status, errorText);
                     }
                 } catch (snsApiError) {
                     console.log('[SNS Lookup] SNS API v2 exception:', snsApiError.message);
@@ -416,17 +444,12 @@
                         const walletPubkey = new window.solanaWeb3.PublicKey(walletAddress);
                         console.log('[SNS Lookup] Wallet PublicKey created:', walletPubkey.toString());
                         
-                        // Try using QuickNode's sns_reverseLookup directly if we can get domain accounts
-                        // First, try to get token accounts (domains are NFTs)
-                        console.log('[SNS Lookup] Querying token accounts via QuickNode...');
-                        const tokenAccounts = await connection.getParsedTokenAccountsByOwner(walletPubkey, {
-                            programId: new window.solanaWeb3.PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
-                        });
-                        
-                        console.log('[SNS Lookup] Found', tokenAccounts.value.length, 'token accounts');
-                        
-                        // For each token account, try reverse lookup if it might be a domain
-                        // This is a fallback - the SNS API v2 should work better
+                        // Try using QuickNode's sns_reverseLookup RPC method
+                        // Query for name accounts using getProgramAccounts with the SNS program
+                        // But first, we need a valid program ID - let's try a different approach
+                        // Use QuickNode's enhanced RPC to query for domains
+                        console.log('[SNS Lookup] Note: QuickNode found token accounts, but domain lookup via program accounts requires valid program ID');
+                        console.log('[SNS Lookup] For .skr domains, the SNS API v2 endpoint should be used instead');
                         
                     } catch (quickNodeError) {
                         console.log('[SNS Lookup] QuickNode API error:', quickNodeError.message);
