@@ -406,6 +406,7 @@
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
             const directionRef = useRef(INITIAL_DIRECTION);
+            const snakeRef = useRef(INITIAL_SNAKE);
             const gameSessionRef = useRef({ gameMode: 'classic', difficulty: 'medium' });
 
             const GAME_SPEEDS = { easy: 200, medium: 150, hard: 100 };
@@ -565,6 +566,7 @@
             const startGame = () => {
                 gameSessionRef.current = { gameMode: settings.gameMode, difficulty: settings.difficulty };
                 setSnake(INITIAL_SNAKE);
+                snakeRef.current = INITIAL_SNAKE;
                 setDirection(INITIAL_DIRECTION);
                 directionRef.current = INITIAL_DIRECTION;
                 setFood(generateFood());
@@ -618,55 +620,73 @@
             };
 
             const checkCollision = useCallback((head) => {
-                if (settings.gameMode === 'portal') return false;
-                if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) return true;
-                if (obstacles.some(obs => obs.x === head.x && obs.y === head.y)) return true;
-                for (let segment of snake) {
-                    if (head.x === segment.x && head.y === segment.y) return true;
+                if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
+                    if (settings.gameMode !== 'portal') return true;
                 }
+                if (obstacles.some(obs => obs.x === head.x && obs.y === head.y)) return true;
                 return false;
-            }, [snake, obstacles, settings.gameMode]);
+            }, [obstacles, settings.gameMode]);
 
             const gameLoop = useCallback(() => {
-                setSnake(prevSnake => {
-                    let head = {
-                        x: prevSnake[0].x + directionRef.current.x,
-                        y: prevSnake[0].y + directionRef.current.y
-                    };
+                const body = snakeRef.current;
+                if (!body || body.length === 0) return;
+                
+                let head = {
+                    x: body[0].x + directionRef.current.x,
+                    y: body[0].y + directionRef.current.y
+                };
 
-                    if (settings.gameMode === 'portal') {
-                        if (head.x < 0) head.x = GRID_SIZE - 1;
-                        if (head.x >= GRID_SIZE) head.x = 0;
-                        if (head.y < 0) head.y = GRID_SIZE - 1;
-                        if (head.y >= GRID_SIZE) head.y = 0;
-                    }
+                if (settings.gameMode === 'portal') {
+                    if (head.x < 0) head.x = GRID_SIZE - 1;
+                    if (head.x >= GRID_SIZE) head.x = 0;
+                    if (head.y < 0) head.y = GRID_SIZE - 1;
+                    if (head.y >= GRID_SIZE) head.y = 0;
+                }
 
-                    if (checkCollision(head)) {
+                // Self-collision: check new head against ALL body segments
+                // This works for ALL game modes including portal
+                for (let i = 0; i < body.length; i++) {
+                    if (head.x === body[i].x && head.y === body[i].y) {
+                        if (gameLoopRef.current) {
+                            clearInterval(gameLoopRef.current);
+                            gameLoopRef.current = null;
+                        }
                         setScreen('gameOver');
                         submitScore(foodEaten);
                         if (settings.sound) playSound(100, 0.3, 0.3);
                         vibrate([200, 100, 200]);
-                        return prevSnake;
+                        return;
                     }
-
-                    const newSnake = [head, ...prevSnake];
-
-                    if (head.x === food.x && head.y === food.y) {
-                        setFoodEaten(f => f + 1);
-                        setFood(generateFood());
-                        if (settings.sound) playSound(800, 0.1, 0.2);
-                        vibrate(50);
-                        
-                        if (settings.gameMode === 'speed') {
-                            setSpeedBoost(true);
-                            setTimeout(() => setSpeedBoost(false), 3000);
-                        }
-                    } else {
-                        newSnake.pop();
+                }
+                if (checkCollision(head)) {
+                    if (gameLoopRef.current) {
+                        clearInterval(gameLoopRef.current);
+                        gameLoopRef.current = null;
                     }
+                    setScreen('gameOver');
+                    submitScore(foodEaten);
+                    if (settings.sound) playSound(100, 0.3, 0.3);
+                    vibrate([200, 100, 200]);
+                    return;
+                }
 
-                    return newSnake;
-                });
+                let newSnake = [head, ...body];
+
+                if (head.x === food.x && head.y === food.y) {
+                    setFoodEaten(f => f + 1);
+                    setFood(generateFood());
+                    if (settings.sound) playSound(800, 0.1, 0.2);
+                    vibrate(50);
+                    if (settings.gameMode === 'speed') {
+                        setSpeedBoost(true);
+                        setTimeout(() => setSpeedBoost(false), 3000);
+                    }
+                } else {
+                    newSnake.pop();
+                }
+
+                snakeRef.current = newSnake;
+                setSnake(newSnake);
             }, [food, checkCollision, foodEaten, generateFood, settings.sound, settings.vibration, settings.gameMode]);
 
             useEffect(() => {
