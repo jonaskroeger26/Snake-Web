@@ -573,40 +573,60 @@
             oscillator.stop(audioContext.currentTime + duration);
         }
 
-        // Fetch .skr domain name using AllDomains API
+        // Fetch .skr domain name using @onsol/tldparser library
         async function getDisplayName(walletAddress) {
             console.log('[SNS Lookup] Starting lookup for:', walletAddress);
             
             try {
-                // Use AllDomains API (NOT SNS!)
-                console.log('[SNS Lookup] 🔍 Trying AllDomains API...');
-                const response = await fetch(`https://alldomains.id/api/wallet/${walletAddress}/domains`);
+                // Check if TldParser is available (loaded from CDN)
+                const TldParser = window.TldParser || (window.onsol && window.onsol.TldParser);
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('[SNS Lookup] AllDomains API response:', data);
-                    
-                    const domains = Array.isArray(data) ? data : (data.domains || []);
-                    console.log('[SNS Lookup] Extracted domains:', domains);
-                    
-                    // Find .skr domain
-                    const skrDomain = domains.find(d => {
-                        const name = typeof d === 'string' ? d : (d.name || '');
-                        return name.endsWith('.skr');
-                    });
-                    
-                    if (skrDomain) {
-                        const domainName = typeof skrDomain === 'string' ? skrDomain : skrDomain.name;
-                        console.log('[SNS Lookup] ✅ Found .skr domain:', domainName);
-                        return domainName;
-                    } else {
-                        console.log('[SNS Lookup] No .skr domain found in domains list');
-                    }
+                if (!TldParser) {
+                    console.log('[SNS Lookup] TldParser not available, using fallback');
+                    return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
+                }
+                
+                // Get Connection and PublicKey from window.solanaWeb3
+                const { Connection, PublicKey } = window.solanaWeb3;
+                
+                if (!Connection || !PublicKey) {
+                    console.log('[SNS Lookup] Solana Web3.js not available, using fallback');
+                    return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
+                }
+                
+                // Use QuickNode endpoint if available, otherwise use mainnet
+                const QUICKNODE_ENDPOINT = 'https://bold-boldest-knowledge.solana-mainnet.quiknode.pro/d31ebc9ab7a456235231f62ce1b43c447712538f/';
+                const rpcEndpoint = QUICKNODE_ENDPOINT || 'https://api.mainnet-beta.solana.com';
+                
+                console.log('[SNS Lookup] 🔍 Using TldParser to query .skr domains...');
+                console.log('[SNS Lookup] RPC endpoint:', rpcEndpoint);
+                
+                // Create connection
+                const connection = new Connection(rpcEndpoint, 'confirmed');
+                
+                // Initialize TldParser
+                const parser = new TldParser(connection);
+                
+                // Create PublicKey from wallet address
+                const ownerPublicKey = new PublicKey(walletAddress);
+                
+                // Query .skr domains for this wallet
+                const skrDomains = await parser.getParsedAllUserDomainsFromTld(
+                    ownerPublicKey,
+                    'skr' // TLD without the dot
+                );
+                
+                // Check if any domains were found
+                if (skrDomains && skrDomains.length > 0) {
+                    const domainName = `${skrDomains[0]}.skr`;
+                    console.log('[SNS Lookup] ✅ Found .skr domain:', domainName);
+                    return domainName;
                 } else {
-                    console.log('[SNS Lookup] AllDomains API error:', response.status, response.statusText);
+                    console.log('[SNS Lookup] No .skr domain found for this wallet');
                 }
             } catch (error) {
                 console.error('[SNS Lookup] Error:', error);
+                console.error('[SNS Lookup] Error details:', error.message, error.stack);
             }
             
             // Fallback to shortened wallet address
