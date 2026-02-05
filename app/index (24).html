@@ -364,7 +364,6 @@
         const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 
         const GRID_SIZE = 20;
-        const CELL_SIZE = 24;
         const INITIAL_SNAKE = [{x: 10, y: 10}];
         const INITIAL_DIRECTION = {x: 1, y: 0};
 
@@ -476,6 +475,7 @@
             const [leaderboardFilter, setLeaderboardFilter] = useState({ mode: 'classic', difficulty: 'medium' });
             const [submittingScore, setSubmittingScore] = useState(false);
             const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+            const [cellSize, setCellSize] = useState(24);
 
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
@@ -484,6 +484,32 @@
             const gameSessionRef = useRef({ gameMode: 'classic', difficulty: 'medium' });
 
             const GAME_SPEEDS = { easy: 200, medium: 150, hard: 100 };
+
+            // Calculate cell size based on viewport
+            useEffect(() => {
+                const calculateCellSize = () => {
+                    // Account for HUD at top (80px) and padding (40px top/bottom, 20px sides)
+                    const availableHeight = window.innerHeight - 80 - 80; // HUD + padding
+                    const availableWidth = window.innerWidth - 40; // Side padding
+                    
+                    // Use the smaller dimension to ensure it fits
+                    const maxSize = Math.min(availableHeight, availableWidth);
+                    
+                    // Calculate cell size to fit GRID_SIZE cells
+                    const calculatedSize = Math.floor(maxSize / GRID_SIZE);
+                    
+                    // Set minimum and maximum cell sizes for playability
+                    const minSize = 12;
+                    const maxSize = 40;
+                    const clampedSize = Math.max(minSize, Math.min(maxSize, calculatedSize));
+                    
+                    setCellSize(clampedSize);
+                };
+
+                calculateCellSize();
+                window.addEventListener('resize', calculateCellSize);
+                return () => window.removeEventListener('resize', calculateCellSize);
+            }, []);
 
             // Display: 1 point per apple. Old DB rows may be stored ×10, so convert for display only.
             const scoreToApples = (s) => {
@@ -905,24 +931,24 @@
                 if (obstacles.length > 0) {
                     ctx.fillStyle = '#1a1a1a';
                     obstacles.forEach(obs => {
-                        ctx.fillRect(obs.x * CELL_SIZE, obs.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
+                        ctx.fillRect(obs.x * cellSize, obs.y * cellSize, cellSize - 1, cellSize - 1);
                     });
                 }
 
                 ctx.fillStyle = speedBoost ? '#FFD700' : '#14F195';
                 snake.forEach((segment) => {
-                    ctx.fillRect(segment.x * CELL_SIZE + 1, segment.y * CELL_SIZE + 1, CELL_SIZE - 2, CELL_SIZE - 2);
+                    ctx.fillRect(segment.x * cellSize + 1, segment.y * cellSize + 1, cellSize - 2, cellSize - 2);
                 });
 
                 ctx.fillStyle = '#9945FF';
                 ctx.beginPath();
                 ctx.arc(
-                    food.x * CELL_SIZE + CELL_SIZE / 2,
-                    food.y * CELL_SIZE + CELL_SIZE / 2,
-                    CELL_SIZE / 2 - 2, 0, Math.PI * 2
+                    food.x * cellSize + cellSize / 2,
+                    food.y * cellSize + cellSize / 2,
+                    cellSize / 2 - 2, 0, Math.PI * 2
                 );
                 ctx.fill();
-            }, [snake, food, obstacles, speedBoost]);
+            }, [snake, food, obstacles, speedBoost, cellSize]);
 
             if (screen === 'menu') {
                 return (
@@ -1117,8 +1143,8 @@
 
                         <canvas
                             ref={canvasRef}
-                            width={GRID_SIZE * CELL_SIZE}
-                            height={GRID_SIZE * CELL_SIZE}
+                            width={GRID_SIZE * cellSize}
+                            height={GRID_SIZE * cellSize}
                         />
 
                         {screen === 'paused' && (
