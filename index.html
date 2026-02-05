@@ -337,48 +337,17 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        // Safety check for React
-        if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
-            document.getElementById('root').innerHTML = '<div style="color: white; padding: 20px; text-align: center;">Error: React libraries not loaded. Please refresh the page.</div>';
-            throw new Error('React not loaded');
-        }
-
         const { useState, useEffect, useRef, useCallback } = React;
-        
-        // Safety check for Solana Web3.js
-        let Connection, PublicKey;
-        if (window.solanaWeb3) {
-            Connection = window.solanaWeb3.Connection;
-            PublicKey = window.solanaWeb3.PublicKey;
-        } else {
-            console.warn('Solana Web3.js not loaded');
-            // Create dummy classes to prevent crashes
-            Connection = class { constructor() {} };
-            PublicKey = class { constructor() {} };
-        }
+        const { Connection, PublicKey } = window.solanaWeb3;
 
         // Supabase credentials
         const SUPABASE_URL = 'https://aukbtnujqzilrqxgelxq.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2J0bnVqcXppbHJxeGdlbHhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMTc1NjQsImV4cCI6MjA4NTY5MzU2NH0.PGwNORkCQn_EztvA4EKoWYQZ3xlhS1a9g-NGPSTL6d4';
         
-        // Initialize Supabase client with safety check
-        let supabase;
-        if (window.supabase && window.supabase.createClient) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        } else {
-            console.warn('Supabase not loaded');
-            supabase = { from: () => ({ select: () => ({ eq: () => ({ order: () => Promise.resolve({ data: [], error: null }) }) }) }), rpc: () => Promise.resolve({ data: [], error: null }) };
-        }
+        // Initialize Supabase client
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Only create connection if Connection is available
-        let connection;
-        try {
-            if (Connection && Connection !== class {}) {
-                connection = new Connection('https://api.devnet.solana.com', 'confirmed');
-            }
-        } catch (e) {
-            console.warn('Failed to create Solana connection:', e);
-        }
+        const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 
         const GRID_SIZE = 20;
         const INITIAL_SNAKE = [{x: 10, y: 10}];
@@ -1153,36 +1122,7 @@
             );
         }
 
-        // Ensure React is loaded and DOM is ready before rendering
-        function renderApp() {
-            try {
-                const root = document.getElementById('root');
-                if (!root) {
-                    console.error('Root element not found');
-                    return;
-                }
-
-                if (typeof React !== 'undefined' && typeof ReactDOM !== 'undefined') {
-                    ReactDOM.render(<SnakeGame />, root);
-                } else {
-                    console.error('React or ReactDOM not loaded');
-                    root.innerHTML = '<div style="color: white; padding: 20px; text-align: center;">Error: React libraries failed to load. Please refresh the page.</div>';
-                }
-            } catch (error) {
-                console.error('Error rendering app:', error);
-                const root = document.getElementById('root');
-                if (root) {
-                    root.innerHTML = '<div style="color: white; padding: 20px; text-align: center;">Error: ' + error.message + '<br>Please check the console for details.</div>';
-                }
-            }
-        }
-
-        // Wait for DOM to be ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', renderApp);
-        } else {
-            renderApp();
-        }
+        ReactDOM.render(<SnakeGame />, document.getElementById('root'));
     </script>
 </body>
 </html>
