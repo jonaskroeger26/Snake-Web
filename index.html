@@ -371,42 +371,44 @@
 
         // Fetch SNS (.skr) name - domains are linked to wallet addresses
         async function getDisplayName(walletAddress) {
-            console.log('🚀🚀🚀 [SNS Lookup] ========== FUNCTION CALLED ========== 🚀🚀🚀');
             console.log('[SNS Lookup] Starting lookup for:', walletAddress);
             
             try {
-                // QuickNode SNS API support
-                const QUICKNODE_ENDPOINT = 'https://bold-boldest-knowledge.solana-mainnet.quiknode.pro/d31ebc9ab7a456235231f62ce1b43c447712538f/';
+                // Use AllDomains API (NOT SNS!)
+                console.log('[SNS Lookup] 🔍 Trying AllDomains API...');
+                const response = await fetch(`https://alldomains.id/api/wallet/${walletAddress}/domains`);
                 
-                // Try AllDomains TLD Parser first (recommended method for .skr domains)
-                if (window.TldParser || (window.onsol && window.onsol.TldParser)) {
-                    try {
-                        console.log('[SNS Lookup] 🔍 Trying AllDomains TLD Parser for .skr domains...');
-                        const TldParser = window.TldParser || window.onsol.TldParser;
-                        const connection = new Connection(QUICKNODE_ENDPOINT || 'https://api.mainnet-beta.solana.com', 'confirmed');
-                        const parser = new TldParser(connection);
-                        const ownerPublicKey = new PublicKey(walletAddress);
-                        
-                        console.log('[SNS Lookup] Querying .skr domains using TLD Parser...');
-                        const skrDomains = await parser.getParsedAllUserDomainsFromTld(ownerPublicKey, 'skr');
-                        
-                        if (skrDomains && skrDomains.length > 0) {
-                            const domainName = `${skrDomains[0]}.skr`;
-                            console.log('[SNS Lookup] ✅ Found .skr domain using TLD Parser:', domainName);
-                            return domainName;
-                        } else {
-                            console.log('[SNS Lookup] No .skr domains found using TLD Parser');
-                        }
-                    } catch (tldParserError) {
-                        console.log('[SNS Lookup] TLD Parser error:', tldParserError.message);
-                        console.log('[SNS Lookup] Continuing with other methods...');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('[SNS Lookup] AllDomains API response:', data);
+                    
+                    const domains = Array.isArray(data) ? data : (data.domains || []);
+                    console.log('[SNS Lookup] Extracted domains:', domains);
+                    
+                    // Find .skr domain
+                    const skrDomain = domains.find(d => {
+                        const name = typeof d === 'string' ? d : (d.name || '');
+                        return name.endsWith('.skr');
+                    });
+                    
+                    if (skrDomain) {
+                        const domainName = typeof skrDomain === 'string' ? skrDomain : skrDomain.name;
+                        console.log('[SNS Lookup] ✅ Found .skr domain:', domainName);
+                        return domainName;
+                    } else {
+                        console.log('[SNS Lookup] No .skr domain found in domains list');
                     }
                 } else {
-                    console.log('[SNS Lookup] TLD Parser not available, trying other methods...');
+                    console.log('[SNS Lookup] AllDomains API error:', response.status, response.statusText);
                 }
-                
-                console.log('[SNS Lookup] ========== STARTING SOLSCAN API LOOKUP ==========');
-                console.log('[SNS Lookup] Wallet address:', walletAddress);
+            } catch (error) {
+                console.error('[SNS Lookup] Error:', error);
+            }
+            
+            // Fallback to shortened wallet address
+            console.log('[SNS Lookup] ⚠️ No .skr domain found, using fallback');
+            return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
+        }
                 
                 // Try Solscan API for .skr domains (account metadata)
                 // Note: Pro API requires authentication, trying public endpoint first
