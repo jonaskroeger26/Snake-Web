@@ -581,16 +581,21 @@
                 
                 // Try Solscan API for .skr domains (account metadata)
                 try {
-                    console.log('[SNS Lookup] Trying Solscan API v2.0 account/metadata...');
+                    console.log('[SNS Lookup] 🔍 Trying Solscan API v2.0 account/metadata...');
+                    console.log('[SNS Lookup] Solscan URL:', `https://pro-api.solscan.io/v2.0/account/metadata?address=${walletAddress}`);
+                    
                     const solscanResponse = await fetch(`https://pro-api.solscan.io/v2.0/account/metadata?address=${walletAddress}`, {
                         method: 'GET',
                         headers: { 
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         }
+                    }).catch(fetchError => {
+                        console.error('[SNS Lookup] ❌ Solscan fetch failed:', fetchError);
+                        throw fetchError;
                     });
                     
-                    console.log('[SNS Lookup] Solscan API status:', solscanResponse.status);
+                    console.log('[SNS Lookup] Solscan API status:', solscanResponse.status, solscanResponse.statusText);
                     
                     if (solscanResponse.ok) {
                         const solscanData = await solscanResponse.json();
