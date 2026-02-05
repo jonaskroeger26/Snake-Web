@@ -844,14 +844,26 @@
                         const walletPubkey = new PublicKey(walletAddress);
                         console.log('[SNS Lookup] Wallet PublicKey created:', walletPubkey.toString());
                         
-                        // SNS Name Program ID (mainnet)
+                        // SNS Name Program ID (mainnet) - using window.solanaWeb3.PublicKey explicitly
+                        const NAME_PROGRAM_ID_STRING = 'namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8c2R1r';
+                        console.log('[SNS Lookup] Attempting to create NAME_PROGRAM_ID from:', NAME_PROGRAM_ID_STRING);
+                        console.log('[SNS Lookup] PublicKey available:', typeof PublicKey, typeof window.solanaWeb3?.PublicKey);
+                        
                         let NAME_PROGRAM_ID;
                         try {
-                            NAME_PROGRAM_ID = new PublicKey('namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8c2R1r');
+                            // Try using window.solanaWeb3.PublicKey explicitly
+                            if (window.solanaWeb3 && window.solanaWeb3.PublicKey) {
+                                NAME_PROGRAM_ID = new window.solanaWeb3.PublicKey(NAME_PROGRAM_ID_STRING);
+                            } else {
+                                NAME_PROGRAM_ID = new PublicKey(NAME_PROGRAM_ID_STRING);
+                            }
                             console.log('[SNS Lookup] NAME_PROGRAM_ID created:', NAME_PROGRAM_ID.toString());
                         } catch (programIdError) {
                             console.error('[SNS Lookup] Failed to create NAME_PROGRAM_ID:', programIdError);
+                            console.error('[SNS Lookup] Program ID string:', NAME_PROGRAM_ID_STRING);
                             console.error('[SNS Lookup] Error details:', programIdError.message, programIdError.stack);
+                            // Skip this method instead of throwing
+                            console.log('[SNS Lookup] Skipping QuickNode on-chain query due to program ID error');
                             throw programIdError;
                         }
                         console.log('[SNS Lookup] Querying SNS program for name accounts owned by wallet...');
