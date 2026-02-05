@@ -574,7 +574,7 @@
         // Fetch SNS (.skr) name - domains are linked to wallet addresses
         async function getDisplayName(walletAddress) {
             try {
-                // Try multiple API endpoints for .skr domain lookup
+                // Try API endpoints first (fastest)
                 const apiEndpoints = [
                     `https://api.sns.id/v1/reverse-lookup/${walletAddress}`,
                     `https://api.sns.id/v1/wallet/${walletAddress}/domains`,
@@ -594,7 +594,6 @@
                             if (apiData && apiData.domain) {
                                 domain = apiData.domain;
                             } else if (apiData && Array.isArray(apiData) && apiData.length > 0) {
-                                // If it's an array, find the first .skr domain
                                 domain = apiData.find(d => d && d.endsWith && d.endsWith('.skr')) || 
                                          apiData.find(d => d && d.name && d.name.endsWith('.skr'))?.name;
                             } else if (apiData && apiData.domains && Array.isArray(apiData.domains)) {
@@ -606,12 +605,11 @@
                             }
                         }
                     } catch (apiError) {
-                        // Try next endpoint
                         continue;
                     }
                 }
                 
-                // Fallback: Query on-chain - domains are NFTs owned by wallets
+                // Fallback: Use Bonfida SDK + on-chain query
                 if (typeof solanaWeb3 !== 'undefined') {
                     const connection = new solanaWeb3.Connection(
                         'https://api.mainnet-beta.solana.com',
@@ -619,24 +617,37 @@
                     );
                     const walletPubkey = new solanaWeb3.PublicKey(walletAddress);
                     
-                    // SNS Program ID - domains are name accounts
+                    // SNS Program ID
                     const NAME_PROGRAM_ID = new solanaWeb3.PublicKey('namesLPneVptA9Z5rqUDD9tMTE1kg');
                     
                     // Get all name accounts owned by this wallet
-                    // The owner field is at offset 32 in NameRecordHeader structure
                     const nameAccounts = await connection.getProgramAccounts(NAME_PROGRAM_ID, {
                         filters: [
                             {
                                 memcmp: {
-                                    offset: 32, // Owner field offset
+                                    offset: 32, // Owner field offset in NameRecordHeader
                                     bytes: walletPubkey.toBytes()
                                 }
                             }
                         ]
                     });
                     
-                    // Parse domain names from the accounts
-                    for (const { account } of nameAccounts) {
+                    // Try using Bonfida SDK reverseLookup if available
+                    if (typeof Bonfida !== 'undefined' && Bonfida.reverseLookup) {
+                        for (const { pubkey } of nameAccounts) {
+                            try {
+                                const domainName = await Bonfida.reverseLookup(connection, pubkey);
+                                if (domainName && domainName.endsWith('.skr')) {
+                                    return domainName;
+                                }
+                            } catch (e) {
+                                continue;
+                            }
+                        }
+                    }
+                    
+                    // Fallback: Parse domain names directly from account data
+                    for (const { account, pubkey } of nameAccounts) {
                         try {
                             if (!account.data || account.data.length < 100) continue;
                             
@@ -648,13 +659,11 @@
                                 const nameBytes = nameData.slice(0, nullIndex);
                                 const domainName = new TextDecoder('utf-8').decode(nameBytes).trim();
                                 
-                                // Check if it's a .skr domain
                                 if (domainName && domainName.endsWith('.skr')) {
                                     return domainName;
                                 }
                             }
                         } catch (parseError) {
-                            // Skip accounts that don't parse correctly
                             continue;
                         }
                     }
