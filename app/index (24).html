@@ -696,10 +696,10 @@
                     if (error) throw error;
 
                     console.log('Score submitted successfully!');
-                    setLeaderboardFilter(prev => ({ ...prev, mode: session.gameMode, difficulty: session.difficulty }));
-                    setTimeout(async () => { await loadLeaderboard(); }, 500);
+                    setLeaderboardFilter({ mode: session.gameMode, difficulty: session.difficulty });
                 } catch (err) {
                     console.error('Failed to submit score:', err);
+                    alert('Could not save score to leaderboard. Try again.');
                 } finally {
                     setSubmittingScore(false);
                 }
@@ -1091,6 +1091,11 @@
                                 {submittingScore && (
                                     <div className="loading-message">
                                         Submitting score...
+                                    </div>
+                                )}
+                                {!wallet && !submittingScore && (
+                                    <div style={{ fontSize: '0.9em', color: '#888', marginTop: 8 }}>
+                                        Connect wallet to save your score to the leaderboard.
                                     </div>
                                 )}
                                 <div className="overlay-buttons">

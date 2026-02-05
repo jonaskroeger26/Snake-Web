@@ -588,8 +588,9 @@
                     setHighScore(apples);
                     localStorage.setItem('snakeHighScore', String(apples));
                 }
-                if (apples === 0 || !wallet) {
-                    console.log('No score to submit or no wallet connected');
+                if (apples === 0) return;
+                if (!wallet) {
+                    console.log('No wallet connected – score not saved to leaderboard');
                     return;
                 }
                 setSubmittingScore(true);
@@ -606,11 +607,11 @@
 
                     if (error) throw error;
 
-                    console.log('Score submitted successfully!');
-                    setLeaderboardFilter(prev => ({ ...prev, mode: session.gameMode, difficulty: session.difficulty }));
-                    setTimeout(() => loadLeaderboard(), 400);
+                    console.log('Score submitted successfully!', session.gameMode, session.difficulty, apples);
+                    setLeaderboardFilter({ mode: session.gameMode, difficulty: session.difficulty });
                 } catch (err) {
                     console.error('Failed to submit score:', err);
+                    alert('Could not save score to leaderboard. Try again.');
                 } finally {
                     setSubmittingScore(false);
                 }
@@ -1002,6 +1003,11 @@
                                 {submittingScore && (
                                     <div className="loading-message">
                                         Submitting score...
+                                    </div>
+                                )}
+                                {!wallet && !submittingScore && (
+                                    <div style={{ fontSize: '0.9em', color: '#888', marginTop: 8 }}>
+                                        Connect wallet to save your score to the leaderboard.
                                     </div>
                                 )}
                                 <div className="overlay-buttons">
