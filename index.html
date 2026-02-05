@@ -369,7 +369,77 @@
 
         // Fetch SNS (.skr) name
         async function getDisplayName(walletAddress) {
-            // Just return shortened wallet address
+            try {
+                // Try API endpoint first (fastest)
+                try {
+                    // Try SNS API reverse lookup
+                    const apiResponse = await fetch(`https://api.sns.id/v1/reverse-lookup/${walletAddress}`, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    if (apiResponse.ok) {
+                        const apiData = await apiResponse.json();
+                        if (apiData && apiData.domain && typeof apiData.domain === 'string' && apiData.domain.endsWith('.skr')) {
+                            return apiData.domain;
+                        }
+                    }
+                } catch (apiError) {
+                    console.log('API lookup failed, trying on-chain query...');
+                }
+                
+                // Fallback: Query on-chain using web3.js
+                if (typeof solanaWeb3 !== 'undefined') {
+                    const connection = new solanaWeb3.Connection(
+                        'https://api.mainnet-beta.solana.com',
+                        { commitment: 'confirmed' }
+                    );
+                    const walletPubkey = new solanaWeb3.PublicKey(walletAddress);
+                    
+                    // SNS Program ID
+                    const NAME_PROGRAM_ID = new solanaWeb3.PublicKey('namesLPneVptA9Z5rqUDD9tMTE1kg');
+                    
+                    // Get all name accounts owned by this wallet
+                    // Name accounts have the owner at offset 32 in the account data
+                    const nameAccounts = await connection.getProgramAccounts(NAME_PROGRAM_ID, {
+                        filters: [
+                            {
+                                memcmp: {
+                                    offset: 32, // Owner field offset in NameRecordHeader
+                                    bytes: walletPubkey.toBytes()
+                                }
+                            }
+                        ]
+                    });
+                    
+                    // Parse domain names from the accounts
+                    for (const { account } of nameAccounts) {
+                        try {
+                            if (!account.data || account.data.length < 100) continue;
+                            
+                            // NameRecordHeader is 96 bytes, domain name starts after that
+                            const nameData = account.data.slice(96);
+                            const nullIndex = nameData.findIndex(byte => byte === 0);
+                            
+                            if (nullIndex > 0) {
+                                const nameBytes = nameData.slice(0, nullIndex);
+                                const domainName = new TextDecoder('utf-8').decode(nameBytes).trim();
+                                
+                                // Check if it's a .skr domain
+                                if (domainName && domainName.endsWith('.skr')) {
+                                    return domainName;
+                                }
+                            }
+                        } catch (parseError) {
+                            // Skip accounts that don't parse correctly
+                            continue;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('Failed to lookup .skr domain for', walletAddress, error);
+            }
+            
+            // Fallback to shortened wallet address
             return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
         }
 
