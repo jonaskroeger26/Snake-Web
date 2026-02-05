@@ -579,7 +579,67 @@
                 // QuickNode SNS API support
                 const QUICKNODE_ENDPOINT = 'https://bold-boldest-knowledge.solana-mainnet.quiknode.pro/d31ebc9ab7a456235231f62ce1b43c447712538f/';
                 
-                // Try Solana Mobile API for .skr domains first (Seeker ID system)
+                // Try Solscan API for .skr domains (account metadata)
+                try {
+                    console.log('[SNS Lookup] Trying Solscan API v2.0 account/metadata...');
+                    const solscanResponse = await fetch(`https://pro-api.solscan.io/v2.0/account/metadata?address=${walletAddress}`, {
+                        method: 'GET',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    console.log('[SNS Lookup] Solscan API status:', solscanResponse.status);
+                    
+                    if (solscanResponse.ok) {
+                        const solscanData = await solscanResponse.json();
+                        console.log('[SNS Lookup] Solscan API response:', solscanData);
+                        
+                        // Check for .skr domain in metadata response
+                        // Response might contain domain info in various formats
+                        let skrDomain = null;
+                        if (solscanData && typeof solscanData === 'object') {
+                            // Check various possible fields
+                            if (solscanData.domain && solscanData.domain.endsWith('.skr')) {
+                                skrDomain = solscanData.domain;
+                            } else if (solscanData.name && solscanData.name.endsWith('.skr')) {
+                                skrDomain = solscanData.name;
+                            } else if (solscanData.seekerId && solscanData.seekerId.endsWith('.skr')) {
+                                skrDomain = solscanData.seekerId;
+                            } else if (solscanData.data && typeof solscanData.data === 'object') {
+                                // Check nested data object
+                                if (solscanData.data.domain && solscanData.data.domain.endsWith('.skr')) {
+                                    skrDomain = solscanData.data.domain;
+                                } else if (solscanData.data.name && solscanData.data.name.endsWith('.skr')) {
+                                    skrDomain = solscanData.data.name;
+                                }
+                            } else if (Array.isArray(solscanData)) {
+                                // If response is an array, check each item
+                                for (const item of solscanData) {
+                                    if (item && item.domain && item.domain.endsWith('.skr')) {
+                                        skrDomain = item.domain;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if (skrDomain) {
+                            console.log('[SNS Lookup] ✅ Returning .skr domain from Solscan API:', skrDomain);
+                            return skrDomain;
+                        } else {
+                            console.log('[SNS Lookup] Solscan API response received but no .skr domain found');
+                        }
+                    } else {
+                        const errorText = await solscanResponse.text().catch(() => '');
+                        console.log('[SNS Lookup] Solscan API error:', solscanResponse.status, errorText);
+                    }
+                } catch (solscanError) {
+                    console.log('[SNS Lookup] Solscan API exception:', solscanError.message);
+                }
+                
+                // Try Solana Mobile API for .skr domains (Seeker ID system)
                 try {
                     console.log('[SNS Lookup] Trying Solana Mobile API for .skr domains...');
                     const solanaMobileEndpoints = [
