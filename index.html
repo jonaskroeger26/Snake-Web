@@ -10,6 +10,8 @@
     <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
     <script src="https://unpkg.com/@bonfida/spl-name-service@2.1.0/dist/index.umd.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- AllDomains TLD Parser for .skr domain resolution -->
+    <script src="https://unpkg.com/@onsol/tldparser@latest/dist/index.umd.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
         
@@ -371,12 +373,40 @@
         async function getDisplayName(walletAddress) {
             console.log('🚀🚀🚀 [SNS Lookup] ========== FUNCTION CALLED ========== 🚀🚀🚀');
             console.log('[SNS Lookup] Starting lookup for:', walletAddress);
-            console.log('[SNS Lookup] ========== STARTING SOLSCAN API LOOKUP ==========');
-            console.log('[SNS Lookup] Wallet address:', walletAddress);
             
             try {
                 // QuickNode SNS API support
                 const QUICKNODE_ENDPOINT = 'https://bold-boldest-knowledge.solana-mainnet.quiknode.pro/d31ebc9ab7a456235231f62ce1b43c447712538f/';
+                
+                // Try AllDomains TLD Parser first (recommended method for .skr domains)
+                if (window.TldParser || (window.onsol && window.onsol.TldParser)) {
+                    try {
+                        console.log('[SNS Lookup] 🔍 Trying AllDomains TLD Parser for .skr domains...');
+                        const TldParser = window.TldParser || window.onsol.TldParser;
+                        const connection = new Connection(QUICKNODE_ENDPOINT || 'https://api.mainnet-beta.solana.com', 'confirmed');
+                        const parser = new TldParser(connection);
+                        const ownerPublicKey = new PublicKey(walletAddress);
+                        
+                        console.log('[SNS Lookup] Querying .skr domains using TLD Parser...');
+                        const skrDomains = await parser.getParsedAllUserDomainsFromTld(ownerPublicKey, 'skr');
+                        
+                        if (skrDomains && skrDomains.length > 0) {
+                            const domainName = `${skrDomains[0]}.skr`;
+                            console.log('[SNS Lookup] ✅ Found .skr domain using TLD Parser:', domainName);
+                            return domainName;
+                        } else {
+                            console.log('[SNS Lookup] No .skr domains found using TLD Parser');
+                        }
+                    } catch (tldParserError) {
+                        console.log('[SNS Lookup] TLD Parser error:', tldParserError.message);
+                        console.log('[SNS Lookup] Continuing with other methods...');
+                    }
+                } else {
+                    console.log('[SNS Lookup] TLD Parser not available, trying other methods...');
+                }
+                
+                console.log('[SNS Lookup] ========== STARTING SOLSCAN API LOOKUP ==========');
+                console.log('[SNS Lookup] Wallet address:', walletAddress);
                 
                 // Try Solscan API for .skr domains (account metadata)
                 // Note: Pro API requires authentication, trying public endpoint first

@@ -1,32 +1,20 @@
 {
-  "name": "snake-dapp",
+  "name": "snake-game-with-skr-domains",
   "version": "1.0.0",
-  "description": "Snake Game on Solana - A blockchain-based arcade game",
+  "description": "Solana Snake Game with .skr domain integration",
+  "type": "module",
   "scripts": {
-    "build": "anchor build",
-    "deploy:devnet": "anchor deploy --provider.cluster devnet",
-    "deploy:mainnet": "anchor deploy --provider.cluster mainnet",
-    "test": "anchor test",
-    "serve": "cd app && python3 -m http.server 8000",
-    "keys": "anchor keys list",
-    "build:mwa": "node build-mwa.js",
-    "build:mwa-seeker": "node build-mwa-seeker.js"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "solana",
-    "dapp",
-    "snake",
-    "game",
-    "blockchain",
-    "web3"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
+  "dependencies": {
+    "@solana/web3.js": "^1.87.6",
+    "@solana/wallet-adapter-base": "^0.9.23",
+    "@solana/wallet-adapter-wallets": "^0.19.23",
+    "@onsol/tldparser": "^0.5.2"
+  },
   "devDependencies": {
-    "@coral-xyz/anchor": "^0.29.0",
-    "@solana-mobile/wallet-standard-mobile": "^0.4.1",
-    "@solana/web3.js": "^1.87.0",
-    "@wallet-standard/core": "^1.0.1",
-    "esbuild": "^0.24.0"
+    "vite": "^5.0.0"
   }
 }

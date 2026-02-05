@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game - Solana dApp with .skr Domains</title>
+    <link rel="stylesheet" href="skr-domain-styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        #gameCanvas {
+            border: 2px solid #14F195;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+            background: #000;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        #startGameBtn {
+            background: linear-gradient(135deg, #14F195 0%, #9945FF 100%);
+            color: white;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .score-display {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .score-display span {
+            color: #14F195;
+            font-weight: bold;
+        }
+
+        /* Leaderboard */
+        .leaderboard-container {
+            margin-top: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .leaderboard-container h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #14F195;
+        }
+
+        #leaderboard {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Custom scrollbar */
+        #leaderboard::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #leaderboard::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        #leaderboard::-webkit-scrollbar-thumb {
+            background: #14F195;
+            border-radius: 4px;
+        }
+
+        /* Instructions */
+        .instructions {
+            text-align: center;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: #ccc;
+        }
+
+        .instructions p {
+            margin: 0.5rem 0;
+        }
+
+        .instructions kbd {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #14F195;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐍 Snake Game</h1>
+
+        <div class="game-container">
+            <!-- Player Info Section -->
+            <div id="player-info" class="hidden">
+                <div id="player-name"></div>
+                <div id="player-stats">
+                    <span>High Score: <span id="high-score">0</span></span>
+                    <span>Games Played: <span id="games-played">0</span></span>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls">
+                <div class="button-group">
+                    <button id="connect-wallet-btn">Connect Phantom Wallet</button>
+                    <button id="disconnect-wallet-btn" class="hidden">Disconnect</button>
+                    <button id="startGameBtn" disabled>Start Game</button>
+                </div>
+            </div>
+
+            <!-- Game Canvas -->
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+
+            <!-- Score Display -->
+            <div class="score-display">
+                Current Score: <span id="current-score">0</span>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <p><strong>How to Play:</strong></p>
+                <p>Use <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> arrow keys to control the snake</p>
+                <p>Eat the red food to grow and score points!</p>
+                <p>Don't hit the walls or yourself!</p>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="leaderboard-container">
+            <h2>🏆 Leaderboard</h2>
+            <div id="leaderboard">
+                <p style="text-align: center; color: #888;">Connect your wallet to see the leaderboard</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay (created dynamically by walletManager) -->
+
+    <!-- Scripts -->
+    <script type="module">
+        import { walletManager } from './walletManager.js';
+
+        // Game variables
+        let gameRunning = false;
+        let currentScore = 0;
+
+        // Get DOM elements
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startBtn = document.getElementById('startGameBtn');
+        const currentScoreElement = document.getElementById('current-score');
+
+        // Enable start button when wallet is connected
+        window.addEventListener('walletConnected', (event) => {
+            console.log('Wallet connected event:', event.detail);
+            startBtn.disabled = false;
+            
+            // Show notification if .skr domain found
+            if (event.detail.skrDomain) {
+                showNotification(`Welcome, ${event.detail.skrDomain}! 🎮`);
+            }
+
+            // Load player stats from blockchain (your existing logic)
+            loadPlayerStats();
+            
+            // Load leaderboard (your existing logic)
+            loadLeaderboard();
+        });
+
+        window.addEventListener('walletDisconnected', () => {
+            console.log('Wallet disconnected event');
+            startBtn.disabled = true;
+            
+            // Clear leaderboard
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.innerHTML = '<p style="text-align: center; color: #888;">Connect your wallet to see the leaderboard</p>';
+        });
+
+        // Start game button
+        startBtn.addEventListener('click', () => {
+            if (!walletManager.isConnected()) {
+                alert('Please connect your wallet first!');
+                return;
+            }
+
+            startGame();
+        });
+
+        function startGame() {
+            gameRunning = true;
+            currentScore = 0;
+            updateScore();
+            startBtn.disabled = true;
+
+            // Your game logic here
+            console.log('Game started!');
+
+            // Example: Simple game loop
+            // Replace with your actual game logic
+        }
+
+        function updateScore() {
+            currentScoreElement.textContent = currentScore;
+        }
+
+        function endGame() {
+            gameRunning = false;
+            startBtn.disabled = false;
+
+            // Submit score to blockchain (your existing logic)
+            submitScoreToBlockchain(currentScore);
+        }
+
+        async function submitScoreToBlockchain(score) {
+            // Your existing Anchor program logic to submit score
+            console.log('Submitting score:', score);
+            
+            const playerData = walletManager.getPlayerData();
+            console.log('Player:', playerData);
+
+            // TODO: Call your Anchor program's submit_score instruction
+        }
+
+        async function loadPlayerStats() {
+            // Your existing logic to load player stats from blockchain
+            console.log('Loading player stats...');
+            
+            // TODO: Fetch from your Anchor program
+            // Update #high-score and #games-played elements
+        }
+
+        async function loadLeaderboard() {
+            console.log('Loading leaderboard...');
+            
+            const leaderboardElement = document.getElementById('leaderboard');
+            leaderboardElement.innerHTML = '<p style="text-align: center; color: #888;">Loading...</p>';
+
+            // TODO: Fetch leaderboard from your Anchor program
+            // For each entry, resolve the .skr domain using walletManager.resolveDisplayName()
+            
+            // Example:
+            /*
+            const leaderboardData = await fetchLeaderboardFromBlockchain();
+            
+            const entriesWithDomains = await Promise.all(
+                leaderboardData.map(async (entry) => {
+                    const displayData = await walletManager.resolveDisplayName(entry.player.toString());
+                    return {
+                        ...entry,
+                        ...displayData
+                    };
+                })
+            );
+
+            const leaderboardHTML = entriesWithDomains
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 10)
+                .map((player, index) => `
+                    <div class="leaderboard-entry ${player.hasDomain ? 'has-domain' : ''}">
+                        <span class="rank">#${index + 1}</span>
+                        <span class="player-name">${player.displayName}</span>
+                        <span class="score">${player.score}</span>
+                    </div>
+                `)
+                .join('');
+            
+            leaderboardElement.innerHTML = leaderboardHTML;
+            */
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'skr-found-notification';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Your game rendering logic
+        function drawGame() {
+            if (!gameRunning) return;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // TODO: Draw your snake and food
+            
+            requestAnimationFrame(drawGame);
+        }
+
+        // Initialize
+        console.log('Snake Game loaded!');
+    </script>
+</body>
+</html>
