@@ -1217,7 +1217,47 @@
             );
         }
 
-        ReactDOM.render(<SnakeGame />, document.getElementById('root'));
+        // Safety check: Ensure React is loaded and root element exists
+        function initApp() {
+            const root = document.getElementById('root');
+            if (!root) {
+                console.error('❌ Root element not found!');
+                document.body.innerHTML = '<div style="color: white; padding: 20px; text-align: center; background: #000;">Error: Root element not found. Please refresh the page.</div>';
+                return;
+            }
+
+            if (typeof React === 'undefined') {
+                console.error('❌ React not loaded!');
+                root.innerHTML = '<div style="color: white; padding: 20px; text-align: center;">Error: React library failed to load. Please refresh the page.</div>';
+                return;
+            }
+
+            if (typeof ReactDOM === 'undefined') {
+                console.error('❌ ReactDOM not loaded!');
+                root.innerHTML = '<div style="color: white; padding: 20px; text-align: center;">Error: ReactDOM library failed to load. Please refresh the page.</div>';
+                return;
+            }
+
+            console.log('✅ React loaded:', typeof React !== 'undefined');
+            console.log('✅ ReactDOM loaded:', typeof ReactDOM !== 'undefined');
+            console.log('✅ Root element found:', !!root);
+
+            try {
+                ReactDOM.render(<SnakeGame />, root);
+                console.log('✅ App rendered successfully');
+            } catch (error) {
+                console.error('❌ Error rendering app:', error);
+                root.innerHTML = '<div style="color: white; padding: 20px; text-align: center;">Error: ' + error.message + '<br>Please check the console for details.</div>';
+            }
+        }
+
+        // Wait for DOM and scripts to be ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            // DOM already ready, but wait a tick for scripts to load
+            setTimeout(initApp, 0);
+        }
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
