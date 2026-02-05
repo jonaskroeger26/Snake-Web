@@ -442,16 +442,22 @@
                         console.log('[SNS Lookup] Created PublicKey:', walletPubkey.toString());
                         
                         // SNS Program ID
+                        console.log('[SNS Lookup] Creating NAME_PROGRAM_ID...');
                         const NAME_PROGRAM_ID = new window.solanaWeb3.PublicKey('namesLPneVptA9Z5rqUDD9tMTE1kg');
-                    
+                        console.log('[SNS Lookup] NAME_PROGRAM_ID created:', NAME_PROGRAM_ID.toString());
+                        
                         // Get all name accounts owned by this wallet
+                        console.log('[SNS Lookup] Converting walletPubkey to bytes...');
+                        const walletBytes = walletPubkey.toBytes();
+                        console.log('[SNS Lookup] Wallet bytes length:', walletBytes.length);
+                        
                         console.log('[SNS Lookup] Querying program accounts...');
                         const nameAccounts = await connection.getProgramAccounts(NAME_PROGRAM_ID, {
                             filters: [
                                 {
                                     memcmp: {
                                         offset: 32, // Owner field offset in NameRecordHeader
-                                        bytes: walletPubkey.toBytes()
+                                        bytes: walletBytes
                                     }
                                 }
                             ]
