@@ -12,7 +12,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [],
     "android": {
       "package": "com.snake.solana.dapp",
       "adaptiveIcon": {
@@ -22,8 +25,12 @@
     },
     "extra": {
       "eas": {
-        "projectId": "YOUR_EAS_PROJECT_ID"
+        "projectId": "16888aab-a6ab-438d-852e-c6cdaef1280b"
       }
+    },
+    "owner": "jonaskroeger",
+    "ios": {
+      "bundleIdentifier": "com.snake.solana.dapp"
     }
   }
 }

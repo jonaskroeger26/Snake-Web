@@ -580,75 +580,152 @@
                 const QUICKNODE_ENDPOINT = 'https://bold-boldest-knowledge.solana-mainnet.quiknode.pro/d31ebc9ab7a456235231f62ce1b43c447712538f/';
                 
                 // Try Solscan API for .skr domains (account metadata)
+                // Note: Pro API requires authentication, trying public endpoint first
+                console.log('[SNS Lookup] ========== STARTING SOLSCAN API LOOKUP ==========');
+                console.log('[SNS Lookup] Wallet address:', walletAddress);
+                
                 try {
-                    console.log('[SNS Lookup] 🔍 Trying Solscan API v2.0 account/metadata...');
-                    console.log('[SNS Lookup] Solscan URL:', `https://pro-api.solscan.io/v2.0/account/metadata?address=${walletAddress}`);
+                    // Try public Solscan API first (no auth required)
+                    console.log('[SNS Lookup] 🔍 Step 1: Trying public Solscan API...');
+                    const publicSolscanUrl = `https://public-api.solscan.io/account/${walletAddress}`;
+                    console.log('[SNS Lookup] Public Solscan URL:', publicSolscanUrl);
                     
-                    const solscanResponse = await fetch(`https://pro-api.solscan.io/v2.0/account/metadata?address=${walletAddress}`, {
+                    const publicSolscanResponse = await fetch(publicSolscanUrl, {
                         method: 'GET',
                         headers: { 
                             'Content-Type': 'application/json',
                             'Accept': 'application/json'
                         }
                     }).catch(fetchError => {
-                        console.error('[SNS Lookup] ❌ Solscan fetch failed:', fetchError);
+                        console.error('[SNS Lookup] ❌ Public Solscan fetch error:', fetchError);
+                        console.error('[SNS Lookup] Error type:', fetchError.constructor.name);
+                        console.error('[SNS Lookup] Error message:', fetchError.message);
                         throw fetchError;
                     });
                     
-                    console.log('[SNS Lookup] Solscan API status:', solscanResponse.status, solscanResponse.statusText);
+                    console.log('[SNS Lookup] Public Solscan status:', publicSolscanResponse.status, publicSolscanResponse.statusText);
                     
-                    if (solscanResponse.ok) {
-                        const solscanData = await solscanResponse.json();
-                        console.log('[SNS Lookup] Solscan API full response:', JSON.stringify(solscanData, null, 2));
-                        console.log('[SNS Lookup] Response type:', typeof solscanData);
-                        console.log('[SNS Lookup] Response keys:', Object.keys(solscanData || {}));
+                    if (publicSolscanResponse.ok) {
+                        const publicSolscanData = await publicSolscanResponse.json().catch(jsonError => {
+                            console.error('[SNS Lookup] ❌ Failed to parse public Solscan JSON:', jsonError);
+                            return null;
+                        });
                         
-                        // Recursively search for .skr domain in the response
-                        function findSkrDomain(obj, path = '') {
-                            if (!obj || typeof obj !== 'object') return null;
+                        if (publicSolscanData) {
+                            console.log('[SNS Lookup] Public Solscan response keys:', Object.keys(publicSolscanData || {}));
                             
-                            // Check all string values for .skr domain
-                            for (const [key, value] of Object.entries(obj)) {
-                                const currentPath = path ? `${path}.${key}` : key;
+                            // Recursively search for .skr domain
+                            function findSkrDomain(obj, path = '') {
+                                if (!obj || typeof obj !== 'object') return null;
                                 
-                                if (typeof value === 'string' && value.endsWith('.skr')) {
-                                    console.log(`[SNS Lookup] Found .skr domain at path: ${currentPath} = ${value}`);
-                                    return value;
-                                }
-                                
-                                // Recursively check nested objects
-                                if (typeof value === 'object' && value !== null) {
-                                    const found = findSkrDomain(value, currentPath);
-                                    if (found) return found;
-                                }
-                                
-                                // Check arrays
-                                if (Array.isArray(value)) {
-                                    for (let i = 0; i < value.length; i++) {
-                                        const found = findSkrDomain(value[i], `${currentPath}[${i}]`);
+                                for (const [key, value] of Object.entries(obj)) {
+                                    const currentPath = path ? `${path}.${key}` : key;
+                                    
+                                    if (typeof value === 'string' && value.endsWith('.skr')) {
+                                        console.log(`[SNS Lookup] ✅ Found .skr domain at path: ${currentPath} = ${value}`);
+                                        return value;
+                                    }
+                                    
+                                    if (typeof value === 'object' && value !== null) {
+                                        const found = findSkrDomain(value, currentPath);
                                         if (found) return found;
                                     }
+                                    
+                                    if (Array.isArray(value)) {
+                                        for (let i = 0; i < value.length; i++) {
+                                            const found = findSkrDomain(value[i], `${currentPath}[${i}]`);
+                                            if (found) return found;
+                                        }
+                                    }
                                 }
+                                return null;
                             }
-                            return null;
+                            
+                            const skrDomain = findSkrDomain(publicSolscanData);
+                            if (skrDomain) {
+                                console.log('[SNS Lookup] ✅ Returning .skr domain from public Solscan API:', skrDomain);
+                                return skrDomain;
+                            }
                         }
+                    }
+                } catch (publicSolscanError) {
+                    console.log('[SNS Lookup] Public Solscan API failed:', publicSolscanError.message);
+                    console.log('[SNS Lookup] Error stack:', publicSolscanError.stack);
+                }
+                
+                // Try Pro API as fallback (may require auth)
+                try {
+                    console.log('[SNS Lookup] 🔍 Step 2: Trying Solscan Pro API v2.0 account/metadata...');
+                    const proSolscanUrl = `https://pro-api.solscan.io/v2.0/account/metadata?address=${walletAddress}`;
+                    console.log('[SNS Lookup] Pro Solscan URL:', proSolscanUrl);
+                    
+                    const proSolscanResponse = await fetch(proSolscanUrl, {
+                        method: 'GET',
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    }).catch(fetchError => {
+                        console.error('[SNS Lookup] ❌ Pro Solscan fetch error:', fetchError);
+                        console.error('[SNS Lookup] Error type:', fetchError.constructor.name);
+                        console.error('[SNS Lookup] Error message:', fetchError.message);
+                        throw fetchError;
+                    });
+                    
+                    console.log('[SNS Lookup] Pro Solscan status:', proSolscanResponse.status, proSolscanResponse.statusText);
+                    
+                    if (proSolscanResponse.ok) {
+                        const proSolscanData = await proSolscanResponse.json().catch(jsonError => {
+                            console.error('[SNS Lookup] ❌ Failed to parse Pro Solscan JSON:', jsonError);
+                            return null;
+                        });
                         
-                        const skrDomain = findSkrDomain(solscanData);
-                        
-                        if (skrDomain) {
-                            console.log('[SNS Lookup] ✅ Returning .skr domain from Solscan API:', skrDomain);
-                            return skrDomain;
-                        } else {
-                            console.log('[SNS Lookup] Solscan API response received but no .skr domain found after recursive search');
-                            console.log('[SNS Lookup] Full response structure:', solscanData);
+                        if (proSolscanData) {
+                            console.log('[SNS Lookup] Pro Solscan response keys:', Object.keys(proSolscanData || {}));
+                            
+                            // Recursively search for .skr domain
+                            function findSkrDomain(obj, path = '') {
+                                if (!obj || typeof obj !== 'object') return null;
+                                
+                                for (const [key, value] of Object.entries(obj)) {
+                                    const currentPath = path ? `${path}.${key}` : key;
+                                    
+                                    if (typeof value === 'string' && value.endsWith('.skr')) {
+                                        console.log(`[SNS Lookup] ✅ Found .skr domain at path: ${currentPath} = ${value}`);
+                                        return value;
+                                    }
+                                    
+                                    if (typeof value === 'object' && value !== null) {
+                                        const found = findSkrDomain(value, currentPath);
+                                        if (found) return found;
+                                    }
+                                    
+                                    if (Array.isArray(value)) {
+                                        for (let i = 0; i < value.length; i++) {
+                                            const found = findSkrDomain(value[i], `${currentPath}[${i}]`);
+                                            if (found) return found;
+                                        }
+                                    }
+                                }
+                                return null;
+                            }
+                            
+                            const skrDomain = findSkrDomain(proSolscanData);
+                            if (skrDomain) {
+                                console.log('[SNS Lookup] ✅ Returning .skr domain from Pro Solscan API:', skrDomain);
+                                return skrDomain;
+                            }
                         }
                     } else {
-                        const errorText = await solscanResponse.text().catch(() => '');
-                        console.log('[SNS Lookup] Solscan API error:', solscanResponse.status, errorText);
+                        const errorText = await proSolscanResponse.text().catch(() => '');
+                        console.log('[SNS Lookup] Pro Solscan API error response:', proSolscanResponse.status, errorText.substring(0, 200));
                     }
-                } catch (solscanError) {
-                    console.log('[SNS Lookup] Solscan API exception:', solscanError.message);
+                } catch (proSolscanError) {
+                    console.log('[SNS Lookup] Pro Solscan API exception:', proSolscanError.message);
+                    console.log('[SNS Lookup] Error stack:', proSolscanError.stack);
                 }
+                
+                console.log('[SNS Lookup] ========== SOLSCAN API LOOKUP COMPLETE ==========');
                 
                 // Try Solana Mobile API for .skr domains (Seeker ID system)
                 try {
