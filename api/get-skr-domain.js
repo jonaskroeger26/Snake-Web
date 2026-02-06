@@ -246,22 +246,41 @@ export default async function handler(req, res) {
                   // Bytes 0-95: Header (parent_name 32b, owner 32b, class 32b)
                   // Bytes 96+: Domain data (usually starts with a length prefix)
                   
-                  // Hex dump of bytes 96-150 to find where domain name is stored
-                  if (accountData.length > 96) {
-                    const hexDumpStart = 96;
-                    const hexDumpEnd = Math.min(150, accountData.length);
-                    const hexDumpBytes = accountData.slice(hexDumpStart, hexDumpEnd);
-                    const hexString = Array.from(hexDumpBytes)
+                  // Hex dump of entire account data to find where domain name is stored
+                  console.log(`[API] Full account data hex dump (${accountData.length} bytes):`);
+                  
+                  // Show hex dump in chunks of 32 bytes for readability
+                  for (let i = 0; i < accountData.length; i += 32) {
+                    const chunk = accountData.slice(i, Math.min(i + 32, accountData.length));
+                    const hexString = Array.from(chunk)
                       .map(b => b.toString(16).padStart(2, '0'))
                       .join(' ');
-                    console.log(`[API] Hex dump of bytes ${hexDumpStart}-${hexDumpEnd}:`);
-                    console.log(`[API] ${hexString}`);
-                    
-                    // Also show ASCII representation
-                    const asciiString = Array.from(hexDumpBytes)
+                    const asciiString = Array.from(chunk)
                       .map(b => (b >= 32 && b <= 126) ? String.fromCharCode(b) : '.')
                       .join('');
-                    console.log(`[API] ASCII representation: ${asciiString}`);
+                    console.log(`[API] Bytes ${i}-${i + chunk.length - 1}: ${hexString.padEnd(96)} | ${asciiString}`);
+                  }
+                  
+                  // Search for "jonaskroeger" in the raw bytes
+                  const domainNameBytes = Buffer.from('jonaskroeger', 'utf8');
+                  let foundOffset = -1;
+                  for (let i = 0; i <= accountData.length - domainNameBytes.length; i++) {
+                    let match = true;
+                    for (let j = 0; j < domainNameBytes.length; j++) {
+                      if (accountData[i + j] !== domainNameBytes[j]) {
+                        match = false;
+                        break;
+                      }
+                    }
+                    if (match) {
+                      foundOffset = i;
+                      console.log(`[API] ✅ Found "jonaskroeger" at byte offset: ${foundOffset}`);
+                      break;
+                    }
+                  }
+                  
+                  if (foundOffset === -1) {
+                    console.log(`[API] ⚠️ Could not find "jonaskroeger" string in account data`);
                   }
                   
                   if (accountData.length > 96) {
