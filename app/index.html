@@ -704,9 +704,13 @@
             }, []);
 
             // Display: 1 point per apple. Old DB rows may be stored ×10, so convert for display only.
+            // Only divide if score is clearly old format (>= 100), otherwise return as-is
             const scoreToApples = (s) => {
                 const n = Number(s);
-                return n >= 10 ? Math.round(n / 10) : n;
+                // Old format: scores were stored as 10x (e.g., 160 for 16 apples)
+                // New format: scores are stored as-is (e.g., 16 for 16 apples)
+                // Only convert if score is >= 100 (clearly old format)
+                return n >= 100 ? Math.round(n / 10) : n;
             };
 
             // Load leaderboard from Supabase
@@ -732,11 +736,12 @@
 
                         if (fallbackError) throw fallbackError;
 
-                        // Keep only best score per wallet
+                        // Keep only best score per wallet (deduplicate by wallet_address only)
                         const bestScores = {};
                         allData.forEach(entry => {
-                            if (!bestScores[entry.wallet_address] || entry.score > bestScores[entry.wallet_address].score) {
-                                bestScores[entry.wallet_address] = entry;
+                            const wallet = entry.wallet_address.toLowerCase(); // Normalize to lowercase
+                            if (!bestScores[wallet] || entry.score > bestScores[wallet].score) {
+                                bestScores[wallet] = entry;
                             }
                         });
 
@@ -764,9 +769,18 @@
                         setLeaderboard(entriesWithDomains);
                     } else {
                         // RPC returns best_score already calculated
+                        // Deduplicate by wallet_address (in case get_best_scores returns duplicates)
+                        const uniqueEntries = {};
+                        data.forEach(entry => {
+                            const wallet = entry.wallet_address.toLowerCase(); // Normalize to lowercase
+                            if (!uniqueEntries[wallet] || entry.best_score > uniqueEntries[wallet].best_score) {
+                                uniqueEntries[wallet] = entry;
+                            }
+                        });
+
                         // Look up domains for all entries
                         const entriesWithDomains = await Promise.all(
-                            data
+                            Object.values(uniqueEntries)
                                 .sort((a, b) => scoreToApples(b.best_score) - scoreToApples(a.best_score))
                                 .slice(0, 100)
                                 .map(async (entry, idx) => {

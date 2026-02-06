@@ -13,15 +13,27 @@ RETURNS TABLE (
 LANGUAGE SQL
 STABLE
 AS $$
-  SELECT
+  -- Get best score per wallet (case-insensitive), ensuring only one entry per wallet
+  WITH wallet_scores AS (
+    SELECT 
+      LOWER(wallet_address) AS wallet_lower,
+      MAX(score) AS max_score
+    FROM leaderboards
+    WHERE game_mode = p_game_mode
+      AND difficulty = p_difficulty
+    GROUP BY LOWER(wallet_address)
+  )
+  SELECT DISTINCT ON (LOWER(l.wallet_address))
     l.wallet_address,
     l.skr_name,
-    MAX(l.score)::INTEGER AS best_score
+    ws.max_score::INTEGER AS best_score
   FROM leaderboards l
+  INNER JOIN wallet_scores ws 
+    ON LOWER(l.wallet_address) = ws.wallet_lower 
+    AND l.score = ws.max_score
   WHERE l.game_mode = p_game_mode
     AND l.difficulty = p_difficulty
-  GROUP BY l.wallet_address, l.skr_name
-  ORDER BY best_score DESC
+  ORDER BY LOWER(l.wallet_address), l.score DESC
   LIMIT 100;
 $$;
 
