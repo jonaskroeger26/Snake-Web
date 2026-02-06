@@ -432,23 +432,23 @@ export default async function handler(req, res) {
       console.log('[API] Error stack:', allDomainsError.stack);
     }
     
-    // Fallback: Hardcoded domain mapping for known wallets
-    // This is a temporary fallback until we can properly decode from account data
-    const hardcodedDomains = {
-      '4B3K1Zwvj4TJoEjtWsyKDrFcoQvFoA49nR82Sm2dscgy': 'jonaskroeger.skr',
-      // Add more wallet -> domain mappings here as needed
-    };
+    // TEMPORARILY DISABLED: Hardcoded domain mapping for known wallets
+    // Commented out to force account data decoding and see hex dump
+    // const hardcodedDomains = {
+    //   '4B3K1Zwvj4TJoEjtWsyKDrFcoQvFoA49nR82Sm2dscgy': 'jonaskroeger.skr',
+    //   // Add more wallet -> domain mappings here as needed
+    // };
     
-    if (hardcodedDomains[wallet]) {
-      console.log('[API] ✅ Using hardcoded domain mapping:', hardcodedDomains[wallet]);
-      return res.status(200).json({
-        success: true,
-        wallet: wallet,
-        domain: hardcodedDomains[wallet],
-        isSeeker: true,
-        method: 'hardcoded_mapping'
-      });
-    }
+    // if (hardcodedDomains[wallet]) {
+    //   console.log('[API] ✅ Using hardcoded domain mapping:', hardcodedDomains[wallet]);
+    //   return res.status(200).json({
+    //     success: true,
+    //     wallet: wallet,
+    //     domain: hardcodedDomains[wallet],
+    //     isSeeker: true,
+    //     method: 'hardcoded_mapping'
+    //   });
+    // }
     
     // No .skr domain found
     console.log('[API] No .skr domain found for wallet:', wallet);
