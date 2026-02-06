@@ -139,27 +139,90 @@ export default async function handler(req, res) {
           setTimeout(() => reject(new Error('All domains timeout')), 10000)
         );
         
-        const skrDomainAccounts = await Promise.race([allDomainsPromise, timeoutPromise]);
+        const skrDomainKeys = await Promise.race([allDomainsPromise, timeoutPromise]);
         
-        console.log('[API] All .skr domain accounts result:', skrDomainAccounts);
+        console.log('[API] All .skr domain accounts result:', skrDomainKeys);
+        console.log('[API] Is array?', Array.isArray(skrDomainKeys));
+        console.log('[API] Length?', skrDomainKeys?.length);
         
-        if (skrDomainAccounts && Array.isArray(skrDomainAccounts) && skrDomainAccounts.length > 0) {
-          // Try to reverse lookup domain names from account addresses
+        // Properly check if the array has items
+        if (skrDomainKeys && Array.isArray(skrDomainKeys) && skrDomainKeys.length > 0) {
+          console.log('[API] ✅ Found', skrDomainKeys.length, 'domain account(s), resolving names...');
+          
+          // Try to resolve domain names from account PublicKeys
           const domainNames = [];
-          for (const accountPubkey of skrDomainAccounts.slice(0, 5)) { // Limit to first 5
+          
+          for (const domainKey of skrDomainKeys.slice(0, 5)) { // Limit to first 5
             try {
-              // Try reverseLookupNameAccount if available
+              console.log('[API] Resolving domain name for account:', domainKey.toString());
+              
+              // Method 3a: Try reverseLookupNameAccount with owner as parent
               if (typeof parser.reverseLookupNameAccount === 'function') {
-                const domainInfo = await parser.reverseLookupNameAccount(accountPubkey, owner);
-                if (domainInfo && domainInfo.domain) {
-                  const fullDomain = `${domainInfo.domain}.${domainInfo.tld || 'skr'}`;
-                  if (fullDomain.endsWith('.skr')) {
-                    domainNames.push(fullDomain);
+                try {
+                  // reverseLookupNameAccount(nameAccount, parentOwner)
+                  // Try with owner first
+                  const domainInfo = await parser.reverseLookupNameAccount(domainKey, owner);
+                  console.log('[API] reverseLookupNameAccount result:', domainInfo);
+                  
+                  if (domainInfo) {
+                    // domainInfo might be a string or an object with domain property
+                    let domainName = null;
+                    
+                    if (typeof domainInfo === 'string') {
+                      domainName = domainInfo.endsWith('.skr') ? domainInfo : `${domainInfo}.skr`;
+                    } else if (domainInfo.domain) {
+                      domainName = `${domainInfo.domain}.${domainInfo.tld || 'skr'}`;
+                    } else if (domainInfo.name) {
+                      domainName = `${domainInfo.name}.skr`;
+                    }
+                    
+                    if (domainName && domainName.endsWith('.skr')) {
+                      console.log('[API] ✅ Successfully resolved domain name:', domainName);
+                      domainNames.push(domainName);
+                      continue; // Success, move to next
+                    }
+                  }
+                } catch (reverseError) {
+                  console.log('[API] reverseLookupNameAccount failed:', reverseError.message);
+                  
+                  // Try without parent owner (some versions might not need it)
+                  try {
+                    const domainInfo2 = await parser.reverseLookupNameAccount(domainKey);
+                    console.log('[API] reverseLookupNameAccount (no parent) result:', domainInfo2);
+                    
+                    if (domainInfo2) {
+                      const domainName = typeof domainInfo2 === 'string'
+                        ? (domainInfo2.endsWith('.skr') ? domainInfo2 : `${domainInfo2}.skr`)
+                        : (domainInfo2.domain ? `${domainInfo2.domain}.skr` : null);
+                      
+                      if (domainName && domainName.endsWith('.skr')) {
+                        console.log('[API] ✅ Successfully resolved domain name (no parent):', domainName);
+                        domainNames.push(domainName);
+                        continue;
+                      }
+                    }
+                  } catch (reverseError2) {
+                    console.log('[API] reverseLookupNameAccount (no parent) also failed:', reverseError2.message);
                   }
                 }
               }
+              
+              // Method 3b: Try to fetch account data and parse domain name
+              try {
+                const accountInfo = await connection.getAccountInfo(domainKey);
+                if (accountInfo && accountInfo.data) {
+                  // Try to parse domain name from account data
+                  // This is a fallback - the account data structure might contain the domain name
+                  console.log('[API] Account data length:', accountInfo.data.length);
+                  // Note: Parsing account data directly is complex and TLD-specific
+                  // We'll rely on reverseLookupNameAccount for now
+                }
+              } catch (accountError) {
+                console.log('[API] Failed to fetch account info:', accountError.message);
+              }
+              
             } catch (e) {
-              console.log('[API] Failed to reverse lookup domain from account:', e.message);
+              console.log('[API] Failed to resolve domain from account:', domainKey.toString(), e.message);
             }
           }
           
@@ -175,16 +238,19 @@ export default async function handler(req, res) {
               allDomains: domainNames,
               method: 'getAllUserDomainsFromTld + reverseLookup'
             });
+          } else {
+            console.log('[API] ⚠️ Found domain accounts but could not resolve domain names');
           }
+        } else {
+          console.log('[API] No .skr domain accounts found (array check failed)');
         }
       } else {
         console.log('[API] getAllUserDomainsFromTld method not available');
       }
       
-      console.log('[API] No .skr domains found from getAllUserDomainsFromTld');
-      
     } catch (allDomainsError) {
       console.log('[API] getAllUserDomainsFromTld failed:', allDomainsError.message);
+      console.log('[API] Error stack:', allDomainsError.stack);
     }
     
     // No .skr domain found
