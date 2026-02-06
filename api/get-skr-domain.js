@@ -149,6 +149,42 @@ export default async function handler(req, res) {
         if (skrDomainKeys && Array.isArray(skrDomainKeys) && skrDomainKeys.length > 0) {
           console.log('[API] ✅ Found', skrDomainKeys.length, 'domain account(s), resolving names...');
           
+          // Get the .skr TLD parent owner (required for reverseLookupNameAccount)
+          // The parent owner is stored in the parent_name field (first 32 bytes) of each domain account
+          let skrParentOwner = null;
+          try {
+            console.log('[API] Getting .skr TLD parent owner from account data...');
+            
+            // Try to get parent owner from the first domain account's account data
+            // The NameRecordHeader structure: parent_name (32 bytes) | owner (32 bytes) | class (32 bytes) | data...
+            for (const domainKey of skrDomainKeys.slice(0, 3)) { // Try up to 3 accounts
+              try {
+                const domainAccount = await connection.getAccountInfo(domainKey);
+                if (domainAccount && domainAccount.data && domainAccount.data.length >= 32) {
+                  // Extract parent_name (first 32 bytes)
+                  const parentNameBytes = domainAccount.data.slice(0, 32);
+                  
+                  // Check if it's not a default/null PublicKey
+                  const parentPubkey = new PublicKey(parentNameBytes);
+                  if (!parentPubkey.equals(PublicKey.default)) {
+                    skrParentOwner = parentPubkey;
+                    console.log('[API] ✅ Found parent owner from account data:', skrParentOwner.toString());
+                    break; // Found valid parent, stop searching
+                  }
+                }
+              } catch (accountError) {
+                console.log('[API] Failed to get parent from account:', domainKey.toString(), accountError.message);
+              }
+            }
+            
+            if (!skrParentOwner) {
+              console.log('[API] ⚠️ Could not extract parent owner from account data, will try with wallet owner');
+            }
+            
+          } catch (parentError) {
+            console.log('[API] Failed to get parent owner:', parentError.message);
+          }
+          
           // Try to resolve domain names from account PublicKeys
           const domainNames = [];
           
@@ -156,12 +192,15 @@ export default async function handler(req, res) {
             try {
               console.log('[API] Resolving domain name for account:', domainKey.toString());
               
-              // Method 3a: Try reverseLookupNameAccount with owner as parent
+              // Method 3a: Try reverseLookupNameAccount with correct parent owner
               if (typeof parser.reverseLookupNameAccount === 'function') {
                 try {
                   // reverseLookupNameAccount(nameAccount, parentOwner)
-                  // Try with owner first
-                  const domainInfo = await parser.reverseLookupNameAccount(domainKey, owner);
+                  // Use the parent owner from TLD if we found it
+                  const parentToUse = skrParentOwner || owner;
+                  console.log('[API] Using parent owner:', parentToUse.toString());
+                  
+                  const domainInfo = await parser.reverseLookupNameAccount(domainKey, parentToUse);
                   console.log('[API] reverseLookupNameAccount result:', domainInfo);
                   
                   if (domainInfo) {
@@ -176,35 +215,16 @@ export default async function handler(req, res) {
                       domainName = `${domainInfo.name}.skr`;
                     }
                     
-                    if (domainName && domainName.endsWith('.skr')) {
-                      console.log('[API] ✅ Successfully resolved domain name:', domainName);
-                      domainNames.push(domainName);
-                      continue; // Success, move to next
-                    }
-                  }
-                } catch (reverseError) {
-                  console.log('[API] reverseLookupNameAccount failed:', reverseError.message);
-                  
-                  // Try without parent owner (some versions might not need it)
-                  try {
-                    const domainInfo2 = await parser.reverseLookupNameAccount(domainKey);
-                    console.log('[API] reverseLookupNameAccount (no parent) result:', domainInfo2);
-                    
-                    if (domainInfo2) {
-                      const domainName = typeof domainInfo2 === 'string'
-                        ? (domainInfo2.endsWith('.skr') ? domainInfo2 : `${domainInfo2}.skr`)
-                        : (domainInfo2.domain ? `${domainInfo2.domain}.skr` : null);
-                      
-                      if (domainName && domainName.endsWith('.skr')) {
-                        console.log('[API] ✅ Successfully resolved domain name (no parent):', domainName);
-                        domainNames.push(domainName);
-                        continue;
-                      }
-                    }
-                  } catch (reverseError2) {
-                    console.log('[API] reverseLookupNameAccount (no parent) also failed:', reverseError2.message);
+                  if (domainName && domainName.endsWith('.skr')) {
+                    console.log('[API] ✅ Successfully resolved domain name:', domainName);
+                    domainNames.push(domainName);
+                    continue; // Success, move to next
                   }
                 }
+              } catch (reverseError) {
+                console.log('[API] reverseLookupNameAccount failed:', reverseError.message);
+                console.log('[API] Error details:', reverseError);
+              }
               }
               
               // Method 3b: Decode domain name from raw account data
