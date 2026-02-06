@@ -134,13 +134,24 @@ export default function App() {
         }
       });
 
-      // Override connect to use React Native bridge
-      const originalConnect = window.__snakeWalletAdapter.connect;
+      // Ensure connect function exists and uses React Native bridge
       window.__snakeWalletAdapter.connect = function() {
         console.log('[MWA Bridge] connect() called, using React Native bridge');
+        if (!window.ReactNativeWebView) {
+          console.error('[MWA Bridge] ReactNativeWebView not available!');
+          return Promise.reject(new Error('React Native bridge not available'));
+        }
+        
         return new Promise((resolve, reject) => {
           // Send message to React Native
-          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'connect' }));
+          try {
+            window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'connect' }));
+            console.log('[MWA Bridge] ✅ Sent connect message to React Native');
+          } catch (err) {
+            console.error('[MWA Bridge] Failed to send message:', err);
+            reject(new Error('Failed to communicate with React Native'));
+            return;
+          }
           
           // Set up event listeners for response
           const handleConnected = (event) => {
@@ -171,10 +182,22 @@ export default function App() {
       };
 
       window.__snakeWalletAdapter.ready = true;
+      window.__snakeWalletAdapter.disconnect = function() {
+        console.log('[MWA Bridge] disconnect() called');
+        // Send disconnect message to React Native if needed
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'disconnect' }));
+        }
+        window.__snakeWalletAdapter.connectedAccount = null;
+        window.__snakeWalletAdapter.connectedWallet = null;
+      };
+      
       console.log('[MWA Bridge] ✅ Bridge ready, adapter:', {
         ready: window.__snakeWalletAdapter.ready,
         hasConnect: typeof window.__snakeWalletAdapter.connect === 'function',
-        inApp: window.__SNAKE_IN_APP
+        hasDisconnect: typeof window.__snakeWalletAdapter.disconnect === 'function',
+        inApp: window.__SNAKE_IN_APP,
+        reactNativeWebView: !!window.ReactNativeWebView
       });
     })();
     true;

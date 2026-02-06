@@ -491,6 +491,7 @@
             const [leaderboardFilter, setLeaderboardFilter] = useState({ mode: 'classic', difficulty: 'medium' });
             const [submittingScore, setSubmittingScore] = useState(false);
             const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
+            const [connectingWallet, setConnectingWallet] = useState(false);
             const [cellSize, setCellSize] = useState(24);
 
             const canvasRef = useRef(null);
@@ -636,7 +637,14 @@
             }, [leaderboardFilter]);
 
             const connectWallet = async () => {
+                // Prevent multiple simultaneous connection attempts
+                if (connectingWallet || wallet) {
+                    console.log('[Snake] Connection already in progress or wallet already connected');
+                    return;
+                }
+
                 try {
+                    setConnectingWallet(true);
                     let pubkey = null;
                     let adapter = window.__snakeWalletAdapter;
                     const isAndroid = /android/i.test(navigator.userAgent);
@@ -646,7 +654,8 @@
                         isAndroid,
                         isInApp,
                         adapter: adapter ? { ready: adapter.ready, hasConnect: !!adapter?.connect } : 'missing',
-                        mwaBundleLoaded: typeof window.__snakeWalletAdapter !== 'undefined'
+                        mwaBundleLoaded: typeof window.__snakeWalletAdapter !== 'undefined',
+                        reactNativeWebView: !!window.ReactNativeWebView
                     });
 
                     // On Android/WebView, wait longer for MWA adapter to initialize
@@ -712,9 +721,11 @@
                         console.error('[Snake] ❌ No wallet available:', {
                             mwaAdapter: !!adapter,
                             mwaReady: adapter?.ready,
+                            hasConnect: typeof adapter?.connect,
                             phantomAvailable: !!window.solana?.isPhantom,
                             isAndroid,
-                            isInApp
+                            isInApp,
+                            reactNativeWebView: !!window.ReactNativeWebView
                         });
                         
                         // Show error but don't block - user can try again
@@ -722,6 +733,7 @@
                         if (!isAndroid && !isInApp) {
                             window.open('https://phantom.app/', '_blank');
                         }
+                        setConnectingWallet(false);
                         return;
                     }
 
@@ -729,9 +741,11 @@
                     const displayInfo = await getDisplayName(pubkey);
                     setSnsName(displayInfo.displayName);
                     console.log('✅ Wallet connected:', displayInfo.displayName);
+                    setConnectingWallet(false);
                 } catch (err) {
                     console.error('[Snake] Connection error:', err);
                     alert('Connection failed: ' + (err.message || String(err)) + '. Please try again.');
+                    setConnectingWallet(false);
                 }
             };
 
@@ -745,6 +759,7 @@
                 }
                 setWallet(null);
                 setSnsName(null);
+                setConnectingWallet(false);
             };
 
             const generateFood = useCallback(() => {
@@ -1066,8 +1081,12 @@
                                 LEADERBOARD
                             </button>
                             {!wallet ? (
-                                <button className="menu-button secondary" onClick={connectWallet}>
-                                    CONNECT WALLET
+                                <button 
+                                    className="menu-button secondary" 
+                                    onClick={connectWallet}
+                                    disabled={connectingWallet}
+                                >
+                                    {connectingWallet ? 'CONNECTING...' : 'CONNECT WALLET'}
                                 </button>
                             ) : (
                                 <button className="menu-button secondary" onClick={disconnectWallet}>
