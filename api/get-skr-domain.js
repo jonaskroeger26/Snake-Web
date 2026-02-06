@@ -3,6 +3,21 @@
 
 import { TldParser } from '@onsol/tldparser';
 import { Connection, PublicKey } from '@solana/web3.js';
+import fs from 'fs';
+import path from 'path';
+
+// Load static lookup file if it exists
+let skrLookup = null;
+try {
+  const lookupPath = path.join(process.cwd(), 'api', 'skr-lookup.json');
+  if (fs.existsSync(lookupPath)) {
+    const lookupData = fs.readFileSync(lookupPath, 'utf8');
+    skrLookup = JSON.parse(lookupData);
+    console.log(`[API] ✅ Loaded ${Object.keys(skrLookup).length} domains from static lookup file`);
+  }
+} catch (lookupError) {
+  console.log('[API] ⚠️ Could not load static lookup file:', lookupError.message);
+}
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -23,6 +38,18 @@ export default async function handler(req, res) {
       wallet: null,
       domain: null,
       isSeeker: false
+    });
+  }
+  
+  // Method 0: Check static lookup file first (fastest - instant lookup)
+  if (skrLookup && skrLookup[wallet]) {
+    console.log(`[API] ✅ Found domain in static lookup: ${skrLookup[wallet]}`);
+    return res.status(200).json({
+      success: true,
+      wallet: wallet,
+      domain: skrLookup[wallet],
+      isSeeker: true,
+      method: 'static_lookup'
     });
   }
   
