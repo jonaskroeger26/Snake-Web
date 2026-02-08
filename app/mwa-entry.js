@@ -1,9 +1,12 @@
 /**
  * Production-ready Mobile Wallet Adapter for Seeker
- * Based on official Solana Mobile patterns:
+ * Uses official Mobile Wallet Standard per Solana Mobile docs:
+ * https://docs.solanamobile.com/mobile-wallet-adapter/web-installation
+ *
+ * registerMwa() registers MWA as a wallet option; on mobile it uses
+ * Android Intents (same as native apps). Also see:
  * - https://github.com/solana-mobile/mobile-wallet-adapter
- * - https://learn.blueshift.gg/en/paths/solana-mobile-mastery
- * 
+ *
  * Build: npm run build:mwa
  */
 import {
