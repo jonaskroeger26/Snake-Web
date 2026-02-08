@@ -1,2 +1,7 @@
 node_modules
 dapp-store-app/*.apk
+.DS_Store
+target/
+*.log
+.env
+.env.local

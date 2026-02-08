@@ -37,8 +37,8 @@ Then press `a` for Android or scan the QR code.
 npx eas build -p android --profile dapp-store
 ```
 
-Download the APK from the EAS dashboard. If the store requires a locally signed APK, sign it with your release keystore (see [DAPP_STORE.md](../DAPP_STORE.md)).
+Download the APK from the EAS dashboard. If the store requires a locally signed APK, sign it with your release keystore (see [DAPP_STORE.md](../docs/DAPP_STORE.md)).
 
 ## Submit
 
-Upload the signed APK at [publish.solanamobile.com](https://publish.solanamobile.com). Full steps are in the root [DAPP_STORE.md](../DAPP_STORE.md).
+Upload the signed APK at [publish.solanamobile.com](https://publish.solanamobile.com). Full steps are in the root [DAPP_STORE.md](../docs/DAPP_STORE.md).
