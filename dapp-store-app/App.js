@@ -25,6 +25,7 @@ import { StyleSheet, View, Text, Dimensions, Platform, Modal } from 'react-nativ
 import { WebView } from 'react-native-webview';
 import { useRef, useEffect } from 'react';
 import { transact } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
+import { PublicKey } from '@solana/web3.js';
 
 const { width: W, height: H } = Dimensions.get('window');
 
@@ -69,17 +70,25 @@ export default function App() {
         throw new Error('No accounts returned from wallet');
       }
 
-      const address = result.accounts[0].address;
+      // Ensure address is base58 string (SDK may return Uint8Array)
+      let address = result.accounts[0].address;
+      if (typeof address !== 'string' && address && address.length) {
+        address = new PublicKey(address).toBase58();
+      } else if (typeof address !== 'string') {
+        address = String(address);
+      }
+      const addressStr = address.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       console.log('[Expo] ✅ Connected, address:', address);
-      
+
       const script = `
         (function() {
-          console.log('[MWA Bridge] Injecting connection result:', '${address}');
+          var addr = '${addressStr}';
+          console.log('[MWA Bridge] Injecting connection result:', addr);
           if (window.__snakeWalletAdapter) {
-            window.__snakeWalletAdapter.connectedAccount = { address: '${address}' };
+            window.__snakeWalletAdapter.connectedAccount = { address: addr };
             window.__snakeWalletAdapter.connectedWallet = { name: 'Mobile Wallet Adapter' };
             window.__snakeWalletAdapter.ready = true;
-            window.dispatchEvent(new CustomEvent('snakeMWAConnected', { detail: { address: '${address}' } }));
+            window.dispatchEvent(new CustomEvent('snakeMWAConnected', { detail: { address: addr } }));
             console.log('[MWA Bridge] ✅ Connection event dispatched');
           } else {
             console.error('[MWA Bridge] ❌ __snakeWalletAdapter not found!');
@@ -278,7 +287,15 @@ export default function App() {
           }
         }}
         onLoadStart={() => console.log('[WebView] Load started')}
-        onLoadEnd={() => console.log('[WebView] Load finished')}
+        onLoadEnd={() => {
+          console.log('[WebView] Load finished');
+          // Re-inject bridge after a short delay so it runs after mwa-bundle.js and overwrites connect
+          if (!TEST_WEBVIEW_WITH_HTML && webViewRef.current) {
+            setTimeout(() => {
+              webViewRef.current?.injectJavaScript(injectedJavaScript);
+            }, 300);
+          }
+        }}
         onLoad={(syntheticEvent) => {
           const { nativeEvent } = syntheticEvent;
           console.log('[WebView] Loaded:', nativeEvent.url);

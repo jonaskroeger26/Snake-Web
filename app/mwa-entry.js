@@ -335,10 +335,17 @@ adapter.isConnected = function () {
 // Initialize on load
 init();
 
-// Expose adapter globally
+// Expose adapter globally (unless running inside Expo/WebView app - they inject their own bridge)
 if (typeof window !== 'undefined') {
-  window.__snakeWalletAdapter = adapter;
-  console.log('[Seeker MWA] Adapter exposed on window.__snakeWalletAdapter, ready:', adapter.ready);
+  if (window.__SNAKE_IN_APP) {
+    // In-app: leave stub so Expo's injected script can attach connect(); just mark ready
+    window.__snakeWalletAdapter = window.__snakeWalletAdapter || { ready: false, connect: null, disconnect: null };
+    window.__snakeWalletAdapter.ready = true;
+    console.log('[Seeker MWA] In-app mode: adapter ready for native bridge');
+  } else {
+    window.__snakeWalletAdapter = adapter;
+    console.log('[Seeker MWA] Adapter exposed on window.__snakeWalletAdapter, ready:', adapter.ready);
+  }
 }
 
 export default adapter;
