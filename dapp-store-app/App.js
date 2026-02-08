@@ -20,12 +20,14 @@ const webCrypto = typeof crypto !== 'undefined' ? crypto : new Crypto();
 })();
 
 import * as SplashScreen from 'expo-splash-screen';
+import * as LocalAuthentication from 'expo-local-authentication';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, Dimensions, Platform, Modal } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useRef, useEffect } from 'react';
 import { transact } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
 import { PublicKey } from '@solana/web3.js';
+import { SolanaMobileWalletAdapterErrorCode } from '@solana-mobile/mobile-wallet-adapter-protocol';
 
 const { width: W, height: H } = Dimensions.get('window');
 
@@ -56,11 +58,12 @@ export default function App() {
   const connectMWA = async () => {
     try {
       console.log('[Expo] Starting MWA connection...');
+      // Use MWA 2.0 authorize params (chain + identity). Mainnet for Seeker/production.
       const result = await transact(async (wallet) => {
         console.log('[Expo] Authorizing with wallet...');
         const authResult = await wallet.authorize({
-          cluster: 'solana:devnet',
           identity: APP_IDENTITY,
+          chain: 'solana:mainnet-beta',
         });
         console.log('[Expo] Authorization result:', authResult);
         return authResult;
@@ -70,8 +73,18 @@ export default function App() {
         throw new Error('No accounts returned from wallet');
       }
 
-      // Ensure address is base58 string (SDK may return Uint8Array)
+      // Protocol returns address as base64; decode to base58 for display/API
       let address = result.accounts[0].address;
+      if (typeof address === 'string') {
+        try {
+          const bytes = Buffer.from(address, 'base64');
+          if (bytes.length === 32) {
+            address = new PublicKey(bytes).toBase58();
+          }
+        } catch (_) {
+          // already base58 or other format
+        }
+      }
       if (typeof address !== 'string' && address && address.length) {
         address = new PublicKey(address).toBase58();
       } else if (typeof address !== 'string') {
@@ -99,11 +112,19 @@ export default function App() {
       return address;
     } catch (error) {
       console.error('[Expo] ❌ MWA connect error:', error);
-      const errorMessage = error.message || String(error);
+      // Minty-fresh pattern: handle "no wallet" explicitly with a clear user message
+      const isNoWallet =
+        error?.code === (SolanaMobileWalletAdapterErrorCode && SolanaMobileWalletAdapterErrorCode.ERROR_WALLET_NOT_FOUND) ||
+        error?.code === 'ERROR_WALLET_NOT_FOUND' ||
+        (error?.message && /no installed wallet|wallet not found/i.test(error.message));
+      const errorMessage = isNoWallet
+        ? 'No wallet found. Please use the Seeker device wallet or install a compatible wallet.'
+        : (error.message || String(error));
+      const escaped = errorMessage.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
       const errorScript = `
         (function() {
-          console.error('[MWA Bridge] Injecting error:', '${errorMessage.replace(/'/g, "\\'")}');
-          window.dispatchEvent(new CustomEvent('snakeMWAError', { detail: { error: '${errorMessage.replace(/'/g, "\\'")}' } }));
+          console.error('[MWA Bridge] Injecting error:', '${escaped}');
+          window.dispatchEvent(new CustomEvent('snakeMWAError', { detail: { error: '${escaped}' } }));
         })();
       `;
       webViewRef.current?.injectJavaScript(errorScript);
@@ -212,12 +233,30 @@ export default function App() {
     true;
   `;
 
-  const handleMessage = (event) => {
+  const handleMessage = async (event) => {
     try {
       console.log('[Expo] Received message from WebView:', event.nativeEvent.data);
       const data = JSON.parse(event.nativeEvent.data);
       if (data.type === 'connect') {
-        console.log('[Expo] Handling connect request...');
+        console.log('[Expo] Connect requested – requiring biometric...');
+        const hasHardware = await LocalAuthentication.hasHardwareAsync();
+        const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+        if (!hasHardware || !isEnrolled) {
+          const errMsg = 'Biometric (fingerprint/face) is not set up on this device. Please add it in device settings.';
+          injectError(errMsg);
+          return;
+        }
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: 'Confirm with fingerprint or face to connect wallet',
+          cancelLabel: 'Cancel',
+          disableDeviceFallback: false,
+        });
+        if (!result.success) {
+          const errMsg = result.error === 'user_cancel' ? 'Connection cancelled' : 'Biometric verification failed';
+          injectError(errMsg);
+          return;
+        }
+        console.log('[Expo] Biometric OK – starting wallet connection...');
         connectMWA().catch((err) => {
           console.error('[Expo] Connect failed:', err);
         });
@@ -226,7 +265,18 @@ export default function App() {
       }
     } catch (error) {
       console.error('[Expo] Message parse error:', error, 'Raw data:', event.nativeEvent.data);
+      injectError(error?.message || 'Something went wrong');
     }
+  };
+
+  const injectError = (errorMessage) => {
+    const escaped = (errorMessage || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const script = `
+      (function() {
+        window.dispatchEvent(new CustomEvent('snakeMWAError', { detail: { error: '${escaped}' } }));
+      })();
+    `;
+    webViewRef.current?.injectJavaScript(script);
   };
 
   const webViewSource = TEST_WEBVIEW_WITH_HTML
