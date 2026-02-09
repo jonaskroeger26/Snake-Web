@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    {"source": "/privacy", "destination": "/privacy.html"},
+    {"source": "/license", "destination": "/license.html"},
+    {"source": "/copyright", "destination": "/copyright.html"}
+  ]
+}
