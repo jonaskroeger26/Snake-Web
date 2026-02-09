@@ -2,7 +2,7 @@
  * Registers Mobile Wallet Adapter (Seeker / Seed Vault) and exposes a single connect API.
  * On Solana Mobile (Seeker), this allows connecting to the device's internal wallet.
  */
-const APP_ORIGIN = typeof location !== 'undefined' ? location.origin : 'https://snake-web-phi.vercel.app';
+const APP_ORIGIN = typeof location !== 'undefined' ? location.origin : 'https://solanasnake.app';
 const APP_NAME = 'Snake - Solana';
 const APP_ICON = APP_ORIGIN + '/icons/icon.svg';
 

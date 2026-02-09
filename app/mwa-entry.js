@@ -17,7 +17,7 @@ import {
 } from '@solana-mobile/wallet-standard-mobile';
 import { getWallets } from '@wallet-standard/core';
 
-const APP_ORIGIN = typeof location !== 'undefined' ? location.origin : 'https://snake-web-phi.vercel.app';
+const APP_ORIGIN = typeof location !== 'undefined' ? location.origin : 'https://solanasnake.app';
 const APP_NAME = 'Snake - Solana';
 const APP_ICON = APP_ORIGIN + '/icons/icon.svg';
 

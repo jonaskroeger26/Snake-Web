@@ -34,11 +34,11 @@ const { width: W, height: H } = Dimensions.get('window');
 // Set to true to verify WebView can render at all (shows "WebView OK" page).
 const TEST_WEBVIEW_WITH_HTML = false;
 
-const PWA_URL = 'https://snake-web-phi.vercel.app/';
+const PWA_URL = 'https://solanasnake.app/';
 
 const APP_IDENTITY = {
   name: 'Snake - Solana',
-  uri: 'https://snake-web-phi.vercel.app',
+  uri: 'https://solanasnake.app',
   icon: 'icons/icon.svg',
 };
 
@@ -155,9 +155,9 @@ export default function App() {
           identity: APP_IDENTITY,
           chain: 'solana:mainnet-beta',
           sign_in_payload: {
-            domain: 'snake-web-phi.vercel.app',
+            domain: 'solanasnake.app',
             statement: 'Sign to connect Snake - Solana to your wallet. This proves you control the address.',
-            uri: 'https://snake-web-phi.vercel.app',
+            uri: 'https://solanasnake.app',
           },
         });
       });
