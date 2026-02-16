@@ -1045,8 +1045,24 @@
         const SKR_DECIMALS = 6;
         const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
         const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
-        // Use a public RPC that allows browser/deployed apps. For production, replace with your own (e.g. Helius: https://mainnet.helius-rpc.com/?api_key=YOUR_KEY).
-        const SKR_RPC = 'https://rpc.ankr.com/solana';
+        const SKR_RPC_DEFAULT = 'https://rpc.ankr.com/solana';
+        let _skrRpcCache = null;
+        async function getSKRRpc() {
+            if (_skrRpcCache) return _skrRpcCache;
+            try {
+                const base = window.location.origin;
+                const r = await fetch(base + '/api/skr-config', { cache: 'default' });
+                if (r.ok) {
+                    const j = await r.json();
+                    if (j && j.SKR_RPC) {
+                        _skrRpcCache = j.SKR_RPC;
+                        return _skrRpcCache;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+            _skrRpcCache = SKR_RPC_DEFAULT;
+            return _skrRpcCache;
+        }
 
         function getAssociatedTokenAddress(owner, mint) {
             const [ata] = PublicKey.findProgramAddressSync(
@@ -1070,7 +1086,8 @@
             });
         }
         async function sendSKRTransfer(walletAddress, amountUnits) {
-            const conn = new Connection(SKR_RPC, 'confirmed');
+            const rpcUrl = await getSKRRpc();
+            const conn = new Connection(rpcUrl, 'confirmed');
             const owner = new PublicKey(walletAddress);
             const receiver = new PublicKey(SKR_RECEIVER_WALLET);
             const amountRaw = BigInt(amountUnits) * BigInt(10 ** SKR_DECIMALS);
@@ -1087,7 +1104,7 @@
             } catch (e) {
                 const msg = (e && e.message) || String(e);
                 if (msg.includes('403') || msg.includes('forbidden')) {
-                    throw new Error('RPC access blocked. Set SKR_RPC in the app to your own Solana RPC URL (e.g. Helius free tier with API key).');
+                    throw new Error('RPC access blocked. Set the SKR_RPC env var in your Vercel project (e.g. Helius: https://mainnet.helius-rpc.com/?api_key=YOUR_KEY).');
                 }
                 throw e;
             }
