@@ -1055,9 +1055,9 @@
             return ata;
         }
         function createTransferInstruction(source, destination, owner, amount) {
-            const data = Buffer.alloc(9);
-            data.writeUInt8(3, 0);
-            data.writeBigUInt64LE(BigInt(amount), 1);
+            const data = new Uint8Array(9);
+            data[0] = 3;
+            new DataView(data.buffer, data.byteOffset, data.byteLength).setBigUint64(1, BigInt(amount), true);
             return new TransactionInstruction({
                 keys: [
                     { pubkey: source, isSigner: false, isWritable: true },
