@@ -156,6 +156,45 @@
             letter-spacing: 5px;
         }
         [data-theme="light"] .menu-tagline { color: #666; }
+        .daily-reward-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 10px 14px;
+            margin: -8px 0 20px 0;
+            background: rgba(0,0,0,0.25);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 0.8rem;
+        }
+        [data-theme="light"] .daily-reward-bar { background: rgba(0,0,0,0.06); }
+        .daily-reward-label { font-weight: 600; color: var(--text-muted); }
+        .daily-reward-days { color: var(--accent); font-weight: 600; }
+        .daily-reward-next { color: var(--text); margin-left: auto; }
+        .daily-reward-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 24px;
+            background: var(--accent);
+            color: var(--button-primary-text);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            z-index: 1000;
+            animation: dailyToastIn 0.3s ease;
+        }
+        @keyframes dailyToastIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-12px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        .daily-reward-toast-icon { font-size: 1.3em; }
         .menu-primary {
             margin-bottom: 0;
         }
@@ -540,10 +579,17 @@
         .mode-row select { margin-left: 12px; }
         .shop-fullscreen {
             width: 100%;
+            height: 100vh;
             min-height: 100vh;
+            max-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px 16px 80px;
             background: var(--bg);
             background-image: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg) 25%, var(--bg) 100%);
+            box-sizing: border-box;
+            align-items: flex-start;
+            justify-content: flex-start;
         }
         .shop-container { width: 100%; max-width: 900px; margin: 0 auto; }
         .shop-header {
@@ -674,6 +720,181 @@
         }
         .shop-back-wrap { margin-top: 28px; text-align: center; }
         .shop-back-wrap .menu-button.secondary { max-width: 200px; }
+        .locker-fullscreen {
+            width: 100%;
+            min-height: 100vh;
+            padding: 24px 20px 80px;
+            background: var(--bg);
+            background-image: linear-gradient(160deg, var(--bg-secondary) 0%, var(--bg) 40%, var(--bg) 100%);
+            box-sizing: border-box;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        .locker-container { width: 100%; max-width: 620px; margin: 0 auto; }
+        .locker-header {
+            text-align: center;
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .locker-title {
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .locker-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .locker-preview-wrap {
+            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px 24px 28px;
+            margin-bottom: 32px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        .locker-preview-snake {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .locker-preview-snake canvas {
+            border-radius: 14px;
+            box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+        }
+        .locker-preview-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .locker-preview-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+        .locker-preview-rarity {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+        .locker-equip-btn {
+            display: inline-block;
+            padding: 14px 36px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            border: 2px solid var(--accent);
+            background: var(--accent);
+            color: var(--button-primary-text);
+            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+        }
+        .locker-equip-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(20, 241, 149, 0.35);
+        }
+        .locker-equip-btn:disabled { opacity: 0.85; cursor: default; }
+        .locker-equip-btn.equipped {
+            background: transparent;
+            color: var(--accent);
+            cursor: default;
+        }
+        .locker-equip-btn.lock {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            border-color: var(--border);
+        }
+        .locker-equip-btn.lock:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .locker-rarity-section {
+            margin-bottom: 28px;
+        }
+        .locker-rarity-heading {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .locker-rarity-heading::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+        .locker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+        .locker-skin-card {
+            position: relative;
+            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+        .locker-skin-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        .locker-skin-card.selected {
+            border-width: 2px;
+            box-shadow: 0 0 0 1px var(--accent);
+        }
+        .locker-skin-card.locked { opacity: 0.75; }
+        .locker-skin-card.locked .locker-skin-card-preview { filter: grayscale(0.7) brightness(0.85); }
+        .locker-skin-card[data-rarity="legendary"] { --locker-card-border: var(--shop-rarity-border, #d97706); --locker-card-glow: rgba(245,158,11,0.25); }
+        .locker-skin-card[data-rarity="epic"] { --locker-card-border: #7c3aed; --locker-card-glow: rgba(168,85,247,0.2); }
+        .locker-skin-card[data-rarity="rare"] { --locker-card-border: #2563eb; --locker-card-glow: rgba(59,130,246,0.2); }
+        .locker-skin-card[data-rarity="uncommon"] { --locker-card-border: #16a34a; --locker-card-glow: rgba(34,197,94,0.15); }
+        .locker-skin-card[data-rarity="legendary"]:hover,
+        .locker-skin-card[data-rarity="legendary"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 20px var(--locker-card-glow); }
+        .locker-skin-card[data-rarity="epic"]:hover,
+        .locker-skin-card[data-rarity="epic"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 16px var(--locker-card-glow); }
+        .locker-skin-card[data-rarity="rare"]:hover,
+        .locker-skin-card[data-rarity="rare"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 12px var(--locker-card-glow); }
+        .locker-skin-card[data-rarity="uncommon"]:hover,
+        .locker-skin-card[data-rarity="uncommon"].selected { border-color: var(--locker-card-border); }
+        .locker-skin-card-preview {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .locker-skin-card-preview canvas { border-radius: 10px; }
+        .locker-skin-card-name { font-size: 0.78rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .locker-skin-lock {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        .locker-back-wrap { text-align: center; margin-top: 8px; }
+        .locker-back-wrap .menu-button.secondary { max-width: 200px; }
         [data-theme="light"] .shop-balance-pill {
             background: rgba(255,255,255,0.8);
             border-color: var(--border);
@@ -814,7 +1035,15 @@
             gold: '#D4AF37',
             crimson: '#DC2626',
             mint: '#2DD4BF',
-            midnight: '#1E293B'
+            midnight: '#1E293B',
+            emerald: '#059669',
+            amber: '#D97706',
+            obsidian: '#0F172A',
+            aurora: '#06B6D4',
+            phoenix: '#EA580C',
+            prism: '#7C3AED',
+            eclipse: '#4C1D95',
+            void: '#18181B'
         };
         const ROYGBIV = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF'];
         const SNAKE_SKIN_IDS = ['blue', 'orange', 'yellow', 'green', 'indigo', 'violet', 'cyan', 'pink', 'lime', 'coral'];
@@ -825,26 +1054,68 @@
             epic: { label: 'Epic', color: '#a855f7', border: '#7c3aed', glow: 'rgba(168,85,247,0.4)' },
             legendary: { label: 'Legendary', color: '#f59e0b', border: '#d97706', glow: 'rgba(245,158,11,0.45)' }
         };
+        const UNLOCK_PATTERN_TYPES = {
+            classicScore: (p, s) => (s.highScores.classic_easy >= (p.min || 0) || s.highScores.classic_medium >= (p.min || 0) || s.highScores.classic_hard >= (p.min || 0)),
+            ioLength: (p, s) => (s.ioMaxLength || 0) >= (p.min || 0),
+            levelReach: (p, s) => Object.keys(s.levelStars || {}).some(k => Number(k) >= (p.level || 0)),
+            totalApples: (p, s) => (s.totalApplesEaten || 0) >= (p.min || 0),
+            survivalScore: (p, s) => (s.highScores.survival_easy >= (p.min || 0) || s.highScores.survival_medium >= (p.min || 0) || s.highScores.survival_hard >= (p.min || 0)),
+            hardClassic: (p, s) => (s.highScores.classic_hard || 0) >= (p.min || 0),
+            totalStars: (p, s) => Object.values(s.levelStars || {}).reduce((a, b) => a + b, 0) >= (p.min || 0),
+            levelComplete: (p, s) => (s.levelStars && (s.levelStars[p.level] || 0) > 0)
+        };
         const SHOP_SKINS = [
             { id: 'gold', price: 50, name: 'Gold', rarity: 'legendary' },
             { id: 'crimson', price: 75, name: 'Crimson', rarity: 'epic' },
             { id: 'mint', price: 75, name: 'Mint', rarity: 'epic' },
             { id: 'leopard', price: 100, name: 'Leopard', rarity: 'rare' },
             { id: 'midnight', price: 150, name: 'Midnight', rarity: 'epic' },
-            { id: 'rainbow', price: 200, name: 'Rainbow', rarity: 'legendary' }
+            { id: 'rainbow', price: 200, name: 'Rainbow', rarity: 'legendary' },
+            { id: 'emerald', unlockBy: 'pattern', pattern: { type: 'classicScore', min: 25 }, name: 'Emerald', rarity: 'epic', requirement: 'Score 25+ in Classic' },
+            { id: 'amber', unlockBy: 'pattern', pattern: { type: 'levelReach', level: 5 }, name: 'Amber', rarity: 'rare', requirement: 'Reach Level 5' },
+            { id: 'obsidian', unlockBy: 'pattern', pattern: { type: 'ioLength', min: 30 }, name: 'Obsidian', rarity: 'epic', requirement: 'Reach length 30 in Multiplayer' },
+            { id: 'aurora', unlockBy: 'pattern', pattern: { type: 'totalApples', min: 200 }, name: 'Aurora', rarity: 'rare', requirement: 'Eat 200 apples total' },
+            { id: 'phoenix', unlockBy: 'pattern', pattern: { type: 'survivalScore', min: 12 }, name: 'Phoenix', rarity: 'epic', requirement: 'Score 12+ in Survival' },
+            { id: 'void', unlockBy: 'pattern', pattern: { type: 'hardClassic', min: 20 }, name: 'Void', rarity: 'legendary', requirement: 'Score 20+ on Hard (Classic)' },
+            { id: 'prism', unlockBy: 'pattern', pattern: { type: 'totalStars', min: 10 }, name: 'Prism', rarity: 'epic', requirement: 'Earn 10 stars in Levels' },
+            { id: 'eclipse', unlockBy: 'pattern', pattern: { type: 'levelComplete', level: 8 }, name: 'Eclipse', rarity: 'legendary', requirement: 'Complete Level 8' }
         ];
+        const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+        const SHOP_WEEKLY_COUNT = 9;
+        const getWeekIndex = () => Math.floor(Date.now() / WEEK_MS);
+        const getWeeklySkins = () => {
+            const L = SHOP_SKINS.length;
+            const start = getWeekIndex() % L;
+            return Array.from({ length: SHOP_WEEKLY_COUNT }, (_, i) => SHOP_SKINS[(start + i) % L]);
+        };
+        const getDaysUntilShopRefresh = () => {
+            const next = (getWeekIndex() + 1) * WEEK_MS;
+            return Math.ceil((next - Date.now()) / (24 * 60 * 60 * 1000));
+        };
         const APPLE_COINS_KEY = 'snakeAppleCoins';
         const UNLOCKED_SKINS_KEY = 'snakeUnlockedSkins';
+        const TOTAL_APPLES_KEY = 'snakeTotalApplesEaten';
+        const IO_MAX_LENGTH_KEY = 'snakeIoMaxLength';
+        const DAILY_REWARDS = [30, 80, 120, 160, 200, 250, 300];
+        const LOGIN_LAST_DATE_KEY = 'snakeLoginLastDate';
+        const LOGIN_STREAK_DAY_KEY = 'snakeLoginStreakDay';
+        const getTodayDateString = () => new Date().toISOString().slice(0, 10);
+        const getYesterdayDateString = () => {
+            const d = new Date();
+            d.setDate(d.getDate() - 1);
+            return d.toISOString().slice(0, 10);
+        };
 
         function ShopSnakePreview({ skinId, size }) {
             const canvasRef = React.useRef(null);
             const isLarge = size === 'large';
+            const isLocker = size === 'locker';
             React.useEffect(() => {
                 const canvas = canvasRef.current;
                 if (!canvas) return;
-                const cellSize = isLarge ? 28 : 22;
-                const segCount = 6;
-                const pad = isLarge ? 18 : 14;
+                const cellSize = isLocker ? 36 : (isLarge ? 28 : 22);
+                const segCount = isLocker ? 8 : 6;
+                const pad = isLocker ? 24 : (isLarge ? 18 : 14);
                 const w = segCount * cellSize + pad * 2;
                 const h = cellSize + pad * 2;
                 const dpr = window.devicePixelRatio || 1;
@@ -893,7 +1164,7 @@
                     ];
                     spots.forEach(([sx, sy]) => ctx.fillRect(sx, sy, spotSize, spotSize));
                 }
-            }, [skinId, isLarge]);
+            }, [skinId, isLarge, isLocker]);
             return <canvas ref={canvasRef} style={{ borderRadius: 10, display: 'block' }} />;
         }
 
@@ -908,16 +1179,16 @@
         }
         function _obs() { var a=[]; for (var i=0;i<arguments.length;i+=2) a.push({x:arguments[i],y:arguments[i+1]}); return a; }
         const LEVELS = [
-            { id: 1, name: 'First Bite', targetApples: 5, star3Time: 14, star2Time: 24, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x!==9&&x!==10) o.push({x:x,y:9}); return o; })() },
-            { id: 2, name: 'Cornered', targetApples: 8, star3Time: 22, star2Time: 38, obstacles: _obs(0,0,1,0,0,1, 19,19,18,19,19,18, 0,19,1,19,0,18, 19,0,18,0,19,1) },
-            { id: 3, name: 'The Gauntlet', targetApples: 10, star3Time: 30, star2Time: 52, obstacles: (function(){ var o=[]; for(var x=0;x<=8;x++) o.push({x:x,y:7},{x:x,y:12}); for(var x=11;x<=19;x++) o.push({x:x,y:7},{x:x,y:12}); for(var y=0;y<=6;y++) o.push({x:9,y:y},{x:10,y:y}); for(var y=13;y<=19;y++) o.push({x:9,y:y},{x:10,y:y}); return o; })() },
-            { id: 4, name: 'Thread the Needle', targetApples: 12, star3Time: 40, star2Time: 65, obstacles: (function(){ var o=[]; for(var y=2;y<=17;y++) if(y!==9&&y!==10) o.push({x:7,y:y},{x:12,y:y}); for(var x=0;x<=6;x++) o.push({x:x,y:5},{x:x,y:14}); for(var x=13;x<=19;x++) o.push({x:x,y:5},{x:x,y:14}); return o; })() },
-            { id: 5, name: 'Maze Runner', targetApples: 15, star3Time: 52, star2Time: 85, obstacles: (function(){ var o=[]; for(var x=1;x<=6;x++) o.push({x:x,y:4},{x:x,y:15}); for(var x=13;x<=18;x++) o.push({x:x,y:4},{x:x,y:15}); for(var y=4;y<=8;y++) o.push({x:8,y:y},{x:11,y:y}); for(var y=11;y<=15;y++) o.push({x:8,y:y},{x:11,y:y}); return o; })() },
-            { id: 6, name: 'Split Lane', targetApples: 18, star3Time: 62, star2Time: 98, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x!==5&&x!==14) o.push({x:x,y:8},{x:x,y:11}); for(var y=0;y<=7;y++) o.push({x:6,y:y},{x:13,y:y}); for(var y=12;y<=19;y++) o.push({x:6,y:y},{x:13,y:y}); return o; })() },
-            { id: 7, name: 'Figure Eight', targetApples: 20, star3Time: 72, star2Time: 112, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x!==9&&x!==10) o.push({x:x,y:5},{x:x,y:14}); for(var y=0;y<=19;y++) if(y!==9&&y!==10) o.push({x:5,y:y},{x:14,y:y}); return o; })() },
-            { id: 8, name: 'Narrow Pass', targetApples: 22, star3Time: 82, star2Time: 125, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++) { o.push({x:4,y:y},{x:15,y:y}); if(y>=2&&y<=17&&y!==9&&y!==10) o.push({x:7,y:y},{x:12,y:y}); } for(var x=5;x<=6;x++) o.push({x:x,y:0},{x:x,y:1},{x:x,y:18},{x:x,y:19}); for(var x=13;x<=14;x++) o.push({x:x,y:0},{x:x,y:1},{x:x,y:18},{x:x,y:19}); return o; })() },
-            { id: 9, name: 'Spiral', targetApples: 25, star3Time: 95, star2Time: 145, obstacles: (function(){ var o=[]; for(var i=2;i<=17;i++) if(i!==9&&i!==10) o.push({x:i,y:2},{x:i,y:17}); for(var i=2;i<=17;i++) o.push({x:2,y:i},{x:17,y:i}); for(var i=5;i<=14;i++) if(i!==9&&i!==10) o.push({x:i,y:5},{x:i,y:14}); for(var i=5;i<=14;i++) if(i!==6&&i!==13) o.push({x:5,y:i},{x:14,y:i}); for(var i=8;i<=11;i++) o.push({x:i,y:8},{x:i,y:11}); for(var i=8;i<=11;i++) if(i!==9&&i!==10) o.push({x:8,y:i},{x:11,y:i}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
-            { id: 10, name: 'Final Boss', targetApples: 30, star3Time: 110, star2Time: 170, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x!==4&&x!==9&&x!==10&&x!==15) o.push({x:x,y:3},{x:x,y:16}); for(var y=0;y<=19;y++) if(y!==4&&y!==9&&y!==10&&y!==15) o.push({x:3,y:y},{x:16,y:y}); for(var x=6;x<=13;x++) if(x!==9&&x!==10) o.push({x:x,y:7},{x:x,y:12}); for(var y=7;y<=12;y++) if(y!==9&&y!==10) o.push({x:6,y:y},{x:13,y:y}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() }
+            { id: 1, name: 'First Bite', targetApples: 5, star3Time: 12, star2Time: 22, obstacles: [] },
+            { id: 2, name: 'The Wall', targetApples: 7, star3Time: 18, star2Time: 32, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x<9||x>10) o.push({x:x,y:10}); return o; })() },
+            { id: 3, name: 'Two Gates', targetApples: 9, star3Time: 24, star2Time: 42, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++){ if(y<8||y>11) o.push({x:5,y:y}); if(y<8||y>11) o.push({x:14,y:y}); } return o; })() },
+            { id: 4, name: 'The Corridor', targetApples: 11, star3Time: 30, star2Time: 52, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++) o.push({x:6,y:y},{x:13,y:y}); return o; })() },
+            { id: 5, name: 'Four Corners', targetApples: 13, star3Time: 36, star2Time: 62, obstacles: (function(){ var o=[]; for(var a=0;a<=3;a++) for(var b=0;b<=3;b++) o.push({x:a,y:b},{x:19-a,y:b},{x:a,y:19-b},{x:19-a,y:19-b}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
+            { id: 6, name: 'The Cross', targetApples: 15, star3Time: 42, star2Time: 72, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x<9||x>10) o.push({x:x,y:10}); for(var y=0;y<=19;y++) if(y<9||y>10) o.push({x:10,y:y}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
+            { id: 7, name: 'The Ring', targetApples: 17, star3Time: 48, star2Time: 82, obstacles: (function(){ var o=[]; for(var x=3;x<=16;x++){ o.push({x:x,y:3}); o.push({x:x,y:16}); } for(var y=4;y<=15;y++){ o.push({x:3,y:y}); o.push({x:16,y:y}); } return o.filter(function(p){ return !(p.y===16&&p.x>=9&&p.x<=10); }); })() },
+            { id: 8, name: 'Double Ring', targetApples: 20, star3Time: 58, star2Time: 98, obstacles: (function(){ var o=[]; for(var x=3;x<=16;x++){ o.push({x:x,y:3}); o.push({x:x,y:16}); } for(var y=4;y<=15;y++){ o.push({x:3,y:y}); o.push({x:16,y:y}); } o=o.filter(function(p){ return !(p.y===16&&p.x>=9&&p.x<=10); }); for(var x=6;x<=13;x++){ o.push({x:x,y:6}); o.push({x:x,y:13}); } for(var y=7;y<=12;y++){ o.push({x:6,y:y}); o.push({x:13,y:y}); } o=o.filter(function(p){ return !(p.y===6&&p.x>=9&&p.x<=10); }); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
+            { id: 9, name: 'The Maze', targetApples: 23, star3Time: 68, star2Time: 115, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++) o.push({x:4,y:y},{x:15,y:y}); for(var y=0;y<=8;y++) o.push({x:7,y:y},{x:12,y:y}); for(var y=11;y<=19;y++) o.push({x:7,y:y},{x:12,y:y}); for(var x=0;x<=6;x++) o.push({x:x,y:5},{x:x,y:14}); for(var x=13;x<=19;x++) o.push({x:x,y:5},{x:x,y:14}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
+            { id: 10, name: 'The Gauntlet', targetApples: 27, star3Time: 82, star2Time: 138, obstacles: (function(){ var o=[]; for(var x=2;x<=17;x++) o.push({x:x,y:2},{x:x,y:17}); for(var y=3;y<=16;y++) o.push({x:2,y:y},{x:17,y:y}); o=o.filter(function(p){ return !(p.y===17&&p.x>=9&&p.x<=10); }); for(var x=6;x<=13;x++) o.push({x:x,y:6},{x:x,y:13}); for(var y=7;y<=12;y++) o.push({x:6,y:y},{x:13,y:y}); o=o.filter(function(p){ return !(p.y===6&&p.x>=9&&p.x<=10); }); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() }
         ];
 
         const audioContext = typeof AudioContext !== 'undefined' ? new AudioContext() : null;
@@ -1080,8 +1351,95 @@
                     return raw ? JSON.parse(raw) : [];
                 } catch (_) { return []; }
             });
+            const [totalApplesEaten, setTotalApplesEaten] = useState(() => {
+                try {
+                    const raw = localStorage.getItem(TOTAL_APPLES_KEY);
+                    const n = raw ? parseInt(raw, 10) : NaN;
+                    return !isNaN(n) && n >= 0 ? n : 0;
+                } catch (_) { return 0; }
+            });
+            const [ioMaxLength, setIoMaxLength] = useState(() => {
+                try {
+                    const raw = localStorage.getItem(IO_MAX_LENGTH_KEY);
+                    const n = raw ? parseInt(raw, 10) : NaN;
+                    return !isNaN(n) && n >= 0 ? n : 0;
+                } catch (_) { return 0; }
+            });
             useEffect(() => { try { localStorage.setItem(APPLE_COINS_KEY, String(appleCoins)); } catch (_) {} }, [appleCoins]);
             useEffect(() => { try { localStorage.setItem(UNLOCKED_SKINS_KEY, JSON.stringify(unlockedSkins)); } catch (_) {} }, [unlockedSkins]);
+            useEffect(() => { try { localStorage.setItem(TOTAL_APPLES_KEY, String(totalApplesEaten)); } catch (_) {} }, [totalApplesEaten]);
+            useEffect(() => { try { localStorage.setItem(IO_MAX_LENGTH_KEY, String(ioMaxLength)); } catch (_) {} }, [ioMaxLength]);
+            const [loginStreakDay, setLoginStreakDay] = useState(() => {
+                try {
+                    const raw = localStorage.getItem(LOGIN_STREAK_DAY_KEY);
+                    const n = raw ? parseInt(raw, 10) : NaN;
+                    return (!isNaN(n) && n >= 1 && n <= 7) ? n : 1;
+                } catch (_) { return 1; }
+            });
+            const [dailyRewardJustClaimed, setDailyRewardJustClaimed] = useState(null);
+            const [selectedLockerSkin, setSelectedLockerSkin] = useState(settings.snakeColor);
+            useEffect(() => {
+                if (screen === 'locker') setSelectedLockerSkin(settings.snakeColor);
+            }, [screen, settings.snakeColor]);
+            useEffect(() => {
+                const today = getTodayDateString();
+                const yesterday = getYesterdayDateString();
+                let lastDate = null;
+                let streakDay = 1;
+                try {
+                    lastDate = localStorage.getItem(LOGIN_LAST_DATE_KEY);
+                    const raw = localStorage.getItem(LOGIN_STREAK_DAY_KEY);
+                    const n = raw ? parseInt(raw, 10) : NaN;
+                    streakDay = (!isNaN(n) && n >= 1 && n <= 7) ? n : 1;
+                } catch (_) {}
+                if (lastDate === today) {
+                    setLoginStreakDay(streakDay);
+                    return;
+                }
+                let grantDay = 1;
+                let nextStreak = 2;
+                if (!lastDate || lastDate < yesterday) {
+                    grantDay = 1;
+                    nextStreak = 2;
+                } else {
+                    grantDay = streakDay;
+                    nextStreak = streakDay === 7 ? 1 : streakDay + 1;
+                }
+                const apples = DAILY_REWARDS[grantDay - 1];
+                setAppleCoins(c => c + apples);
+                setLoginStreakDay(nextStreak);
+                setDailyRewardJustClaimed({ day: grantDay, apples });
+                try {
+                    localStorage.setItem(LOGIN_LAST_DATE_KEY, today);
+                    localStorage.setItem(LOGIN_STREAK_DAY_KEY, String(nextStreak));
+                } catch (_) {}
+            }, []);
+            useEffect(() => {
+                if (!dailyRewardJustClaimed) return;
+                const t = setTimeout(() => setDailyRewardJustClaimed(null), 4000);
+                return () => clearTimeout(t);
+            }, [dailyRewardJustClaimed]);
+            const getUnlockStats = () => ({
+                highScores: highScores || {},
+                levelStars: levelStars || {},
+                totalApplesEaten: totalApplesEaten || 0,
+                ioMaxLength: ioMaxLength || 0
+            });
+            const checkUnlockPattern = (pattern) => {
+                if (!pattern || !pattern.type) return false;
+                const fn = UNLOCK_PATTERN_TYPES[pattern.type];
+                return fn ? fn(pattern, getUnlockStats()) : false;
+            };
+            useEffect(() => {
+                const stats = { highScores, levelStars, totalApplesEaten, ioMaxLength };
+                SHOP_SKINS.forEach((item) => {
+                    if (item.unlockBy !== 'pattern' || !item.pattern) return;
+                    const fn = UNLOCK_PATTERN_TYPES[item.pattern.type];
+                    if (fn && fn(item.pattern, stats)) {
+                        setUnlockedSkins(prev => prev.includes(item.id) ? prev : [...prev, item.id]);
+                    }
+                });
+            }, [highScores, levelStars, totalApplesEaten, ioMaxLength]);
             const [levelId, setLevelId] = useState(null);
             const [levelCompleteTime, setLevelCompleteTime] = useState(0);
             const levelStartTimeRef = useRef(0);
@@ -1537,6 +1895,10 @@
                 const apples = finalFoodCount;
                 const session = gameSessionRef.current;
 
+                setTotalApplesEaten(prev => prev + (apples || 0));
+                if (session.gameMode === 'io' && apples) {
+                    setIoMaxLength(prev => Math.max(prev, apples));
+                }
                 if (wallet && apples > getHighScore(session.gameMode, session.difficulty)) {
                     setHighScoreFor(session.gameMode, session.difficulty, apples);
                 }
@@ -2271,6 +2633,12 @@
             if (screen === 'menu') {
                 return (
                     <div className="fullscreen menu-fullscreen">
+                        {dailyRewardJustClaimed && (
+                            <div className="daily-reward-toast" role="alert">
+                                <span className="daily-reward-toast-icon">🍎</span>
+                                <span>Day {dailyRewardJustClaimed.day} login reward: +{dailyRewardJustClaimed.apples} apples!</span>
+                            </div>
+                        )}
                         <div className="menu-container">
                             <div className="menu-card">
                                 <header className="menu-header">
@@ -2279,6 +2647,11 @@
                                     </div>
                                     <div className="menu-tagline">Solana Seeker</div>
                                 </header>
+                                <div className="daily-reward-bar">
+                                    <span className="daily-reward-label">Daily login</span>
+                                    <span className="daily-reward-days">Day {loginStreakDay} of 7</span>
+                                    <span className="daily-reward-next">Next: {DAILY_REWARDS[loginStreakDay - 1]} apples</span>
+                                </div>
                                 <div className="menu-primary">
                                     <button className="menu-button" onClick={() => setScreen('playSelect')}>
                                         Play
@@ -2291,6 +2664,9 @@
                                     </button>
                                     <button className="menu-button secondary" onClick={() => setScreen('shop')}>
                                         Shop
+                                    </button>
+                                    <button className="menu-button secondary" onClick={() => setScreen('locker')}>
+                                        Locker
                                     </button>
                                     <button className="menu-button secondary" onClick={() => setScreen('settings')}>
                                         Settings
@@ -2319,6 +2695,94 @@
                                         </div>
                                     </div>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            if (screen === 'locker') {
+                const RARITY_ORDER = ['legendary', 'epic', 'rare', 'uncommon', 'common'];
+                const getSkinRarity = (id) => SHOP_SKINS.find(s => s.id === id)?.rarity || 'common';
+                const getSkinDisplayName = (id) => SHOP_SKINS.find(s => s.id === id)?.name || (id.charAt(0).toUpperCase() + id.slice(1));
+                const isSkinOwned = (id) => SNAKE_SKIN_IDS.includes(id) || unlockedSkins.includes(id) || SHOP_SKINS.some(s => s.id === id && s.unlockBy === 'pattern' && checkUnlockPattern(s.pattern));
+                const allIds = [...SNAKE_SKIN_IDS, ...SHOP_SKINS.map(s => s.id)].filter((id, i, a) => a.indexOf(id) === i);
+                const sortedByRarity = [...allIds].sort((a, b) => RARITY_ORDER.indexOf(getSkinRarity(a)) - RARITY_ORDER.indexOf(getSkinRarity(b)));
+                const byRarity = {};
+                sortedByRarity.forEach(id => {
+                    const r = getSkinRarity(id);
+                    if (!byRarity[r]) byRarity[r] = [];
+                    byRarity[r].push(id);
+                });
+                const selectedRarity = getSkinRarity(selectedLockerSkin);
+                const rarityInfo = SHOP_RARITIES[selectedRarity] || SHOP_RARITIES.common;
+                return (
+                    <div className="fullscreen locker-fullscreen">
+                        <div className="locker-container">
+                            <header className="locker-header">
+                                <h1 className="locker-title">Locker</h1>
+                                <p className="locker-subtitle">Preview and equip your skins</p>
+                            </header>
+                            <div className="locker-preview-wrap">
+                                <div className="locker-preview-snake">
+                                    <ShopSnakePreview skinId={selectedLockerSkin} size="locker" />
+                                </div>
+                                <div className="locker-preview-meta">
+                                    <span className="locker-preview-name">{getSkinDisplayName(selectedLockerSkin)}</span>
+                                    <span className="locker-preview-rarity" style={{ color: rarityInfo.color, backgroundColor: rarityInfo.glow, border: '1px solid ' + rarityInfo.border }}>
+                                        {rarityInfo.label}
+                                    </span>
+                                </div>
+                                {isSkinOwned(selectedLockerSkin) ? (
+                                    <button
+                                        className={`locker-equip-btn ${settings.snakeColor === selectedLockerSkin ? 'equipped' : ''}`}
+                                        onClick={() => setSettings({ ...settings, snakeColor: selectedLockerSkin })}
+                                        disabled={settings.snakeColor === selectedLockerSkin}
+                                    >
+                                        {settings.snakeColor === selectedLockerSkin ? 'Equipped' : 'Equip'}
+                                    </button>
+                                ) : (
+                                    <button className="locker-equip-btn lock" onClick={() => setScreen('shop')}>
+                                        Unlock in Shop
+                                    </button>
+                                )}
+                            </div>
+                            {RARITY_ORDER.filter(r => byRarity[r] && byRarity[r].length > 0).map((rarity) => {
+                                const label = (SHOP_RARITIES[rarity] || SHOP_RARITIES.common).label;
+                                const color = (SHOP_RARITIES[rarity] || SHOP_RARITIES.common).color;
+                                return (
+                                    <div key={rarity} className="locker-rarity-section">
+                                        <div className="locker-rarity-heading" style={{ color }}>
+                                            {label}
+                                        </div>
+                                        <div className="locker-grid">
+                                            {byRarity[rarity].map((id) => {
+                                                const owned = isSkinOwned(id);
+                                                const selected = selectedLockerSkin === id;
+                                                return (
+                                                    <button
+                                                        key={id}
+                                                        type="button"
+                                                        className={`locker-skin-card ${selected ? 'selected' : ''} ${!owned ? 'locked' : ''}`}
+                                                        data-rarity={rarity}
+                                                        onClick={() => setSelectedLockerSkin(id)}
+                                                    >
+                                                        <div className="locker-skin-card-preview">
+                                                            <ShopSnakePreview skinId={id} size="large" />
+                                                        </div>
+                                                        <div className="locker-skin-card-name">{getSkinDisplayName(id)}</div>
+                                                        {!owned && <span className="locker-skin-lock" aria-hidden>🔒</span>}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            <div className="locker-back-wrap">
+                                <button className="menu-button secondary" onClick={() => setScreen('menu')}>
+                                    Back
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -2384,14 +2848,19 @@
                                     <span>{appleCoins}</span>
                                 </div>
                             </div>
-                            <p style={{ fontSize: '0.85em', color: 'var(--text-muted)', marginBottom: 24 }}>
+                            <p style={{ fontSize: '0.85em', color: 'var(--text-muted)', marginBottom: 8 }}>
                                 Earn apples by eating fruit. Unlock skins to show off in game.
                             </p>
-                            <div className="shop-section-label">Featured</div>
+                            <p style={{ fontSize: '0.75em', color: 'var(--text-muted)', marginBottom: 24 }}>
+                                {getDaysUntilShopRefresh() === 1 ? 'New selection tomorrow' : `New selection in ${getDaysUntilShopRefresh()} days`}
+                            </p>
+                            <div className="shop-section-label">This week&apos;s skins</div>
                             <div className="shop-grid">
-                                {SHOP_SKINS.map((item) => {
-                                    const owned = unlockedSkins.includes(item.id);
-                                    const canBuy = !owned && appleCoins >= item.price;
+                                {getWeeklySkins().map((item) => {
+                                    const isPattern = item.unlockBy === 'pattern';
+                                    const patternMet = isPattern && checkUnlockPattern(item.pattern);
+                                    const owned = unlockedSkins.includes(item.id) || patternMet;
+                                    const canBuy = !owned && !isPattern && appleCoins >= (item.price || 0);
                                     const rarity = SHOP_RARITIES[item.rarity] || SHOP_RARITIES.rare;
                                     return (
                                         <div
@@ -2413,7 +2882,13 @@
                                                 </div>
                                                 <div className="shop-card-name">{item.name}</div>
                                                 <div className="shop-card-footer">
-                                                    {!owned ? (
+                                                    {owned ? (
+                                                        <div className="shop-owned-badge">Owned</div>
+                                                    ) : isPattern ? (
+                                                        <div className="shop-card-requirement" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                                            Unlock: {item.requirement}
+                                                        </div>
+                                                    ) : (
                                                         <>
                                                             <div className="shop-card-price">
                                                                 <span className="shop-currency-icon" aria-hidden>🍎</span>
@@ -2432,8 +2907,6 @@
                                                                 Buy
                                                             </button>
                                                         </>
-                                                    ) : (
-                                                        <div className="shop-owned-badge">Owned</div>
                                                     )}
                                                 </div>
                                             </div>
