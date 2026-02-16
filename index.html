@@ -1045,7 +1045,8 @@
         const SKR_DECIMALS = 6;
         const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
         const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
-        const SKR_RPC = 'https://api.mainnet-beta.solana.com';
+        // Use a public RPC that allows browser/deployed apps. For production, replace with your own (e.g. Helius: https://mainnet.helius-rpc.com/?api_key=YOUR_KEY).
+        const SKR_RPC = 'https://rpc.ankr.com/solana';
 
         function getAssociatedTokenAddress(owner, mint) {
             const [ata] = PublicKey.findProgramAddressSync(
@@ -1078,7 +1079,18 @@
             const toATA = getAssociatedTokenAddress(receiver, SKR_MINT);
             const ix = createTransferInstruction(fromATA, toATA, owner, Number(amountRaw));
             const tx = new Transaction().add(ix);
-            const { blockhash, lastValidBlockHeight } = await conn.getLatestBlockhash('confirmed');
+            let blockhash, lastValidBlockHeight;
+            try {
+                const latest = await conn.getLatestBlockhash('confirmed');
+                blockhash = latest.blockhash;
+                lastValidBlockHeight = latest.lastValidBlockHeight;
+            } catch (e) {
+                const msg = (e && e.message) || String(e);
+                if (msg.includes('403') || msg.includes('forbidden')) {
+                    throw new Error('RPC access blocked. Set SKR_RPC in the app to your own Solana RPC URL (e.g. Helius free tier with API key).');
+                }
+                throw e;
+            }
             tx.recentBlockhash = blockhash;
             tx.feePayer = owner;
             let signed;
