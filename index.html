@@ -96,27 +96,34 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px 16px;
-            background: var(--bg);
-            background-image: radial-gradient(ellipse 120% 80% at 50% 0%, var(--bg-secondary) 0%, transparent 55%),
-                              radial-gradient(ellipse 80% 50% at 50% 100%, var(--bg-tertiary) 0%, transparent 50%);
+            padding: 32px 20px;
+            background: #0a0a0a;
+            background-image: radial-gradient(ellipse 100% 70% at 50% -20%, #141414 0%, transparent 50%),
+                              radial-gradient(ellipse 70% 40% at 50% 110%, #1a1a1a 0%, transparent 45%);
+        }
+        [data-theme="light"] .menu-fullscreen {
+            background: #f0f0f0;
+            background-image: radial-gradient(ellipse 100% 70% at 50% -20%, #e5e5e5 0%, transparent 50%),
+                              radial-gradient(ellipse 70% 40% at 50% 110%, #ddd 0%, transparent 45%);
         }
         .menu-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
         }
         .menu-card {
             position: relative;
             overflow: hidden;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px 28px 32px;
+            background: #141414;
+            border: 1px solid #2a2a2a;
+            border-radius: 24px;
+            padding: 48px 32px 40px;
             text-align: center;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.15), 0 0 0 1px rgba(255,255,255,0.03) inset;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05) inset;
         }
         [data-theme="light"] .menu-card {
-            box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.04) inset;
+            background: #fff;
+            border-color: #e0e0e0;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.06) inset;
         }
         .menu-card::before {
             content: '';
@@ -125,96 +132,108 @@
             left: 0;
             right: 0;
             height: 3px;
-            background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%);
-            border-radius: 20px 20px 0 0;
+            background: linear-gradient(90deg, transparent 5%, #14F195 50%, transparent 95%);
+            border-radius: 24px 24px 0 0;
         }
         .menu-header {
-            margin-bottom: 32px;
+            margin-bottom: 36px;
         }
         .logo-big {
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 700;
-            margin-bottom: 4px;
-            letter-spacing: -1px;
-            line-height: 1.15;
+            margin-bottom: 8px;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            color: #fff;
         }
-        .logo-accent { color: var(--accent); }
+        [data-theme="light"] .logo-big { color: #111; }
+        .logo-accent { color: #14F195; }
         .menu-tagline {
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            font-weight: 500;
+            color: #888;
+            font-size: 0.65rem;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 5px;
         }
+        [data-theme="light"] .menu-tagline { color: #666; }
         .menu-primary {
-            margin-bottom: 4px;
+            margin-bottom: 0;
         }
-        .menu-button {
+        .menu-card .menu-button {
             width: 100%;
-            padding: 16px 24px;
+            padding: 18px 24px;
             margin: 0 auto;
             display: block;
-            background: var(--accent);
+            background: #14F195;
             color: #000;
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.15s, box-shadow 0.15s;
-            font-family: 'Space Grotesk';
-            letter-spacing: 0.02em;
-            box-shadow: 0 2px 12px rgba(20, 241, 149, 0.35);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: 0.03em;
+            box-shadow: 0 2px 16px rgba(20, 241, 149, 0.35);
         }
-        .menu-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(20, 241, 149, 0.4);
+        .menu-card .menu-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(20, 241, 149, 0.4);
         }
-        .menu-button:active {
+        .menu-card .menu-button:active {
             transform: translateY(0);
         }
-        .menu-button:disabled {
+        .menu-card .menu-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
         .menu-divider {
             height: 1px;
-            background: var(--border);
-            margin: 20px 0 16px;
+            background: #2a2a2a;
+            margin: 24px 0 20px;
         }
+        [data-theme="light"] .menu-divider { background: #e0e0e0; }
         .menu-nav {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
-        .menu-button.secondary {
+        .menu-card .menu-button.secondary {
             background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
+            color: #fff;
+            border: 1px solid #2a2a2a;
             font-weight: 500;
-            font-size: 0.9rem;
-            padding: 12px 20px;
+            font-size: 0.875rem;
+            padding: 14px 20px;
             box-shadow: none;
         }
-        .menu-button.secondary:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--text-muted);
-            box-shadow: none;
+        [data-theme="light"] .menu-card .menu-button.secondary {
+            color: #111;
+            border-color: #e0e0e0;
+        }
+        .menu-card .menu-button.secondary:hover {
+            background: #1f1f1f;
+            border-color: #555;
+        }
+        [data-theme="light"] .menu-card .menu-button.secondary:hover {
+            background: #f5f5f5;
+            border-color: #999;
         }
         .menu-wallet-wrap {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid #2a2a2a;
         }
-        .wallet-display {
-            padding: 8px 16px;
+        [data-theme="light"] .menu-wallet-wrap { border-top-color: #e0e0e0; }
+        .menu-card .wallet-display {
+            padding: 10px 18px;
             background: rgba(20, 241, 149, 0.1);
-            border: 1px solid rgba(20, 241, 149, 0.35);
+            border: 1px solid rgba(20, 241, 149, 0.3);
             border-radius: 999px;
             font-size: 0.8rem;
             font-weight: 500;
-            color: var(--accent);
+            color: #14F195;
             display: inline-block;
         }
         .game-screen {
@@ -734,41 +753,6 @@
             color: var(--text-muted);
             margin-bottom: 10px;
         }
-        .joystick-wrap {
-            position: relative;
-            margin-top: 20px;
-            width: 100px;
-            height: 100px;
-            flex-shrink: 0;
-            touch-action: none;
-            pointer-events: auto;
-        }
-        .joystick-base {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.5);
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .joystick-knob {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            margin-left: -20px;
-            margin-top: -20px;
-            border-radius: 50%;
-            background: var(--accent);
-            border: 2px solid rgba(255,255,255,0.5);
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            transition: none;
-            pointer-events: none;
-        }
         .copyright-footer {
             position: fixed;
             bottom: 0;
@@ -804,7 +788,8 @@
         const INITIAL_DIRECTION = {x: 1, y: 0};
         const GRID_SIZE_IO = 80;
         const VIEWPORT_CELLS = 27;
-        const IO_NUM_APPLES = 20;
+        const IO_NUM_APPLES = 45;
+        const IO_AI_COUNT = 25;
         const IO_AI_NAMES = ['Bot Red', 'Bot Blue', 'Bot Green', 'Bot Violet', 'Bot Orange'];
         const IO_SNAKE_COLORS = ['#14F195', '#EF4444', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899'];
         const IO_DIRS = [{ x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 }, { x: 1, y: 0 }];
@@ -812,8 +797,7 @@
         const IO_EAT_RADIUS = 0.6;
         const IO_COLLIDE_RADIUS = 0.35;
         const IO_SEGMENT_RADIUS = 0.35;
-        const IO_SELF_COLLIDE_MIN_DIST = 1.2;
-
+        const IO_SELF_COLLIDE_MIN_DIST = 3.0;
         const SNAKE_SKINS = {
             blue: '#3B82F6',
             orange: '#F97316',
@@ -1106,14 +1090,11 @@
             const [ioLeaderboard, setIoLeaderboard] = useState([]);
             const ioSnakesRef = useRef([]);
             const ioFoodRef = useRef([]);
-            const joystickRef = useRef({ x: 0, y: 0 });
-            const lastJoystickDirRef = useRef({ x: 1, y: 0 });
+            const ioDirRef = useRef({ x: 1, y: 0 });
             const ioLastFrameRef = useRef(performance.now());
             const ioRafRef = useRef(null);
             const ioGameStartRef = useRef(0);
-            const [joystickKnob, setJoystickKnob] = useState({ x: 0, y: 0 });
-            const joystickBaseRef = useRef(null);
-            const joystickActiveRef = useRef(false);
+            const ioNextAiIdRef = useRef(IO_AI_COUNT + 1);
 
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
@@ -1395,27 +1376,35 @@
                 return newFood;
             }, [obstacles, snake]);
 
-            const getInitialIoState = useCallback(() => {
+            const getInitialIoState = useCallback((playerDisplayName) => {
                 const half = GRID_SIZE_IO / 2;
-                const offset = 10;
-                const positions = [
-                    { x: half, y: half },
-                    { x: half - offset, y: half },
-                    { x: half + offset, y: half },
-                    { x: half, y: half - offset },
-                    { x: half, y: half + offset },
-                    { x: half - 7, y: half - 7 }
-                ];
-                const snakes = positions.slice(0, 1 + Math.min(5, IO_AI_NAMES.length)).map((pos, i) => ({
-                    id: i === 0 ? 'player' : 'ai_' + i,
-                    name: i === 0 ? 'You' : IO_AI_NAMES[i - 1],
-                    body: [{ x: pos.x, y: pos.y }],
-                    bodyLength: 1,
-                    direction: i === 0 ? { x: 1, y: 0 } : IO_DIRS[Math.floor(Math.random() * 4)],
-                    isAI: i !== 0,
-                    colorIndex: i % IO_SNAKE_COLORS.length,
-                    dead: false
-                }));
+                const positions = [{ x: half, y: half }];
+                const cols = 5;
+                const rows = Math.ceil(IO_AI_COUNT / cols);
+                const step = 14;
+                const start = 8;
+                for (let j = 0; j < rows; j++) {
+                    for (let k = 0; k < cols && positions.length < 1 + IO_AI_COUNT; k++) {
+                        positions.push({ x: start + k * step + (j % 2) * 4, y: start + j * step });
+                    }
+                }
+                const snakes = positions.slice(0, 1 + IO_AI_COUNT).map((pos, i) => {
+                    const toCenterX = half - pos.x, toCenterY = half - pos.y;
+                    const towardCenter = Math.abs(toCenterX) >= Math.abs(toCenterY)
+                        ? { x: toCenterX >= 0 ? 1 : -1, y: 0 }
+                        : { x: 0, y: toCenterY >= 0 ? 1 : -1 };
+                    return {
+                        id: i === 0 ? 'player' : 'ai_' + i,
+                        name: i === 0 ? (playerDisplayName || 'You') : IO_AI_NAMES[(i - 1) % IO_AI_NAMES.length],
+                        body: [{ x: pos.x, y: pos.y }],
+                        bodyLength: 1,
+                        direction: i === 0 ? { x: 1, y: 0 } : towardCenter,
+                        isAI: i !== 0,
+                        colorIndex: i % IO_SNAKE_COLORS.length,
+                        dead: false,
+                        lastTurnTime: 0
+                    };
+                });
                 const cellKey = (x, y) => Math.floor(x) + ',' + Math.floor(y);
                 const allCells = new Set(snakes.flatMap(s => s.body.map(b => cellKey(b.x, b.y))));
                 const foodList = [];
@@ -1479,14 +1468,14 @@
                 setIoLeaderboard([]);
                 if (mode === 'io') {
                     ioGameStartRef.current = performance.now();
-                    const { snakes, foodList } = getInitialIoState();
+                    ioNextAiIdRef.current = IO_AI_COUNT + 1;
+                    const playerDisplayName = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
+                    const { snakes, foodList } = getInitialIoState(playerDisplayName);
                     setIoSnakes(snakes);
                     setIoFood(foodList);
                     ioSnakesRef.current = snakes;
                     ioFoodRef.current = foodList;
-                    joystickRef.current = { x: 0, y: 0 };
-                    lastJoystickDirRef.current = { x: 1, y: 0 };
-                    setJoystickKnob({ x: 0, y: 0 });
+                    ioDirRef.current = { x: 1, y: 0 };
                     setSnake(snakes[0].body);
                     snakeRef.current = snakes[0].body;
                     lastHeadRef.current = { x: snakes[0].body[0].x, y: snakes[0].body[0].y };
@@ -1516,6 +1505,7 @@
             const startLevel = (id) => {
                 const level = LEVELS[id - 1];
                 if (!level) return;
+                setSettings(prev => ({ ...prev, gameMode: 'classic' }));
                 gameSessionRef.current = { gameMode: 'classic', difficulty: settings.difficulty, levelId: id };
                 setLevelId(id);
                 levelStartTimeRef.current = Date.now();
@@ -1732,47 +1722,107 @@
                     const head = s.body[0];
                     let dx, dy;
                     if (s.id === 'player') {
-                        const j = joystickRef.current;
-                        const len = Math.hypot(j.x, j.y);
-                        if (len >= 0.15) {
-                            dx = j.x / len;
-                            dy = j.y / len;
-                            lastJoystickDirRef.current = { x: dx, y: dy };
-                        } else {
-                            dx = lastJoystickDirRef.current.x;
-                            dy = lastJoystickDirRef.current.y;
-                        }
+                        dx = ioDirRef.current.x;
+                        dy = ioDirRef.current.y;
                     } else {
-                        const head = s.body[0];
-                        let bestDir = s.direction;
-                        let bestScore = -1e9;
-                        for (const d of IO_DIRS) {
-                            const nx = head.x + d.x * 0.5, ny = head.y + d.y * 0.5;
+                        const cur = s.direction;
+                        const isCurValid = IO_DIRS.some(d => d.x === cur.x && d.y === cur.y);
+                        const curDir = isCurValid ? cur : { x: 1, y: 0 };
+                        let nearestApple = null;
+                        let nearestAppleDist = 1e9;
+                        foodList.forEach(f => {
+                            const d = dist(head, f);
+                            if (d < nearestAppleDist) { nearestAppleDist = d; nearestApple = f; }
+                        });
+                        const reverse = { x: -curDir.x, y: -curDir.y };
+                        const safe = [];
+                        for (let i = 0; i < IO_DIRS.length; i++) {
+                            const d = IO_DIRS[i];
+                            if (d.x === reverse.x && d.y === reverse.y) continue;
+                            const nx = head.x + d.x, ny = head.y + d.y;
                             if (nx < 0 || nx >= GRID_SIZE_IO || ny < 0 || ny >= GRID_SIZE_IO) continue;
-                            let minDistToBody = 1e9;
+                            let minD = 1e9;
                             allBodyPoints.forEach(pt => {
                                 if (pt.snakeId === s.id && (pt.segIdx === 0 || pt.isTail)) return;
                                 const dd = Math.hypot(nx - pt.x, ny - pt.y);
-                                if (dd < minDistToBody) minDistToBody = dd;
+                                if (dd < minD) minD = dd;
                             });
-                            if (minDistToBody < IO_SEGMENT_RADIUS * 2) continue;
-                            let foodDist = 1e9;
-                            foodList.forEach(f => { const fd = Math.hypot(nx - f.x, ny - f.y); if (fd < foodDist) foodDist = fd; });
-                            const score = -foodDist * 2 + minDistToBody;
-                            if (score > bestScore) { bestScore = score; bestDir = d; }
+                            if (minD < 0.7) continue;
+                            safe.push(d);
                         }
-                        dx = bestDir.x;
-                        dy = bestDir.y;
+                        if (safe.length === 0) {
+                            let inBounds = IO_DIRS.filter(d => {
+                                const nx = head.x + d.x, ny = head.y + d.y;
+                                return nx >= 0 && nx < GRID_SIZE_IO && ny >= 0 && ny < GRID_SIZE_IO;
+                            });
+                            const noReverse = inBounds.filter(d => d.x !== reverse.x || d.y !== reverse.y);
+                            if (noReverse.length > 0) inBounds = noReverse;
+                            if (inBounds.length === 0) {
+                                dx = curDir.x; dy = curDir.y;
+                            } else {
+                                let best = inBounds[0];
+                                let bestDist = 1e9;
+                                inBounds.forEach(d => {
+                                    const next = { x: head.x + d.x, y: head.y + d.y };
+                                    const dApple = nearestApple ? dist(next, nearestApple) : 0;
+                                    if (dApple < bestDist) { bestDist = dApple; best = d; }
+                                });
+                                dx = best.x;
+                                dy = best.y;
+                            }
+                        } else {
+                            let bestD = safe[0];
+                            let bestScore = -1e9;
+                            safe.forEach(d => {
+                                const next = { x: head.x + d.x, y: head.y + d.y };
+                                let score = 0;
+                                if (nearestApple) score += -dist(next, nearestApple) * 80;
+                                snakes.forEach(other => {
+                                    if (other.dead || other.id === s.id || !other.body || other.body.length < 2) return;
+                                    for (let i = 1; i < other.body.length; i++) {
+                                        const seg = other.body[i];
+                                        if (dist(head, seg) < 14 && dist(next, seg) < dist(head, seg)) score += 200;
+                                    }
+                                });
+                                if (d.x === curDir.x && d.y === curDir.y) score += 90;
+                                const nearWall = (next.x < 3 || next.x > GRID_SIZE_IO - 4 || next.y < 3 || next.y > GRID_SIZE_IO - 4);
+                                if (nearWall) score -= 50;
+                                if (score > bestScore) { bestScore = score; bestD = d; }
+                            });
+                            dx = bestD.x;
+                            dy = bestD.y;
+                        }
+                        let outDir = IO_DIRS.find(d => d.x === dx && d.y === dy);
+                        if (!outDir) {
+                            if (dx === 0 && dy === 0) outDir = curDir;
+                            else if (dx !== 0 && dy !== 0) outDir = Math.abs(dx) >= Math.abs(dy) ? { x: dx > 0 ? 1 : -1, y: 0 } : { x: 0, y: dy > 0 ? 1 : -1 };
+                            else outDir = dx !== 0 ? { x: dx > 0 ? 1 : -1, y: 0 } : { x: 0, y: dy > 0 ? 1 : -1 };
+                        }
+                        dx = outDir.x;
+                        dy = outDir.y;
+                        if (dx === 0 && dy === 0) { dx = 1; dy = 0; }
+                        return {
+                            ...s,
+                            body: trimBodyToLength([{ x: head.x + dx * IO_FREE_SPEED * dt, y: head.y + dy * IO_FREE_SPEED * dt }, ...s.body], s.bodyLength),
+                            direction: { x: dx, y: dy },
+                            lastTurnTime: s.lastTurnTime
+                        };
                     }
                     const newHead = {
                         x: head.x + dx * IO_FREE_SPEED * dt,
                         y: head.y + dy * IO_FREE_SPEED * dt
                     };
                     let newBody = trimBodyToLength([newHead, ...s.body], s.bodyLength);
-                    return { ...s, body: newBody, direction: { x: dx, y: dy } };
+                    return {
+                        ...s,
+                        body: newBody,
+                        direction: { x: dx, y: dy },
+                        lastTurnTime: s.lastTurnTime
+                    };
                 });
 
                 const deaths = new Set();
+                const lengthBonus = {};
                 newSnakes.forEach(s => {
                     if (s.dead) return;
                     if (s.id === 'player' && playerGrace) return;
@@ -1783,14 +1833,31 @@
                         pathLen += dist(s.body[i - 1], s.body[i]);
                         if (pathLen >= IO_SELF_COLLIDE_MIN_DIST && dist(h, s.body[i]) < IO_COLLIDE_RADIUS + IO_SEGMENT_RADIUS) {
                             deaths.add(s.id);
-                            break;
+                            return;
                         }
                     }
+                });
+                newSnakes.forEach(s => {
+                    if (s.dead || deaths.has(s.id)) return;
+                    const h = s.body[0];
                     newSnakes.forEach(other => {
-                        if (other.dead || other.id === s.id) return;
-                        for (let i = 0; i < other.body.length; i++) {
+                        if (other.dead || other.id === s.id || deaths.has(other.id)) return;
+                        const oh = other.body[0];
+                        if (dist(h, oh) < IO_COLLIDE_RADIUS + IO_COLLIDE_RADIUS) {
+                            deaths.add(s.id);
+                            deaths.add(other.id);
+                        }
+                    });
+                });
+                newSnakes.forEach(s => {
+                    if (s.dead || deaths.has(s.id)) return;
+                    const h = s.body[0];
+                    newSnakes.forEach(other => {
+                        if (other.id === s.id || deaths.has(other.id)) return;
+                        for (let i = 1; i < other.body.length; i++) {
                             if (dist(h, other.body[i]) < IO_COLLIDE_RADIUS + IO_SEGMENT_RADIUS) {
-                                deaths.add(s.id);
+                                deaths.add(other.id);
+                                lengthBonus[s.id] = (lengthBonus[s.id] || 0) + Math.max(1, Math.round(other.bodyLength));
                                 return;
                             }
                         }
@@ -1802,17 +1869,66 @@
                 const updatedSnakes = newSnakes.map(s => {
                     if (s.dead || deaths.has(s.id)) return { ...s, dead: s.dead || deaths.has(s.id) };
                     const h = s.body[0];
+                    let bodyLength = s.bodyLength;
+                    let ateThisStep = false;
                     const idx = foodList.findIndex(f => dist(h, f) < IO_EAT_RADIUS);
                     if (idx >= 0 && !eatenIndices.has(idx)) {
                         eatenIndices.add(idx);
                         if (s.id === 'player') setAppleCoins(c => c + 1);
                         newFood = newFood.filter((_, i) => i !== idx);
-                        return { ...s, bodyLength: s.bodyLength + 1 };
+                        bodyLength += 1;
+                        ateThisStep = true;
                     }
-                    return s;
+                    const killBonus = lengthBonus[s.id] || 0;
+                    if (killBonus > 0) {
+                        bodyLength += killBonus;
+                        ateThisStep = true;
+                    }
+                    return { ...s, bodyLength, ateThisStep };
                 }).map(s => deaths.has(s.id) ? { ...s, dead: true } : s);
 
-                const allPts = new Set(updatedSnakes.flatMap(s => s.body.map(p => Math.floor(p.x) + ',' + Math.floor(p.y))));
+                let finalSnakes = updatedSnakes.filter(s => !s.dead);
+                const liveAICount = finalSnakes.filter(s => s.id !== 'player').length;
+                const toSpawn = Math.max(0, IO_AI_COUNT - liveAICount);
+                const occupied = new Set(updatedSnakes.flatMap(s => s.body.map(p => Math.floor(p.x) + ',' + Math.floor(p.y))));
+                for (let i = 0; i < toSpawn; i++) {
+                    for (let att = 0; att < 60; att++) {
+                        const x = Math.floor(Math.random() * (GRID_SIZE_IO - 12)) + 6 + 0.5;
+                        const y = Math.floor(Math.random() * (GRID_SIZE_IO - 12)) + 6 + 0.5;
+                        const key = Math.floor(x) + ',' + Math.floor(y);
+                        if (occupied.has(key)) continue;
+                        let tooClose = false;
+                        occupied.forEach(cell => {
+                            const [cx, cy] = cell.split(',').map(Number);
+                            if (Math.hypot(x - cx, y - cy) < 4) tooClose = true;
+                        });
+                        if (tooClose) continue;
+                        const id = 'ai_' + (ioNextAiIdRef.current++);
+                        const name = IO_AI_NAMES[Math.floor(Math.random() * IO_AI_NAMES.length)];
+                        const colorIndex = Math.floor(Math.random() * IO_SNAKE_COLORS.length);
+                        const half = GRID_SIZE_IO / 2;
+                        const toCenterX = half - x, toCenterY = half - y;
+                        const towardCenter = Math.abs(toCenterX) >= Math.abs(toCenterY)
+                            ? { x: toCenterX >= 0 ? 1 : -1, y: 0 }
+                            : { x: 0, y: toCenterY >= 0 ? 1 : -1 };
+                        const dir = towardCenter;
+                        finalSnakes = finalSnakes.concat([{
+                            id,
+                            name,
+                            body: [{ x, y }],
+                            bodyLength: 1,
+                            direction: dir,
+                            isAI: true,
+                            colorIndex,
+                            dead: false,
+                            lastTurnTime: 0
+                        }]);
+                        occupied.add(key);
+                        break;
+                    }
+                }
+
+                const allPts = new Set(finalSnakes.flatMap(s => s.body.map(p => Math.floor(p.x) + ',' + Math.floor(p.y))));
                 eatenIndices.forEach(() => {
                     for (let att = 0; att < 80; att++) {
                         const x = Math.random() * (GRID_SIZE_IO - 1) + 0.5;
@@ -1826,25 +1942,27 @@
                     }
                 });
 
-                ioSnakesRef.current = updatedSnakes;
+                ioSnakesRef.current = finalSnakes;
                 ioFoodRef.current = newFood;
-                setIoSnakes(updatedSnakes);
+                setIoSnakes(finalSnakes);
                 setIoFood(newFood);
-                const player = updatedSnakes.find(s => s.id === 'player');
-                if (player) {
-                    snakeRef.current = player.body;
-                    lastHeadRef.current = player.body[0];
-                    setSnake(player.body);
+                const playerAlive = finalSnakes.find(s => s.id === 'player');
+                const playerAny = updatedSnakes.find(s => s.id === 'player');
+                if (playerAlive) {
+                    snakeRef.current = playerAlive.body;
+                    lastHeadRef.current = playerAlive.body[0];
+                    setSnake(playerAlive.body);
                 }
-                if (player && player.dead) {
+                if (playerAny && playerAny.dead) {
                     if (ioRafRef.current) cancelAnimationFrame(ioRafRef.current);
                     ioRafRef.current = null;
-                    const leaderboard = [...updatedSnakes]
+                    const deadOnly = updatedSnakes.filter(s => s.dead);
+                    const leaderboard = [...finalSnakes, ...deadOnly]
                         .sort((a, b) => b.bodyLength - a.bodyLength)
                         .map(s => ({ name: s.name, length: Math.round(s.bodyLength), isPlayer: s.id === 'player', dead: s.dead }));
                     setIoLeaderboard(leaderboard);
-                    setFoodEaten(Math.round(player.bodyLength));
-                    submitScore(Math.round(player.bodyLength));
+                    setFoodEaten(Math.round(playerAny.bodyLength));
+                    submitScore(Math.round(playerAny.bodyLength));
                     if (settings.sound) playSound(100, 0.3, 0.3);
                     vibrate([200, 100, 200]);
                     setScreen('gameOver');
@@ -1896,6 +2014,22 @@
 
             useEffect(() => {
                 const handleKeyPress = (e) => {
+                    if (screen === 'playing' && settings.gameMode === 'io') {
+                        const setIoDir = (dx, dy) => {
+                            e.preventDefault();
+                            ioDirRef.current = { x: dx, y: dy };
+                        };
+                        const cur = ioDirRef.current;
+                        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { if (cur.y !== 1) setIoDir(0, -1); }
+                        else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { if (cur.y !== -1) setIoDir(0, 1); }
+                        else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { if (cur.x !== 1) setIoDir(-1, 0); }
+                        else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { if (cur.x !== -1) setIoDir(1, 0); }
+                        else if (e.key === 'Escape' || e.key === ' ') {
+                            e.preventDefault();
+                            setScreen('paused');
+                        }
+                        return;
+                    }
                     if (screen === 'playing' && settings.gameMode !== 'io') {
                         const currentDir = directionRef.current;
                         if (e.key === 'ArrowUp' && currentDir.y === 0) {
@@ -1930,6 +2064,17 @@
                 const SWIPE_THRESHOLD = 20; // px – react as soon as swipe is clear
                 const applySwipeDirection = (deltaX, deltaY) => {
                     if (Math.abs(deltaX) < SWIPE_THRESHOLD && Math.abs(deltaY) < SWIPE_THRESHOLD) return false;
+                    if (settings.gameMode === 'io') {
+                        const cur = ioDirRef.current;
+                        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                            if (deltaX > 0 && cur.x !== -1) { ioDirRef.current = { x: 1, y: 0 }; return true; }
+                            if (deltaX < 0 && cur.x !== 1) { ioDirRef.current = { x: -1, y: 0 }; return true; }
+                        } else {
+                            if (deltaY > 0 && cur.y !== -1) { ioDirRef.current = { x: 0, y: 1 }; return true; }
+                            if (deltaY < 0 && cur.y !== 1) { ioDirRef.current = { x: 0, y: -1 }; return true; }
+                        }
+                        return false;
+                    }
                     const currentDir = directionRef.current;
                     if (Math.abs(deltaX) > Math.abs(deltaY)) {
                         if (deltaX > 0 && currentDir.x === 0) { handleDirectionChange({x: 1, y: 0}); return true; }
@@ -2011,6 +2156,23 @@
                                 ctx.fillStyle = color;
                                 ctx.fillRect(x, y, segW, segW);
                             });
+                        });
+                        const nameFont = Math.max(10, Math.min(14, Math.floor(cellSize * 0.7))) + 'px sans-serif';
+                        const nameYOffset = segW + 2;
+                        ioSnakesNow.forEach(function(s) {
+                            if (s.dead || !s.body || !s.body.length) return;
+                            const head = s.body[0];
+                            const hx = head.x * cellSize + cellSize / 2;
+                            const hy = head.y * cellSize;
+                            const label = (s.name || 'Snake').slice(0, 20);
+                            ctx.font = nameFont;
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.strokeStyle = (settings.theme === 'light') ? '#111' : '#000';
+                            ctx.lineWidth = 2;
+                            ctx.strokeText(label, hx, hy - nameYOffset);
+                            ctx.fillStyle = (settings.theme === 'light') ? '#111' : '#fff';
+                            ctx.fillText(label, hx, hy - nameYOffset);
                         });
                         ctx.restore();
                         return;
@@ -2169,7 +2331,7 @@
                 { id: 'portal', name: 'Portal', desc: 'Wrap around edges' },
                 { id: 'speed', name: 'Speed', desc: 'Collect orbs for boost' },
                 { id: 'survival', name: 'Survival', desc: 'Eat to add time' },
-                { id: 'io', name: 'Battle (vs AI)', desc: 'Snake.io style: eat apples, avoid others' }
+                { id: 'io', name: 'Multiplayer (Beta)', desc: 'Collect apples to grow. Kill others (hit their body) to take their length. Goal: become the longest snake.' }
             ];
 
             if (screen === 'playSelect') {
@@ -2453,7 +2615,14 @@
                     <div className="game-screen">
                         <div className="game-hud">
                             <div className="hud-left">
-                                {settings.gameMode === 'io' ? (
+                                {levelId ? (
+                                    <>
+                                        <div className="stat-pill" data-score-type="apples">
+                                            <span className="label">LEVEL {levelId}</span>
+                                            <span>{Number(foodEaten)} / {LEVELS[levelId - 1].targetApples}</span>
+                                        </div>
+                                    </>
+                                ) : settings.gameMode === 'io' ? (
                                     <>
                                         <div className="stat-pill" data-score-type="apples">
                                             <span className="label">LENGTH</span>
@@ -2468,13 +2637,6 @@
                                                     <span className="io-len">{Math.round(s.bodyLength || 1)}</span>
                                                 </div>
                                             ))}
-                                        </div>
-                                    </>
-                                ) : levelId ? (
-                                    <>
-                                        <div className="stat-pill" data-score-type="apples">
-                                            <span className="label">LEVEL {levelId}</span>
-                                            <span>{Number(foodEaten)} / {LEVELS[levelId - 1].targetApples}</span>
                                         </div>
                                     </>
                                 ) : (
@@ -2510,56 +2672,6 @@
                             height={settings.gameMode === 'io' ? VIEWPORT_CELLS * cellSize : GRID_SIZE * cellSize}
                         />
                         </div>
-                        {screen === 'playing' && settings.gameMode === 'io' && (
-                            <div
-                                className="joystick-wrap"
-                                ref={joystickBaseRef}
-                                onPointerDown={(e) => {
-                                    e.preventDefault();
-                                    joystickActiveRef.current = true;
-                                    e.currentTarget.setPointerCapture(e.pointerId);
-                                }}
-                                onPointerMove={(e) => {
-                                    if (!joystickActiveRef.current || !joystickBaseRef.current) return;
-                                    const rect = joystickBaseRef.current.getBoundingClientRect();
-                                    const cx = rect.left + rect.width / 2;
-                                    const cy = rect.top + rect.height / 2;
-                                    let dx = e.clientX - cx;
-                                    let dy = e.clientY - cy;
-                                    const maxR = 30;
-                                    const r = Math.hypot(dx, dy);
-                                    if (r > maxR) {
-                                        dx = dx * maxR / r;
-                                        dy = dy * maxR / r;
-                                    }
-                                    setJoystickKnob({ x: dx, y: dy });
-                                    const nr = Math.hypot(dx, dy);
-                                    let jx = 0, jy = 0;
-                                    if (nr > 0) {
-                                        jx = dx / maxR;
-                                        jy = dy / maxR;
-                                        const len = Math.hypot(jx, jy) || 1;
-                                        jx /= len;
-                                        jy /= len;
-                                    }
-                                    joystickRef.current = { x: jx, y: jy };
-                                }}
-                                onPointerUp={(e) => {
-                                    joystickActiveRef.current = false;
-                                    e.currentTarget.releasePointerCapture(e.pointerId);
-                                    setJoystickKnob({ x: 0, y: 0 });
-                                    joystickRef.current = { x: 0, y: 0 };
-                                }}
-                                onPointerCancel={(e) => {
-                                    joystickActiveRef.current = false;
-                                    setJoystickKnob({ x: 0, y: 0 });
-                                    joystickRef.current = { x: 0, y: 0 };
-                                }}
-                            >
-                                <div className="joystick-base" />
-                                <div className="joystick-knob" style={{ transform: `translate(calc(-50% + ${joystickKnob.x}px), calc(-50% + ${joystickKnob.y}px))` }} />
-                            </div>
-                        )}
 
                         {screen === 'paused' && (
                             <div className="overlay">
@@ -2603,7 +2715,12 @@
                         {screen === 'gameOver' && (
                             <div className="overlay">
                                 <div className="overlay-title">GAME OVER</div>
-                                {ioLeaderboard.length > 0 ? (
+                                {settings.gameMode === 'io' ? (
+                                    <div className="overlay-score">
+                                        YOUR LENGTH
+                                        <span>{Number(foodEaten)}</span>
+                                    </div>
+                                ) : ioLeaderboard.length > 0 ? (
                                     <>
                                         <div className="overlay-score">
                                             YOUR LENGTH
