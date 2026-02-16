@@ -722,76 +722,183 @@
         .shop-back-wrap .menu-button.secondary { max-width: 200px; }
         .locker-fullscreen {
             width: 100%;
+            height: 100vh;
             min-height: 100vh;
-            padding: 24px 20px 80px;
+            max-height: 100vh;
+            padding: 16px 16px 24px;
             background: var(--bg);
             background-image: linear-gradient(160deg, var(--bg-secondary) 0%, var(--bg) 40%, var(--bg) 100%);
             box-sizing: border-box;
             overflow-y: auto;
             overflow-x: hidden;
         }
-        .locker-container { width: 100%; max-width: 620px; margin: 0 auto; }
-        .locker-header {
-            text-align: center;
-            margin-bottom: 28px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border);
-        }
+        .locker-container { width: 100%; max-width: 640px; margin: 0 auto; min-height: 0; overflow-x: hidden; }
+        .locker-header { margin-bottom: 12px; }
         .locker-title {
-            font-size: 1.85rem;
+            font-size: 1.75rem;
             font-weight: 700;
-            letter-spacing: -0.03em;
-            margin-bottom: 6px;
+            letter-spacing: 0.02em;
             color: var(--text);
+            text-transform: uppercase;
         }
-        .locker-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-        .locker-preview-wrap {
-            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 32px 24px 28px;
-            margin-bottom: 32px;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-        .locker-preview-snake {
+        .locker-tabs {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
         }
-        .locker-preview-snake canvas {
-            border-radius: 14px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.35);
+        .locker-tab {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
         }
-        .locker-preview-meta {
+        .locker-tab:hover { border-color: var(--accent); color: var(--text); }
+        .locker-tab.active {
+            background: rgba(20, 241, 149, 0.15);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .locker-toolbar {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .locker-search-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+        .locker-search-icon { color: var(--text-muted); margin-right: 8px; font-size: 1rem; }
+        .locker-search {
+            flex: 1;
+            border: none;
+            background: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .locker-search::placeholder { color: var(--text-muted); }
+        .locker-sort-btn {
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .locker-sort-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .locker-preview-strip {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        .locker-preview-strip-snake { flex-shrink: 0; }
+        .locker-preview-strip-snake canvas { border-radius: 8px; }
+        .locker-preview-strip-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+        .locker-preview-strip-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+        .locker-preview-strip-rarity { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .locker-grid-wrap { flex: 1; min-height: 0; margin-bottom: 16px; }
+        .locker-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        @media (min-width: 420px) {
+            .locker-grid { grid-template-columns: repeat(5, 1fr); }
+        }
+        @media (min-width: 560px) {
+            .locker-grid { grid-template-columns: repeat(6, 1fr); gap: 12px; }
+        }
+        .locker-skin-card {
+            position: relative;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 6px 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-family: inherit;
+        }
+        .locker-skin-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+        .locker-skin-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent), 0 0 24px rgba(20, 241, 149, 0.4);
+        }
+        .locker-skin-card.locked { opacity: 0.8; }
+        .locker-skin-card.locked .locker-skin-card-preview { filter: grayscale(0.6) brightness(0.9); }
+        .locker-skin-card[data-rarity="legendary"] { --locker-card-border: #d97706; --locker-card-glow: rgba(245,158,11,0.3); }
+        .locker-skin-card[data-rarity="epic"] { --locker-card-border: #7c3aed; --locker-card-glow: rgba(168,85,247,0.25); }
+        .locker-skin-card[data-rarity="rare"] { --locker-card-border: #2563eb; --locker-card-glow: rgba(59,130,246,0.25); }
+        .locker-skin-card[data-rarity="uncommon"] { --locker-card-border: #16a34a; --locker-card-glow: rgba(34,197,94,0.2); }
+        .locker-skin-card[data-rarity="legendary"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 0 2px var(--locker-card-border), 0 0 20px var(--locker-card-glow); }
+        .locker-skin-card[data-rarity="epic"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 0 2px var(--locker-card-border), 0 0 18px var(--locker-card-glow); }
+        .locker-skin-card[data-rarity="rare"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 0 2px var(--locker-card-border), 0 0 14px var(--locker-card-glow); }
+        .locker-skin-card[data-rarity="uncommon"].selected { border-color: var(--locker-card-border); }
+        .locker-skin-card-preview { display: flex; justify-content: center; margin-bottom: 6px; }
+        .locker-skin-card-preview canvas { border-radius: 8px; max-width: 100%; }
+        .locker-skin-card-name { font-size: 0.7rem; font-weight: 600; color: var(--text); line-height: 1.2; }
+        .locker-skin-equipped {
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            color: var(--button-primary-text);
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .locker-preview-name {
-            font-size: 1.35rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: var(--text);
-        }
-        .locker-preview-rarity {
             font-size: 0.65rem;
             font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 4px 10px;
-            border-radius: 999px;
         }
-        .locker-equip-btn {
-            display: inline-block;
-            padding: 14px 36px;
+        .locker-skin-lock {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 0.7rem;
+            opacity: 0.95;
+        }
+        .locker-footer {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .locker-footer-equip {
+            padding: 12px 28px;
             border-radius: 12px;
             font-size: 0.95rem;
             font-weight: 600;
@@ -800,101 +907,38 @@
             border: 2px solid var(--accent);
             background: var(--accent);
             color: var(--button-primary-text);
-            transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+            transition: all 0.2s;
         }
-        .locker-equip-btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(20, 241, 149, 0.35);
-        }
-        .locker-equip-btn:disabled { opacity: 0.85; cursor: default; }
-        .locker-equip-btn.equipped {
-            background: transparent;
-            color: var(--accent);
-            cursor: default;
-        }
-        .locker-equip-btn.lock {
+        .locker-footer-equip:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(20, 241, 149, 0.35); }
+        .locker-footer-equip:disabled { opacity: 0.85; cursor: default; }
+        .locker-footer-equip.lock {
             background: var(--bg-tertiary);
             color: var(--text-muted);
             border-color: var(--border);
         }
-        .locker-equip-btn.lock:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        .locker-rarity-section {
-            margin-bottom: 28px;
-        }
-        .locker-rarity-heading {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .locker-rarity-heading::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-        .locker-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 12px;
-        }
-        .locker-skin-card {
-            position: relative;
-            background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px 10px 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
+        .locker-footer-equip.lock:hover { border-color: var(--accent); color: var(--accent); }
+        .locker-footer-back {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
             font-family: inherit;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            transition: all 0.2s;
         }
-        .locker-skin-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        .locker-footer-back:hover { border-color: var(--accent); color: var(--accent); }
+        @media (min-width: 480px) {
+            .locker-fullscreen { padding: 20px 20px 28px; }
+            .locker-header { margin-bottom: 14px; }
+            .locker-title { font-size: 1.9rem; }
+            .locker-tabs { margin-bottom: 14px; }
+            .locker-toolbar { margin-bottom: 14px; }
+            .locker-preview-strip { padding: 14px 18px; margin-bottom: 18px; }
+            .locker-preview-strip-name { font-size: 1.1rem; }
         }
-        .locker-skin-card.selected {
-            border-width: 2px;
-            box-shadow: 0 0 0 1px var(--accent);
-        }
-        .locker-skin-card.locked { opacity: 0.75; }
-        .locker-skin-card.locked .locker-skin-card-preview { filter: grayscale(0.7) brightness(0.85); }
-        .locker-skin-card[data-rarity="legendary"] { --locker-card-border: var(--shop-rarity-border, #d97706); --locker-card-glow: rgba(245,158,11,0.25); }
-        .locker-skin-card[data-rarity="epic"] { --locker-card-border: #7c3aed; --locker-card-glow: rgba(168,85,247,0.2); }
-        .locker-skin-card[data-rarity="rare"] { --locker-card-border: #2563eb; --locker-card-glow: rgba(59,130,246,0.2); }
-        .locker-skin-card[data-rarity="uncommon"] { --locker-card-border: #16a34a; --locker-card-glow: rgba(34,197,94,0.15); }
-        .locker-skin-card[data-rarity="legendary"]:hover,
-        .locker-skin-card[data-rarity="legendary"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 20px var(--locker-card-glow); }
-        .locker-skin-card[data-rarity="epic"]:hover,
-        .locker-skin-card[data-rarity="epic"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 16px var(--locker-card-glow); }
-        .locker-skin-card[data-rarity="rare"]:hover,
-        .locker-skin-card[data-rarity="rare"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 12px var(--locker-card-glow); }
-        .locker-skin-card[data-rarity="uncommon"]:hover,
-        .locker-skin-card[data-rarity="uncommon"].selected { border-color: var(--locker-card-border); }
-        .locker-skin-card-preview {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        .locker-skin-card-preview canvas { border-radius: 10px; }
-        .locker-skin-card-name { font-size: 0.78rem; font-weight: 600; color: var(--text); line-height: 1.2; }
-        .locker-skin-lock {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-        .locker-back-wrap { text-align: center; margin-top: 8px; }
-        .locker-back-wrap .menu-button.secondary { max-width: 200px; }
         [data-theme="light"] .shop-balance-pill {
             background: rgba(255,255,255,0.8);
             border-color: var(--border);
@@ -993,7 +1037,62 @@
 
     <script type="text/babel">
         const { useState, useEffect, useRef, useCallback } = React;
-        const { Connection, PublicKey } = window.solanaWeb3;
+        const { Connection, PublicKey, Transaction, TransactionInstruction } = window.solanaWeb3;
+
+        // SKR token purchase config (mainnet). Replace with your treasury wallet; it must have an ATA for this mint.
+        const SKR_MINT = new PublicKey('SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3');
+        const SKR_RECEIVER_WALLET = 'G5ooU48sKpV7zamLQ5SZDnaZxkDPDzbMBK3MsTyAKwBW';
+        const SKR_DECIMALS = 6;
+        const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+        const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
+        const SKR_RPC = 'https://api.mainnet-beta.solana.com';
+
+        function getAssociatedTokenAddress(owner, mint) {
+            const [ata] = PublicKey.findProgramAddressSync(
+                [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
+                ASSOCIATED_TOKEN_PROGRAM_ID
+            );
+            return ata;
+        }
+        function createTransferInstruction(source, destination, owner, amount) {
+            const data = Buffer.alloc(9);
+            data.writeUInt8(3, 0);
+            data.writeBigUInt64LE(BigInt(amount), 1);
+            return new TransactionInstruction({
+                keys: [
+                    { pubkey: source, isSigner: false, isWritable: true },
+                    { pubkey: destination, isSigner: false, isWritable: true },
+                    { pubkey: owner, isSigner: true, isWritable: false }
+                ],
+                programId: TOKEN_PROGRAM_ID,
+                data: data
+            });
+        }
+        async function sendSKRTransfer(walletAddress, amountUnits) {
+            const conn = new Connection(SKR_RPC, 'confirmed');
+            const owner = new PublicKey(walletAddress);
+            const receiver = new PublicKey(SKR_RECEIVER_WALLET);
+            const amountRaw = BigInt(amountUnits) * BigInt(10 ** SKR_DECIMALS);
+            if (amountRaw > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error('Amount too large');
+            const fromATA = getAssociatedTokenAddress(owner, SKR_MINT);
+            const toATA = getAssociatedTokenAddress(receiver, SKR_MINT);
+            const ix = createTransferInstruction(fromATA, toATA, owner, Number(amountRaw));
+            const tx = new Transaction().add(ix);
+            const { blockhash, lastValidBlockHeight } = await conn.getLatestBlockhash('confirmed');
+            tx.recentBlockhash = blockhash;
+            tx.feePayer = owner;
+            let signed;
+            if (window.solana && window.solana.signTransaction) {
+                signed = await window.solana.signTransaction(tx);
+            } else if (window.__snakeWalletAdapter && window.__snakeWalletAdapter.signTransaction) {
+                signed = await window.__snakeWalletAdapter.signTransaction(tx);
+            } else {
+                throw new Error('Wallet cannot sign transactions');
+            }
+            const sig = await conn.sendRawTransaction(signed.serialize(), { skipPreflight: false });
+            await conn.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, 'confirmed');
+            return sig;
+        }
 
         // Supabase credentials
         const SUPABASE_URL = 'https://aukbtnujqzilrqxgelxq.supabase.co';
@@ -1043,7 +1142,9 @@
             phoenix: '#EA580C',
             prism: '#7C3AED',
             eclipse: '#4C1D95',
-            void: '#18181B'
+            void: '#18181B',
+            skr_exclusive: '#14F195',
+            skr_legend: '#A855F7'
         };
         const ROYGBIV = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF'];
         const SNAKE_SKIN_IDS = ['blue', 'orange', 'yellow', 'green', 'indigo', 'violet', 'cyan', 'pink', 'lime', 'coral'];
@@ -1078,15 +1179,19 @@
             { id: 'phoenix', unlockBy: 'pattern', pattern: { type: 'survivalScore', min: 12 }, name: 'Phoenix', rarity: 'epic', requirement: 'Score 12+ in Survival' },
             { id: 'void', unlockBy: 'pattern', pattern: { type: 'hardClassic', min: 20 }, name: 'Void', rarity: 'legendary', requirement: 'Score 20+ on Hard (Classic)' },
             { id: 'prism', unlockBy: 'pattern', pattern: { type: 'totalStars', min: 10 }, name: 'Prism', rarity: 'epic', requirement: 'Earn 10 stars in Levels' },
-            { id: 'eclipse', unlockBy: 'pattern', pattern: { type: 'levelComplete', level: 8 }, name: 'Eclipse', rarity: 'legendary', requirement: 'Complete Level 8' }
+            { id: 'eclipse', unlockBy: 'pattern', pattern: { type: 'levelComplete', level: 8 }, name: 'Eclipse', rarity: 'legendary', requirement: 'Complete Level 8' },
+            { id: 'skr_exclusive', purchaseWith: 'skr', skrPrice: 10, name: 'SKR Exclusive', rarity: 'legendary' },
+            { id: 'skr_legend', purchaseWith: 'skr', skrPrice: 5, name: 'SKR Legend', rarity: 'epic' }
         ];
         const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
         const SHOP_WEEKLY_COUNT = 9;
         const getWeekIndex = () => Math.floor(Date.now() / WEEK_MS);
         const getWeeklySkins = () => {
-            const L = SHOP_SKINS.length;
+            const pool = SHOP_SKINS.filter(s => s.purchaseWith !== 'skr');
+            const L = pool.length;
+            if (L === 0) return [];
             const start = getWeekIndex() % L;
-            return Array.from({ length: SHOP_WEEKLY_COUNT }, (_, i) => SHOP_SKINS[(start + i) % L]);
+            return Array.from({ length: Math.min(SHOP_WEEKLY_COUNT, L) }, (_, i) => pool[(start + i) % L]);
         };
         const getDaysUntilShopRefresh = () => {
             const next = (getWeekIndex() + 1) * WEEK_MS;
@@ -1327,6 +1432,7 @@
             const [submittingScore, setSubmittingScore] = useState(false);
             const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
             const [connectingWallet, setConnectingWallet] = useState(false);
+            const [purchasingSKRId, setPurchasingSKRId] = useState(null);
             const [cellSize, setCellSize] = useState(24);
 
             const LEVEL_STARS_KEY = 'snakeLevelStars';
@@ -1378,6 +1484,9 @@
             });
             const [dailyRewardJustClaimed, setDailyRewardJustClaimed] = useState(null);
             const [selectedLockerSkin, setSelectedLockerSkin] = useState(settings.snakeColor);
+            const [lockerFilterTab, setLockerFilterTab] = useState('all');
+            const [lockerSearch, setLockerSearch] = useState('');
+            const [lockerSort, setLockerSort] = useState('rarity');
             useEffect(() => {
                 if (screen === 'locker') setSelectedLockerSkin(settings.snakeColor);
             }, [screen, settings.snakeColor]);
@@ -2714,76 +2823,81 @@
                     if (!byRarity[r]) byRarity[r] = [];
                     byRarity[r].push(id);
                 });
+                let displayIds = lockerFilterTab === 'all' ? sortedByRarity : (byRarity[lockerFilterTab] || []);
+                const searchLower = lockerSearch.trim().toLowerCase();
+                if (searchLower) displayIds = displayIds.filter(id => getSkinDisplayName(id).toLowerCase().includes(searchLower));
+                if (lockerSort === 'name') displayIds = [...displayIds].sort((a, b) => getSkinDisplayName(a).localeCompare(getSkinDisplayName(b)));
                 const selectedRarity = getSkinRarity(selectedLockerSkin);
                 const rarityInfo = SHOP_RARITIES[selectedRarity] || SHOP_RARITIES.common;
+                const isEquipped = settings.snakeColor === selectedLockerSkin;
                 return (
                     <div className="fullscreen locker-fullscreen">
                         <div className="locker-container">
                             <header className="locker-header">
-                                <h1 className="locker-title">Locker</h1>
-                                <p className="locker-subtitle">Preview and equip your skins</p>
+                                <h1 className="locker-title">SKINS</h1>
                             </header>
-                            <div className="locker-preview-wrap">
-                                <div className="locker-preview-snake">
-                                    <ShopSnakePreview skinId={selectedLockerSkin} size="locker" />
+                            <div className="locker-tabs">
+                                <button type="button" className={`locker-tab ${lockerFilterTab === 'all' ? 'active' : ''}`} onClick={() => setLockerFilterTab('all')}>All</button>
+                                {RARITY_ORDER.filter(r => byRarity[r] && byRarity[r].length > 0).map((r) => (
+                                    <button key={r} type="button" className={`locker-tab ${lockerFilterTab === r ? 'active' : ''}`} onClick={() => setLockerFilterTab(r)} style={lockerFilterTab === r ? { color: (SHOP_RARITIES[r] || SHOP_RARITIES.common).color } : {}}>{(SHOP_RARITIES[r] || SHOP_RARITIES.common).label}</button>
+                                ))}
+                            </div>
+                            <div className="locker-toolbar">
+                                <div className="locker-search-wrap">
+                                    <span className="locker-search-icon" aria-hidden>⌕</span>
+                                    <input type="text" className="locker-search" placeholder="Search" value={lockerSearch} onChange={(e) => setLockerSearch(e.target.value)} aria-label="Search skins" />
                                 </div>
-                                <div className="locker-preview-meta">
-                                    <span className="locker-preview-name">{getSkinDisplayName(selectedLockerSkin)}</span>
-                                    <span className="locker-preview-rarity" style={{ color: rarityInfo.color, backgroundColor: rarityInfo.glow, border: '1px solid ' + rarityInfo.border }}>
-                                        {rarityInfo.label}
-                                    </span>
+                                <div className="locker-sort-wrap">
+                                    <button type="button" className="locker-sort-btn" onClick={() => setLockerSort(lockerSort === 'rarity' ? 'name' : 'rarity')} aria-label="Sort">
+                                        {lockerSort === 'rarity' ? 'Sort: Rarity' : 'Sort: A–Z'}
+                                    </button>
                                 </div>
+                            </div>
+                            <div className="locker-preview-strip">
+                                <div className="locker-preview-strip-snake">
+                                    <ShopSnakePreview skinId={selectedLockerSkin} size="large" />
+                                </div>
+                                <div className="locker-preview-strip-info">
+                                    <span className="locker-preview-strip-name">{getSkinDisplayName(selectedLockerSkin)}</span>
+                                    <span className="locker-preview-strip-rarity" style={{ color: rarityInfo.color }}>{rarityInfo.label}</span>
+                                </div>
+                            </div>
+                            <div className="locker-grid-wrap">
+                                <div className="locker-grid">
+                                    {displayIds.map((id) => {
+                                        const owned = isSkinOwned(id);
+                                        const selected = selectedLockerSkin === id;
+                                        const equipped = settings.snakeColor === id;
+                                        const rarity = getSkinRarity(id);
+                                        return (
+                                            <button
+                                                key={id}
+                                                type="button"
+                                                className={`locker-skin-card ${selected ? 'selected' : ''} ${!owned ? 'locked' : ''}`}
+                                                data-rarity={rarity}
+                                                onClick={() => setSelectedLockerSkin(id)}
+                                            >
+                                                <div className="locker-skin-card-preview">
+                                                    <ShopSnakePreview skinId={id} size="large" />
+                                                </div>
+                                                <div className="locker-skin-card-name">{getSkinDisplayName(id)}</div>
+                                                {equipped && <span className="locker-skin-equipped" aria-hidden>✓</span>}
+                                                {!owned && <span className="locker-skin-lock" aria-hidden>🔒</span>}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <footer className="locker-footer">
                                 {isSkinOwned(selectedLockerSkin) ? (
-                                    <button
-                                        className={`locker-equip-btn ${settings.snakeColor === selectedLockerSkin ? 'equipped' : ''}`}
-                                        onClick={() => setSettings({ ...settings, snakeColor: selectedLockerSkin })}
-                                        disabled={settings.snakeColor === selectedLockerSkin}
-                                    >
-                                        {settings.snakeColor === selectedLockerSkin ? 'Equipped' : 'Equip'}
+                                    <button className="locker-footer-equip" onClick={() => setSettings({ ...settings, snakeColor: selectedLockerSkin })} disabled={isEquipped}>
+                                        {isEquipped ? 'Equipped' : 'Equip'}
                                     </button>
                                 ) : (
-                                    <button className="locker-equip-btn lock" onClick={() => setScreen('shop')}>
-                                        Unlock in Shop
-                                    </button>
+                                    <button className="locker-footer-equip lock" onClick={() => setScreen('shop')}>Unlock in Shop</button>
                                 )}
-                            </div>
-                            {RARITY_ORDER.filter(r => byRarity[r] && byRarity[r].length > 0).map((rarity) => {
-                                const label = (SHOP_RARITIES[rarity] || SHOP_RARITIES.common).label;
-                                const color = (SHOP_RARITIES[rarity] || SHOP_RARITIES.common).color;
-                                return (
-                                    <div key={rarity} className="locker-rarity-section">
-                                        <div className="locker-rarity-heading" style={{ color }}>
-                                            {label}
-                                        </div>
-                                        <div className="locker-grid">
-                                            {byRarity[rarity].map((id) => {
-                                                const owned = isSkinOwned(id);
-                                                const selected = selectedLockerSkin === id;
-                                                return (
-                                                    <button
-                                                        key={id}
-                                                        type="button"
-                                                        className={`locker-skin-card ${selected ? 'selected' : ''} ${!owned ? 'locked' : ''}`}
-                                                        data-rarity={rarity}
-                                                        onClick={() => setSelectedLockerSkin(id)}
-                                                    >
-                                                        <div className="locker-skin-card-preview">
-                                                            <ShopSnakePreview skinId={id} size="large" />
-                                                        </div>
-                                                        <div className="locker-skin-card-name">{getSkinDisplayName(id)}</div>
-                                                        {!owned && <span className="locker-skin-lock" aria-hidden>🔒</span>}
-                                                    </button>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            <div className="locker-back-wrap">
-                                <button className="menu-button secondary" onClick={() => setScreen('menu')}>
-                                    Back
-                                </button>
-                            </div>
+                                <button className="locker-footer-back" onClick={() => setScreen('menu')}>Back</button>
+                            </footer>
                         </div>
                     </div>
                 );
@@ -2854,13 +2968,63 @@
                             <p style={{ fontSize: '0.75em', color: 'var(--text-muted)', marginBottom: 24 }}>
                                 {getDaysUntilShopRefresh() === 1 ? 'New selection tomorrow' : `New selection in ${getDaysUntilShopRefresh()} days`}
                             </p>
+                            {(() => {
+                                const skrSkins = SHOP_SKINS.filter(s => s.purchaseWith === 'skr');
+                                if (skrSkins.length === 0) return null;
+                                return (
+                                    <>
+                                        <div className="shop-section-label">Purchase with SKR</div>
+                                        <div className="shop-grid" style={{ marginBottom: 28 }}>
+                                            {skrSkins.map((item) => {
+                                                const isSKR = true;
+                                                const owned = unlockedSkins.includes(item.id);
+                                                const skrConfigured = typeof SKR_RECEIVER_WALLET === 'string' && !SKR_RECEIVER_WALLET.includes('REPLACE');
+                                                const canBuySKR = !owned && wallet && skrConfigured && !purchasingSKRId;
+                                                const rarity = SHOP_RARITIES[item.rarity] || SHOP_RARITIES.rare;
+                                                return (
+                                                    <div key={item.id} className={`shop-card shop-card-rare ${owned ? 'owned' : ''}`} style={{ '--shop-rarity-border': rarity.border, '--shop-rarity-glow': rarity.glow }}>
+                                                        <div className="shop-card-preview-wrap">
+                                                            <div className="shop-skin-preview-wrap" aria-hidden><ShopSnakePreview skinId={item.id} size="large" /></div>
+                                                        </div>
+                                                        <div className="shop-card-body">
+                                                            <div className="shop-card-rarity" style={{ color: rarity.color }}>{rarity.label}</div>
+                                                            <div className="shop-card-name">{item.name}</div>
+                                                            <div className="shop-card-footer">
+                                                                {owned ? (
+                                                                    <div className="shop-owned-badge">Owned</div>
+                                                                ) : (
+                                                                    <>
+                                                                        <div className="shop-card-price"><span>{item.skrPrice || 10}</span><span style={{ fontSize: '0.85em', marginLeft: 4 }}>SKR</span></div>
+                                                                        <button className="shop-card-buy" disabled={!canBuySKR} onClick={async () => {
+                                                                            if (!wallet || !skrConfigured || purchasingSKRId) return;
+                                                                            setPurchasingSKRId(item.id);
+                                                                            try {
+                                                                                await sendSKRTransfer(wallet, item.skrPrice || 10);
+                                                                                setUnlockedSkins(prev => prev.includes(item.id) ? prev : [...prev, item.id]);
+                                                                            } catch (err) { alert(err?.message || 'SKR purchase failed'); }
+                                                                            finally { setPurchasingSKRId(null); }
+                                                                        }}>{purchasingSKRId === item.id ? '…' : 'Buy with SKR'}</button>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </>
+                                );
+                            })()}
                             <div className="shop-section-label">This week&apos;s skins</div>
                             <div className="shop-grid">
                                 {getWeeklySkins().map((item) => {
                                     const isPattern = item.unlockBy === 'pattern';
+                                    const isSKR = item.purchaseWith === 'skr';
                                     const patternMet = isPattern && checkUnlockPattern(item.pattern);
                                     const owned = unlockedSkins.includes(item.id) || patternMet;
-                                    const canBuy = !owned && !isPattern && appleCoins >= (item.price || 0);
+                                    const canBuy = !owned && !isPattern && !isSKR && appleCoins >= (item.price || 0);
+                                    const skrConfigured = typeof SKR_RECEIVER_WALLET === 'string' && !SKR_RECEIVER_WALLET.includes('REPLACE');
+                                    const canBuySKR = !owned && isSKR && wallet && skrConfigured && !purchasingSKRId;
                                     const rarity = SHOP_RARITIES[item.rarity] || SHOP_RARITIES.rare;
                                     return (
                                         <div
@@ -2888,6 +3052,31 @@
                                                         <div className="shop-card-requirement" style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
                                                             Unlock: {item.requirement}
                                                         </div>
+                                                    ) : isSKR ? (
+                                                        <>
+                                                            <div className="shop-card-price">
+                                                                <span>{item.skrPrice || 10}</span>
+                                                                <span style={{ fontSize: '0.85em', marginLeft: 4 }}>SKR</span>
+                                                            </div>
+                                                            <button
+                                                                className="shop-card-buy"
+                                                                disabled={!canBuySKR}
+                                                                onClick={async () => {
+                                                                    if (!wallet || !skrConfigured || purchasingSKRId) return;
+                                                                    setPurchasingSKRId(item.id);
+                                                                    try {
+                                                                        await sendSKRTransfer(wallet, item.skrPrice || 10);
+                                                                        setUnlockedSkins(prev => prev.includes(item.id) ? prev : [...prev, item.id]);
+                                                                    } catch (err) {
+                                                                        alert(err?.message || 'SKR purchase failed');
+                                                                    } finally {
+                                                                        setPurchasingSKRId(null);
+                                                                    }
+                                                                }}
+                                                            >
+                                                                {purchasingSKRId === item.id ? '…' : 'Buy with SKR'}
+                                                            </button>
+                                                        </>
                                                     ) : (
                                                         <>
                                                             <div className="shop-card-price">
