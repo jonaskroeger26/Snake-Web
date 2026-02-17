@@ -450,27 +450,6 @@
             font-weight: 500;
             min-width: 140px;
         }
-        .skin-swatches {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .skin-swatch {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            cursor: pointer;
-            padding: 0;
-            transition: transform 0.15s, border-color 0.15s;
-        }
-        .skin-swatch:hover {
-            transform: scale(1.1);
-        }
-        .skin-swatch.active {
-            border-color: var(--skin-active-border);
-            box-shadow: 0 0 0 1px var(--border);
-        }
         .leaderboard-container {
             width: 100%;
             max-width: 600px;
@@ -1209,8 +1188,8 @@
             { id: 'void', unlockBy: 'pattern', pattern: { type: 'hardClassic', min: 20 }, name: 'Void', rarity: 'legendary', requirement: 'Score 20+ on Hard (Classic)' },
             { id: 'prism', unlockBy: 'pattern', pattern: { type: 'totalStars', min: 10 }, name: 'Prism', rarity: 'epic', requirement: 'Earn 10 stars in Levels' },
             { id: 'eclipse', unlockBy: 'pattern', pattern: { type: 'levelComplete', level: 8 }, name: 'Eclipse', rarity: 'legendary', requirement: 'Complete Level 8' },
-            { id: 'skr_exclusive', purchaseWith: 'skr', skrPrice: 10, name: 'SKR Exclusive', rarity: 'legendary' },
-            { id: 'skr_legend', purchaseWith: 'skr', skrPrice: 5, name: 'SKR Legend', rarity: 'epic' }
+            { id: 'skr_exclusive', purchaseWith: 'skr', skrPrice: 25, name: 'SKR Exclusive', rarity: 'legendary' },
+            { id: 'skr_legend', purchaseWith: 'skr', skrPrice: 10, name: 'SKR Legend', rarity: 'epic' }
         ];
         const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
         const SHOP_WEEKLY_COUNT = 9;
@@ -1267,6 +1246,8 @@
                 ctx.fill();
                 const isRainbow = skinId === 'rainbow';
                 const isGold = skinId === 'gold';
+                const isSkrExclusive = skinId === 'skr_exclusive';
+                const isSkrLegend = skinId === 'skr_legend';
                 const segW = cellSize - 2;
                 for (let i = 0; i < segCount; i++) {
                     const x = pad + i * cellSize + 1;
@@ -1279,6 +1260,20 @@
                         g.addColorStop(0.35, '#E8C547');
                         g.addColorStop(0.7, '#B8860B');
                         g.addColorStop(1, '#8B6914');
+                        ctx.fillStyle = g;
+                    } else if (isSkrExclusive) {
+                        const g = ctx.createLinearGradient(x, y, x + segW, y + segW);
+                        g.addColorStop(0, '#FEF3C7');
+                        g.addColorStop(0.3, '#F59E0B');
+                        g.addColorStop(0.6, '#14F195');
+                        g.addColorStop(1, '#059669');
+                        ctx.fillStyle = g;
+                    } else if (isSkrLegend) {
+                        const g = ctx.createLinearGradient(x, y, x + segW, y + segW);
+                        g.addColorStop(0, '#C4B5FD');
+                        g.addColorStop(0.4, '#A855F7');
+                        g.addColorStop(0.7, '#7C3AED');
+                        g.addColorStop(1, '#5B21B6');
                         ctx.fillStyle = g;
                     } else {
                         ctx.fillStyle = SNAKE_SKINS[skinId] || '#14F195';
@@ -2729,6 +2724,20 @@
                             g.addColorStop(0.7, '#B8860B');
                             g.addColorStop(1, '#8B6914');
                             ctx.fillStyle = g;
+                        } else if (settings.snakeColor === 'skr_exclusive' && !speedBoost) {
+                            const g = ctx.createLinearGradient(x, y, x + segW, y + segW);
+                            g.addColorStop(0, '#FEF3C7');
+                            g.addColorStop(0.3, '#F59E0B');
+                            g.addColorStop(0.6, '#14F195');
+                            g.addColorStop(1, '#059669');
+                            ctx.fillStyle = g;
+                        } else if (settings.snakeColor === 'skr_legend' && !speedBoost) {
+                            const g = ctx.createLinearGradient(x, y, x + segW, y + segW);
+                            g.addColorStop(0, '#C4B5FD');
+                            g.addColorStop(0.4, '#A855F7');
+                            g.addColorStop(0.7, '#7C3AED');
+                            g.addColorStop(1, '#5B21B6');
+                            ctx.fillStyle = g;
                         } else {
                             ctx.fillStyle = segColor;
                         }
@@ -3210,22 +3219,6 @@
                                     onClick={() => setSettings({...settings, vibration: !settings.vibration})}
                                 >
                                     <div className="toggle-knob"></div>
-                                </div>
-                            </div>
-
-                            <div className="setting-row">
-                                <div className="setting-name">Snake color</div>
-                                <div className="skin-swatches">
-                                    {[...SNAKE_SKIN_IDS, ...unlockedSkins].filter((id, i, a) => a.indexOf(id) === i).map((id) => (
-                                        <button
-                                            key={id}
-                                            type="button"
-                                            className={`skin-swatch ${settings.snakeColor === id ? 'active' : ''}`}
-                                            style={id === 'rainbow' ? { background: 'linear-gradient(to right, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #8B00FF)' } : { backgroundColor: SNAKE_SKINS[id] }}
-                                            title={id}
-                                            onClick={() => setSettings({...settings, snakeColor: id})}
-                                        />
-                                    ))}
                                 </div>
                             </div>
 
