@@ -1313,7 +1313,7 @@
             { id: 3, name: 'Two Gates', targetApples: 9, star3Time: 24, star2Time: 42, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++){ if(y<8||y>11) o.push({x:5,y:y}); if(y<8||y>11) o.push({x:14,y:y}); } return o; })() },
             { id: 4, name: 'The Corridor', targetApples: 11, star3Time: 30, star2Time: 52, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++) o.push({x:6,y:y},{x:13,y:y}); return o; })() },
             { id: 5, name: 'Four Corners', targetApples: 13, star3Time: 36, star2Time: 62, obstacles: (function(){ var o=[]; for(var a=0;a<=3;a++) for(var b=0;b<=3;b++) o.push({x:a,y:b},{x:19-a,y:b},{x:a,y:19-b},{x:19-a,y:19-b}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
-            { id: 6, name: 'The Cross', targetApples: 15, star3Time: 42, star2Time: 72, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x<9||x>10) o.push({x:x,y:10}); for(var y=0;y<=19;y++) if(y<9||y>10) o.push({x:10,y:y}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
+            { id: 6, name: 'The Cross', targetApples: 15, star3Time: 42, star2Time: 72, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x<9||x>10) o.push({x:x,y:10}); for(var y=0;y<=19;y++) if(y<9||y>10) o.push({x:10,y:y}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })(), startPosition: [{x:9,y:10}], startDirection: {x:1,y:0} },
             { id: 7, name: 'The Ring', targetApples: 17, star3Time: 48, star2Time: 82, obstacles: (function(){ var o=[]; for(var x=3;x<=16;x++){ o.push({x:x,y:3}); o.push({x:x,y:16}); } for(var y=4;y<=15;y++){ o.push({x:3,y:y}); o.push({x:16,y:y}); } return o.filter(function(p){ return !(p.y===16&&p.x>=9&&p.x<=10); }); })() },
             { id: 8, name: 'Double Ring', targetApples: 20, star3Time: 58, star2Time: 98, obstacles: (function(){ var o=[]; for(var x=3;x<=16;x++){ o.push({x:x,y:3}); o.push({x:x,y:16}); } for(var y=4;y<=15;y++){ o.push({x:3,y:y}); o.push({x:16,y:y}); } o=o.filter(function(p){ return !(p.y===16&&p.x>=9&&p.x<=10); }); for(var x=6;x<=13;x++){ o.push({x:x,y:6}); o.push({x:x,y:13}); } for(var y=7;y<=12;y++){ o.push({x:6,y:y}); o.push({x:13,y:y}); } o=o.filter(function(p){ return !(p.y===6&&p.x>=9&&p.x<=10); }); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
             { id: 9, name: 'The Maze', targetApples: 23, star3Time: 68, star2Time: 115, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++) o.push({x:4,y:y},{x:15,y:y}); for(var y=0;y<=8;y++) o.push({x:7,y:y},{x:12,y:y}); for(var y=11;y<=19;y++) o.push({x:7,y:y},{x:12,y:y}); for(var x=0;x<=6;x++) o.push({x:x,y:5},{x:x,y:14}); for(var x=13;x<=19;x++) o.push({x:x,y:5},{x:x,y:14}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
@@ -3161,13 +3161,12 @@
                             <div className="levels-subtitle">Collect apples to finish. 3★ fast, 2★ medium, 1★ complete.</div>
                             <div className="levels-grid">
                                 {LEVELS.map((lev) => {
-                                    const unlocked = lev.id === 1 || (levelStars[lev.id - 1] !== undefined && levelStars[lev.id - 1] > 0);
                                     const stars = levelStars[lev.id] || 0;
                                     return (
                                         <div
                                             key={lev.id}
-                                            className={`level-card ${unlocked ? '' : 'locked'}`}
-                                            onClick={() => unlocked && startLevel(lev.id)}
+                                            className="level-card"
+                                            onClick={() => startLevel(lev.id)}
                                         >
                                             <div className="level-num">{lev.id}</div>
                                             <div className="level-name">{lev.name}</div>
