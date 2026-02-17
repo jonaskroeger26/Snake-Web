@@ -96,11 +96,6 @@
             height: 100dvh;
             overflow: hidden;
             background: var(--bg);
-            padding-top: max(24px, env(safe-area-inset-top, 0px));
-            padding-left: env(safe-area-inset-left, 0px);
-            padding-right: env(safe-area-inset-right, 0px);
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-            box-sizing: border-box;
         }
         .app-scaler {
             width: 100%;
@@ -1056,6 +1051,23 @@
 </head>
 <body>
     <div id="root"></div>
+    <script>
+        (function() {
+            var entered = false;
+            function goFullscreen() {
+                if (entered) return;
+                entered = true;
+                var el = document.documentElement;
+                if (el.requestFullscreen) el.requestFullscreen().catch(function(){});
+                else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+                else if (el.msRequestFullscreen) el.msRequestFullscreen();
+                document.removeEventListener('click', goFullscreen);
+                document.removeEventListener('touchstart', goFullscreen, { passive: true });
+            }
+            document.addEventListener('click', goFullscreen, { once: true });
+            document.addEventListener('touchstart', goFullscreen, { once: true, passive: true });
+        })();
+    </script>
     <div class="copyright-footer">© solanasnake.app</div>
 
     <script type="text/babel">
