@@ -66,6 +66,24 @@ async function init() {
       }
     };
 
+    window.__snakeWalletAdapter.signTransaction = async function (transaction) {
+      const wallet = window.__snakeWalletAdapter.connectedWallet;
+      const account = window.__snakeWalletAdapter.connectedAccount;
+      if (!wallet || !account) {
+        throw new Error('Wallet not connected. Connect first.');
+      }
+      const signFeature = wallet.features && wallet.features['solana:signTransaction'];
+      if (!signFeature || typeof signFeature.signTransaction !== 'function') {
+        throw new Error('Wallet cannot sign transactions');
+      }
+      const result = await signFeature.signTransaction({
+        account,
+        chain: account.chains && account.chains[0] ? account.chains[0] : 'solana:mainnet',
+        transaction,
+      });
+      return result;
+    };
+
     window.__snakeWalletAdapter.ready = true;
   } catch (e) {
     console.warn('[Snake] Mobile Wallet Adapter not loaded:', e.message);

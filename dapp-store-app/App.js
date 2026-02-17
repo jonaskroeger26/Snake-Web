@@ -26,7 +26,7 @@ import { StyleSheet, View, Text, Dimensions, Platform, Modal } from 'react-nativ
 import { WebView } from 'react-native-webview';
 import { useRef, useEffect } from 'react';
 import { transact } from '@solana-mobile/mobile-wallet-adapter-protocol-web3js';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import { SolanaMobileWalletAdapterErrorCode } from '@solana-mobile/mobile-wallet-adapter-protocol';
 
 const { width: W, height: H } = Dimensions.get('window');
@@ -116,6 +116,26 @@ export default function App() {
           window.__snakeWalletAdapter.connectedWallet = null;
           window.dispatchEvent(new CustomEvent('snakeMWADisconnected'));
         }
+      })();
+    `;
+    webViewRef.current?.injectJavaScript(script);
+  };
+
+  const injectSignedTransaction = (signedBase64) => {
+    const escaped = signedBase64.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const script = `
+      (function() {
+        window.dispatchEvent(new CustomEvent('snakeMWASignedTransaction', { detail: { signed: '${escaped}' } }));
+      })();
+    `;
+    webViewRef.current?.injectJavaScript(script);
+  };
+
+  const injectSignError = (errorMessage) => {
+    const escaped = (errorMessage || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    const script = `
+      (function() {
+        window.dispatchEvent(new CustomEvent('snakeMWASignError', { detail: { error: '${escaped}' } }));
       })();
     `;
     webViewRef.current?.injectJavaScript(script);
@@ -281,6 +301,47 @@ export default function App() {
         window.__snakeWalletAdapter.connectedAccount = null;
         window.__snakeWalletAdapter.connectedWallet = null;
       };
+
+      window.__snakeWalletAdapter.signTransaction = function(transaction) {
+        if (!window.ReactNativeWebView) {
+          return Promise.reject(new Error('Wallet cannot sign transactions'));
+        }
+        try {
+          var serialized = transaction.serialize({ requireAllSignatures: false });
+          var bytes = new Uint8Array(serialized);
+          var binary = '';
+          for (var i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+          var base64 = btoa(binary);
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'signTransaction', payload: base64 }));
+          return new Promise(function(resolve, reject) {
+            var handler = function(e) {
+              window.removeEventListener('snakeMWASignedTransaction', handler);
+              window.removeEventListener('snakeMWASignError', handlerErr);
+              if (e.detail && e.detail.signed) {
+                var bin = atob(e.detail.signed);
+                var buf = new Uint8Array(bin.length);
+                for (var j = 0; j < bin.length; j++) buf[j] = bin.charCodeAt(j);
+                var SignedTransaction = window.solanaWeb3 && window.solanaWeb3.Transaction;
+                if (SignedTransaction) resolve(SignedTransaction.from(buf)); else resolve(transaction);
+              }
+            };
+            var handlerErr = function(e) {
+              window.removeEventListener('snakeMWASignedTransaction', handler);
+              window.removeEventListener('snakeMWASignError', handlerErr);
+              reject(new Error(e.detail && e.detail.error ? e.detail.error : 'Sign failed'));
+            };
+            window.addEventListener('snakeMWASignedTransaction', handler);
+            window.addEventListener('snakeMWASignError', handlerErr);
+            setTimeout(function() {
+              window.removeEventListener('snakeMWASignedTransaction', handler);
+              window.removeEventListener('snakeMWASignError', handlerErr);
+              reject(new Error('Sign timeout'));
+            }, 60000);
+          });
+        } catch (err) {
+          return Promise.reject(err);
+        }
+      };
       
       console.log('[MWA Bridge] ✅ Bridge ready, adapter:', {
         ready: window.__snakeWalletAdapter.ready,
@@ -311,6 +372,33 @@ export default function App() {
           } catch (_) {}
         }
         injectDisconnected();
+      } else if (data.type === 'signTransaction' && data.payload) {
+        try {
+          const session = await getStoredSession();
+          if (!session?.authToken) {
+            injectSignError('Not connected. Connect wallet first.');
+            return;
+          }
+          const txBuffer = Buffer.from(data.payload, 'base64');
+          const tx = Transaction.from(txBuffer);
+          const signedTxs = await transact(async (wallet) => {
+            await wallet.authorize({
+              identity: APP_IDENTITY,
+              chain: 'solana:mainnet-beta',
+              auth_token: session.authToken,
+            });
+            return await wallet.signTransactions({ transactions: [tx] });
+          });
+          if (signedTxs && signedTxs[0]) {
+            const signedBuffer = Buffer.from(signedTxs[0].serialize());
+            injectSignedTransaction(signedBuffer.toString('base64'));
+          } else {
+            injectSignError('No signed transaction returned');
+          }
+        } catch (err) {
+          console.error('[Expo] signTransaction error:', err);
+          injectSignError(err?.message || 'Sign failed');
+        }
       } else {
         console.log('[Expo] Unknown message type:', data.type);
       }
