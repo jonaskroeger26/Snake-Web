@@ -793,10 +793,13 @@
             outline: none;
         }
         .locker-search::placeholder { color: var(--text-muted); }
+        .locker-sort-wrap { flex-shrink: 0; }
         .locker-sort-btn {
-            padding: 10px 16px;
+            padding: 12px 18px;
+            min-width: 120px;
+            min-height: 44px;
             border-radius: 10px;
-            font-size: 0.8rem;
+            font-size: 0.875rem;
             font-weight: 600;
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
@@ -804,6 +807,9 @@
             cursor: pointer;
             font-family: inherit;
             white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .locker-sort-btn:hover { border-color: var(--accent); color: var(--accent); }
         .locker-preview-strip {
