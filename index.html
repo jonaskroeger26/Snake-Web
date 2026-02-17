@@ -1263,8 +1263,9 @@
                 const dpr = window.devicePixelRatio || 1;
                 canvas.width = w * dpr;
                 canvas.height = h * dpr;
-                canvas.style.width = w + 'px';
-                canvas.style.height = h + 'px';
+                const scale = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scale').trim()) || 1;
+                canvas.style.width = (w / scale) + 'px';
+                canvas.style.height = (h / scale) + 'px';
                 const ctx = canvas.getContext('2d');
                 ctx.scale(dpr, dpr);
                 const bg = document.documentElement.getAttribute('data-theme') === 'light' ? '#e0e0e0' : '#1a1a1a';
@@ -1322,6 +1323,14 @@
                     ];
                     spots.forEach(([sx, sy]) => ctx.fillRect(sx, sy, spotSize, spotSize));
                 }
+                const applyScale = () => {
+                    if (!canvasRef.current) return;
+                    const s = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scale').trim()) || 1;
+                    canvasRef.current.style.width = (w / s) + 'px';
+                    canvasRef.current.style.height = (h / s) + 'px';
+                };
+                window.addEventListener('resize', applyScale);
+                return () => window.removeEventListener('resize', applyScale);
             }, [skinId, isLarge, isLocker]);
             return <canvas ref={canvasRef} style={{ borderRadius: 10, display: 'block' }} />;
         }
