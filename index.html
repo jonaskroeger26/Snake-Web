@@ -6,7 +6,7 @@
     <script src="https://unpkg.com/@onsol/tldparser@0.5.2/lib/index.iife.js"></script>
     
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -31,6 +31,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html {
+            font-size: clamp(12px, 2.5vmin, 16px);
+            -webkit-text-size-adjust: 100%;
+        }
         :root, [data-theme="dark"] {
             --bg: #000;
             --bg-secondary: #1a1a1a;
@@ -76,27 +80,52 @@
         body {
             font-family: 'Space Grotesk', monospace;
             background: var(--bg);
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow: auto;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--text);
         }
+        .app-scaler-wrap {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--bg);
+        }
+        .app-scaler {
+            width: var(--app-w, 400px);
+            height: var(--app-h, 700px);
+            max-width: 100vw;
+            max-height: 100%;
+            max-height: 100dvh;
+            transform: scale(var(--scale, 1));
+            transform-origin: center center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
         .fullscreen {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
+            min-height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
         .menu-fullscreen {
             width: 100%;
-            min-height: 100vh;
+            min-height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 32px 20px;
+            padding: clamp(12px, 4%, 32px) clamp(12px, 4%, 20px);
             background: #0a0a0a;
             background-image: radial-gradient(ellipse 100% 70% at 50% -20%, #141414 0%, transparent 50%),
                               radial-gradient(ellipse 70% 40% at 50% 110%, #1a1a1a 0%, transparent 45%);
@@ -558,9 +587,9 @@
         .mode-row select { margin-left: 12px; }
         .shop-fullscreen {
             width: 100%;
-            height: 100vh;
-            min-height: 100vh;
-            max-height: 100vh;
+            height: 100%;
+            min-height: 100%;
+            max-height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
             padding: 20px 16px 80px;
@@ -701,9 +730,9 @@
         .shop-back-wrap .menu-button.secondary { max-width: 200px; }
         .locker-fullscreen {
             width: 100%;
-            height: 100vh;
-            min-height: 100vh;
-            max-height: 100vh;
+            height: 100%;
+            min-height: 100%;
+            max-height: 100%;
             padding: 16px 16px 24px;
             background: var(--bg);
             background-image: linear-gradient(160deg, var(--bg-secondary) 0%, var(--bg) 40%, var(--bg) 100%);
@@ -1385,6 +1414,9 @@
             };
         }
 
+        const APP_DESIGN_W = 400;
+        const APP_DESIGN_H = 700;
+
         function SnakeGame() {
             const [screen, setScreen] = useState('menu');
             const [snake, setSnake] = useState(INITIAL_SNAKE);
@@ -1598,16 +1630,34 @@
             const GAME_SPEEDS = { easy: 150, medium: 120, hard: 85 };
             const SURVIVAL_TIME_PER_APPLE = 3;
 
-            // Calculate cell size based on viewport (IO mode uses VIEWPORT_CELLS for a follow-camera view)
+            // Viewport scale: fit app to any screen (e.g. Seeker)
+            useEffect(() => {
+                const updateScale = () => {
+                    const w = window.innerWidth;
+                    const h = typeof window.visualViewport !== 'undefined' ? window.visualViewport.height : window.innerHeight;
+                    const scale = Math.min(w / APP_DESIGN_W, h / APP_DESIGN_H, 1);
+                    document.documentElement.style.setProperty('--scale', scale);
+                    document.documentElement.style.setProperty('--app-w', APP_DESIGN_W + 'px');
+                    document.documentElement.style.setProperty('--app-h', APP_DESIGN_H + 'px');
+                };
+                updateScale();
+                window.addEventListener('resize', updateScale);
+                if (window.visualViewport) window.visualViewport.addEventListener('resize', updateScale);
+                return () => {
+                    window.removeEventListener('resize', updateScale);
+                    if (window.visualViewport) window.visualViewport.removeEventListener('resize', updateScale);
+                };
+            }, []);
+
+            // Calculate cell size to fit inside design box (scaled app)
             useEffect(() => {
                 const calculateCellSize = () => {
-                    const availableHeight = window.innerHeight - 80 - 80;
-                    const availableWidth = window.innerWidth - 40;
-                    const maxDimension = Math.min(availableHeight, availableWidth);
+                    const gameAreaW = APP_DESIGN_W - 40;
+                    const gameAreaH = APP_DESIGN_H - 160;
                     const cells = (screen === 'playing' && settings.gameMode === 'io') ? VIEWPORT_CELLS : GRID_SIZE;
-                    const calculatedSize = Math.floor(maxDimension / cells);
-                    const minSize = 10;
-                    const maxSize = 40;
+                    const calculatedSize = Math.floor(Math.min(gameAreaW, gameAreaH) / cells);
+                    const minSize = 8;
+                    const maxSize = 24;
                     const clampedSize = Math.max(minSize, Math.min(maxSize, calculatedSize));
                     setCellSize(clampedSize);
                 };
@@ -2781,6 +2831,8 @@
 
             if (screen === 'menu') {
                 return (
+                    <div className="app-scaler-wrap">
+                        <div className="app-scaler">
                     <div className="fullscreen menu-fullscreen">
                         {dailyRewardJustClaimed && (
                             <div className="daily-reward-toast" role="alert">
@@ -2847,6 +2899,8 @@
                             </div>
                         </div>
                     </div>
+                        </div>
+                    </div>
                 );
             }
 
@@ -2871,6 +2925,8 @@
                 const rarityInfo = SHOP_RARITIES[selectedRarity] || SHOP_RARITIES.common;
                 const isEquipped = settings.snakeColor === selectedLockerSkin;
                 return (
+                    <div className="app-scaler-wrap">
+                        <div className="app-scaler">
                     <div className="fullscreen locker-fullscreen">
                         <div className="locker-container">
                             <header className="locker-header">
@@ -2940,6 +2996,8 @@
                             </footer>
                         </div>
                     </div>
+                        </div>
+                    </div>
                 );
             }
 
@@ -2954,6 +3012,8 @@
 
             if (screen === 'playSelect') {
                 return (
+                    <div className="app-scaler-wrap">
+                        <div className="app-scaler">
                     <div className="fullscreen">
                         <div className="play-select-container">
                             <div className="play-select-header">
@@ -2988,11 +3048,15 @@
                             </button>
                         </div>
                     </div>
+                        </div>
+                    </div>
                 );
             }
 
             if (screen === 'shop') {
                 return (
+                    <div className="app-scaler-wrap">
+                        <div className="app-scaler">
                     <div className="fullscreen shop-fullscreen">
                         <div className="shop-container">
                             <div className="shop-header">
@@ -3150,11 +3214,15 @@
                             </div>
                         </div>
                     </div>
+                        </div>
+                    </div>
                 );
             }
 
             if (screen === 'levels') {
                 return (
+                    <div className="app-scaler-wrap">
+                        <div className="app-scaler">
                     <div className="fullscreen">
                         <div className="levels-container">
                             <div className="levels-title">LEVELS</div>
@@ -3182,11 +3250,15 @@
                             </button>
                         </div>
                     </div>
+                        </div>
+                    </div>
                 );
             }
 
             if (screen === 'settings') {
                 return (
+                    <div className="app-scaler-wrap">
+                        <div className="app-scaler">
                     <div className="fullscreen">
                         <div className="settings-container">
                             <div className="settings-title">SETTINGS</div>
@@ -3228,11 +3300,15 @@
                             </button>
                         </div>
                     </div>
+                        </div>
+                    </div>
                 );
             }
 
             if (screen === 'leaderboard') {
                 return (
+                    <div className="app-scaler-wrap">
+                        <div className="app-scaler">
                     <div className="fullscreen">
                         <div className="leaderboard-container">
                             <div className="leaderboard-title">LEADERBOARD</div>
@@ -3292,10 +3368,14 @@
                             </button>
                         </div>
                     </div>
+                        </div>
+                    </div>
                 );
             }
 
             return (
+                <div className="app-scaler-wrap">
+                    <div className="app-scaler">
                 <div className="fullscreen">
                     <div className="game-screen">
                         <div className="game-hud">
@@ -3458,6 +3538,8 @@
                                 </div>
                             </div>
                         )}
+                    </div>
+                </div>
                     </div>
                 </div>
             );
