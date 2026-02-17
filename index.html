@@ -1309,7 +1309,7 @@
         function _obs() { var a=[]; for (var i=0;i<arguments.length;i+=2) a.push({x:arguments[i],y:arguments[i+1]}); return a; }
         const LEVELS = [
             { id: 1, name: 'First Bite', targetApples: 5, star3Time: 12, star2Time: 22, obstacles: [] },
-            { id: 2, name: 'The Wall', targetApples: 7, star3Time: 18, star2Time: 32, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x<9||x>10) o.push({x:x,y:10}); return o; })() },
+            { id: 2, name: 'The Wall', targetApples: 7, star3Time: 18, star2Time: 32, obstacles: (function(){ var o=[]; for(var x=0;x<=19;x++) if(x<9||x>10) o.push({x:x,y:10}); return o; })(), startPosition: [{x:9,y:10}], startDirection: {x:1,y:0} },
             { id: 3, name: 'Two Gates', targetApples: 9, star3Time: 24, star2Time: 42, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++){ if(y<8||y>11) o.push({x:5,y:y}); if(y<8||y>11) o.push({x:14,y:y}); } return o; })() },
             { id: 4, name: 'The Corridor', targetApples: 11, star3Time: 30, star2Time: 52, obstacles: (function(){ var o=[]; for(var y=0;y<=19;y++) o.push({x:6,y:y},{x:13,y:y}); return o; })() },
             { id: 5, name: 'Four Corners', targetApples: 13, star3Time: 36, star2Time: 62, obstacles: (function(){ var o=[]; for(var a=0;a<=3;a++) for(var b=0;b<=3;b++) o.push({x:a,y:b},{x:19-a,y:b},{x:a,y:19-b},{x:19-a,y:19-b}); return o.filter(function(p,i,a){ return a.findIndex(function(q){ return q.x===p.x&&q.y===p.y; })===i; }); })() },
@@ -2000,12 +2000,14 @@
                 gameSessionRef.current = { gameMode: 'classic', difficulty: settings.difficulty, levelId: id };
                 setLevelId(id);
                 levelStartTimeRef.current = Date.now();
-                setSnake(INITIAL_SNAKE);
-                snakeRef.current = INITIAL_SNAKE;
-                lastHeadRef.current = { x: INITIAL_SNAKE[0].x, y: INITIAL_SNAKE[0].y };
+                const startPos = level.startPosition || INITIAL_SNAKE;
+                const startDir = level.startDirection || INITIAL_DIRECTION;
+                setSnake(startPos);
+                snakeRef.current = startPos;
+                lastHeadRef.current = { x: startPos[0].x, y: startPos[0].y };
                 lastTickRef.current = Date.now();
-                setDirection(INITIAL_DIRECTION);
-                directionRef.current = INITIAL_DIRECTION;
+                setDirection(startDir);
+                directionRef.current = startDir;
                 setObstacles(level.obstacles || []);
                 setFoodEaten(0);
                 setSpeedBoost(false);
@@ -2015,7 +2017,7 @@
                     let newFood;
                     let attempts = 0;
                     const obs = level.obstacles || [];
-                    const snakePos = INITIAL_SNAKE;
+                    const snakePos = startPos;
                     do {
                         newFood = { x: Math.floor(Math.random() * GRID_SIZE), y: Math.floor(Math.random() * GRID_SIZE) };
                         attempts++;
