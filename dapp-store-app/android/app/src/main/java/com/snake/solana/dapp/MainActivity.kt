@@ -3,6 +3,10 @@ package com.snake.solana.dapp
 import android.os.Build
 import android.os.Bundle
 
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -17,6 +21,21 @@ class MainActivity : ReactActivity() {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null)
+    enableImmersiveFullscreen()
+  }
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+    if (hasFocus) enableImmersiveFullscreen()
+  }
+
+  /** Hide status bar and nav bar; they reappear when user swipes from edge (like Clash Royale). */
+  private fun enableImmersiveFullscreen() {
+    WindowCompat.setDecorFitsSystemWindows(window, false)
+    WindowCompat.getInsetsController(window, window.decorView)?.apply {
+      hide(WindowInsetsCompat.Type.systemBars())
+      systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+    }
   }
 
   /**
