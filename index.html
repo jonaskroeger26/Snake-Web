@@ -1307,10 +1307,12 @@
         const IO_SNAKE_COLORS = ['#14F195', '#EF4444', '#3B82F6', '#8B5CF6', '#F59E0B', '#EC4899'];
         const IO_DIRS = [{ x: 0, y: -1 }, { x: 0, y: 1 }, { x: -1, y: 0 }, { x: 1, y: 0 }];
         const IO_FREE_SPEED = 5;
-        const IO_EAT_RADIUS = 0.6;
-        const IO_COLLIDE_RADIUS = 0.35;
-        const IO_SEGMENT_RADIUS = 0.35;
-        const IO_SELF_COLLIDE_MIN_DIST = 3.0;
+        const IO_FIXED_DT = 1 / 60;
+        const IO_MAX_STEPS_PER_FRAME = 3;
+        const IO_EAT_RADIUS = 0.7;
+        const IO_COLLIDE_RADIUS = 0.4;
+        const IO_SEGMENT_RADIUS = 0.4;
+        const IO_SELF_COLLIDE_MIN_DIST = 2.5;
         const SNAKE_SKINS = {
             blue: '#3B82F6',
             orange: '#F97316',
@@ -1777,6 +1779,8 @@
             const ioRafRef = useRef(null);
             const ioGameStartRef = useRef(0);
             const ioNextAiIdRef = useRef(IO_AI_COUNT + 1);
+            const ioAccumRef = useRef(0);
+            const ioFrameCountRef = useRef(0);
 
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
@@ -2065,15 +2069,28 @@
 
             const getInitialIoState = useCallback((playerDisplayName) => {
                 const half = GRID_SIZE_IO / 2;
-                const positions = [{ x: half, y: half }];
+                const positions = [{ x: half + 0.5, y: half + 0.5 }];
                 const cols = 5;
                 const rows = Math.ceil(IO_AI_COUNT / cols);
-                const step = 14;
-                const start = 8;
+                const step = 16;
+                const start = 6;
                 for (let j = 0; j < rows; j++) {
                     for (let k = 0; k < cols && positions.length < 1 + IO_AI_COUNT; k++) {
-                        positions.push({ x: start + k * step + (j % 2) * 4, y: start + j * step });
+                        const x = start + k * step + (j % 2) * 5;
+                        const y = start + j * step;
+                        if (Math.hypot(x - half, y - half) < 12) continue;
+                        positions.push({ x: x + 0.5, y: y + 0.5 });
                     }
+                }
+                const occupied = new Set(positions.map(p => Math.floor(p.x) + ',' + Math.floor(p.y)));
+                while (positions.length < 1 + IO_AI_COUNT) {
+                    const x = Math.floor(Math.random() * (GRID_SIZE_IO - 8)) + 4 + 0.5;
+                    const y = Math.floor(Math.random() * (GRID_SIZE_IO - 8)) + 4 + 0.5;
+                    if (Math.hypot(x - half, y - half) < 10) continue;
+                    const key = Math.floor(x) + ',' + Math.floor(y);
+                    if (occupied.has(key)) continue;
+                    occupied.add(key);
+                    positions.push({ x, y });
                 }
                 const snakes = positions.slice(0, 1 + IO_AI_COUNT).map((pos, i) => {
                     const toCenterX = half - pos.x, toCenterY = half - pos.y;
@@ -2398,21 +2415,35 @@
                 const playerSnake = snakes.find(s => s.id === 'player');
                 if (!playerSnake || playerSnake.dead) return;
                 if (!playerSnake.body || playerSnake.body.length === 0) return;
+                const head = playerSnake.body[0];
+                if (head == null || typeof head.x !== 'number' || typeof head.y !== 'number') return;
 
-                const dt = Math.max(0, Math.min(0.05, (now - ioLastFrameRef.current) / 1000));
+                let accum = ioAccumRef.current + (now - ioLastFrameRef.current) / 1000;
                 ioLastFrameRef.current = now;
-                const gracePeriod = 1200;
+                const gracePeriod = 1500;
                 const playerGrace = (now - ioGameStartRef.current) < gracePeriod;
 
                 const dist = (a, b) => Math.hypot(b.x - a.x, b.y - a.y);
+                const maxSteps = IO_MAX_STEPS_PER_FRAME;
+                let steps = 0;
+                let lastSnakes = snakes;
+                let lastFood = foodList;
+                let lastUpdatedSnakes = snakes;
+
+                while (accum >= IO_FIXED_DT && steps < maxSteps) {
+                    accum -= IO_FIXED_DT;
+                    steps++;
+                    const dt = IO_FIXED_DT;
+
                 const allBodyPoints = [];
-                snakes.forEach(s => {
-                    if (!s.dead) s.body.forEach((p, i) => allBodyPoints.push({ ...p, snakeId: s.id, segIdx: i, isTail: i === s.body.length - 1 }));
+                lastSnakes.forEach(s => {
+                    if (!s.dead && s.body) s.body.forEach((p, i) => allBodyPoints.push({ ...p, snakeId: s.id, segIdx: i, isTail: i === s.body.length - 1 }));
                 });
 
-                const newSnakes = snakes.map(s => {
-                    if (s.dead) return s;
+                const newSnakes = lastSnakes.map(s => {
+                    if (s.dead || !s.body || s.body.length === 0) return s;
                     const head = s.body[0];
+                    if (head == null || typeof head.x !== 'number' || typeof head.y !== 'number') return s;
                     let dx, dy;
                     if (s.id === 'player') {
                         dx = ioDirRef.current.x;
@@ -2423,7 +2454,7 @@
                         const curDir = isCurValid ? cur : { x: 1, y: 0 };
                         let nearestApple = null;
                         let nearestAppleDist = 1e9;
-                        foodList.forEach(f => {
+                        lastFood.forEach(f => {
                             const d = dist(head, f);
                             if (d < nearestAppleDist) { nearestAppleDist = d; nearestApple = f; }
                         });
@@ -2470,7 +2501,7 @@
                                 const next = { x: head.x + d.x, y: head.y + d.y };
                                 let score = 0;
                                 if (nearestApple) score += -dist(next, nearestApple) * 80;
-                                snakes.forEach(other => {
+                                lastSnakes.forEach(other => {
                                     if (other.dead || other.id === s.id || !other.body || other.body.length < 2) return;
                                     for (let i = 1; i < other.body.length; i++) {
                                         const seg = other.body[i];
@@ -2558,13 +2589,13 @@
                 });
 
                 const eatenIndices = new Set();
-                let newFood = [...foodList];
+                let newFood = [...lastFood];
                 const updatedSnakes = newSnakes.map(s => {
                     if (s.dead || deaths.has(s.id)) return { ...s, dead: s.dead || deaths.has(s.id) };
                     const h = s.body[0];
                     let bodyLength = s.bodyLength;
                     let ateThisStep = false;
-                    const idx = foodList.findIndex(f => dist(h, f) < IO_EAT_RADIUS);
+                    const idx = lastFood.findIndex(f => dist(h, f) < IO_EAT_RADIUS);
                     if (idx >= 0 && !eatenIndices.has(idx)) {
                         eatenIndices.add(idx);
                         if (s.id === 'player') setAppleCoins(c => c + 1);
@@ -2580,6 +2611,7 @@
                     return { ...s, bodyLength, ateThisStep };
                 }).map(s => deaths.has(s.id) ? { ...s, dead: true } : s);
 
+                    lastUpdatedSnakes = updatedSnakes;
                 let finalSnakes = updatedSnakes.filter(s => !s.dead);
                 const liveAICount = finalSnakes.filter(s => s.id !== 'player').length;
                 const toSpawn = Math.max(0, IO_AI_COUNT - liveAICount);
@@ -2635,12 +2667,20 @@
                     }
                 });
 
-                ioSnakesRef.current = finalSnakes;
-                ioFoodRef.current = newFood;
-                setIoSnakes(finalSnakes);
-                setIoFood(newFood);
-                const playerAlive = finalSnakes.find(s => s.id === 'player');
-                const playerAny = updatedSnakes.find(s => s.id === 'player');
+                lastSnakes = finalSnakes;
+                    lastFood = newFood;
+                }
+
+                ioAccumRef.current = accum;
+                ioSnakesRef.current = lastSnakes;
+                ioFoodRef.current = lastFood;
+                ioFrameCountRef.current++;
+                if (ioFrameCountRef.current % 2 === 0) {
+                    setIoSnakes(lastSnakes);
+                    setIoFood(lastFood);
+                }
+                const playerAlive = lastSnakes.find(s => s.id === 'player');
+                const playerAny = lastSnakes.find(s => s.id === 'player') || lastUpdatedSnakes.find(s => s.id === 'player');
                 if (playerAlive) {
                     snakeRef.current = playerAlive.body;
                     lastHeadRef.current = playerAlive.body[0];
@@ -2649,8 +2689,8 @@
                 if (playerAny && playerAny.dead) {
                     if (ioRafRef.current) cancelAnimationFrame(ioRafRef.current);
                     ioRafRef.current = null;
-                    const deadOnly = updatedSnakes.filter(s => s.dead);
-                    const leaderboard = [...finalSnakes, ...deadOnly]
+                    const deadOnly = lastUpdatedSnakes.filter(s => s.dead);
+                    const leaderboard = [...lastSnakes, ...deadOnly]
                         .sort((a, b) => b.bodyLength - a.bodyLength)
                         .map(s => ({ name: s.name, length: Math.round(s.bodyLength), isPlayer: s.id === 'player', dead: s.dead }));
                     setIoLeaderboard(leaderboard);
