@@ -725,12 +725,13 @@
             height: 100%;
             min-height: 100%;
             max-height: 100%;
-            padding: 16px 16px 24px;
+            padding: max(44px, env(safe-area-inset-top, 0px)) 16px 48px 16px;
             background: var(--bg);
             background-image: linear-gradient(160deg, var(--bg-secondary) 0%, var(--bg) 40%, var(--bg) 100%);
             box-sizing: border-box;
             overflow-y: auto;
             overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
         .locker-container { width: 100%; max-width: 640px; margin: 0 auto; min-height: 0; overflow-x: hidden; }
         .locker-header { margin-bottom: 12px; }
@@ -773,7 +774,7 @@
             align-items: stretch;
             margin-bottom: 12px;
             position: sticky;
-            top: 0;
+            top: max(44px, env(safe-area-inset-top, 0px));
             z-index: 10;
             background: var(--bg);
             padding: 2px 0 10px;
