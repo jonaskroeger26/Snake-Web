@@ -2220,7 +2220,7 @@
                             lastTurnTime: 0
                         };
                     });
-                    if (Array.isArray(state.food) && state.food.length > 0) {
+                    if (Array.isArray(state.food)) {
                         ioFoodRef.current = state.food.map(f => ({ x: Number(f.x), y: Number(f.y) }));
                     }
                     ioSnakesPrevRef.current = ioSnakesRef.current;

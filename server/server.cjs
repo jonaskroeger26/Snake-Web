@@ -134,6 +134,15 @@ function trimBodyForPayload(body) {
 }
 
 setInterval(() => {
+  // Guarantee food is never empty so clients always see apples (e.g. after deploy without startup seed)
+  if (state.food.length === 0) {
+    for (let i = 0; i < NUM_FOOD; i++) {
+      state.food.push({
+        x: randomInt(1, GRID_SIZE - 1) + 0.5,
+        y: randomInt(1, GRID_SIZE - 1) + 0.5,
+      });
+    }
+  }
   const snakes = Object.values(state.snakes);
   if (snakes.length === 0) {
     const occupied = getOccupiedCells([], state.food);
