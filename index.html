@@ -38,6 +38,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        button { outline: none; -webkit-tap-highlight-color: transparent; }
         /* Seeker target: 2670×1200 (~460 PPI). Use dvh so height matches visible area in WebView. */
         html {
             font-size: clamp(14px, 2.5vmin, 16px);
@@ -246,7 +247,10 @@
             font-family: 'Space Grotesk', sans-serif;
             letter-spacing: 0.03em;
             box-shadow: 0 2px 16px rgba(20, 241, 149, 0.35);
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
+        .menu-card .menu-button:focus-visible { box-shadow: 0 0 0 2px #14F195; }
         .menu-card .menu-button:hover {
             transform: translateY(-1px);
             box-shadow: 0 6px 24px rgba(20, 241, 149, 0.4);
@@ -283,6 +287,8 @@
             color: #111;
             border-color: #e0e0e0;
         }
+        .menu-card .menu-button.secondary:focus,
+        .menu-card .menu-button.secondary:focus-visible { outline: none; -webkit-tap-highlight-color: transparent; box-shadow: 0 0 0 2px rgba(20, 241, 149, 0.5); }
         .menu-card .menu-button.secondary:hover {
             background: #1f1f1f;
             border-color: #555;
@@ -423,6 +429,9 @@
             border: 1px solid #2a2a2a;
         }
         .overlay-button.secondary:hover { background: var(--bg-tertiary); }
+        .overlay-button:focus,
+        .overlay-button:focus-visible { outline: none; -webkit-tap-highlight-color: transparent; }
+        .overlay-button:focus-visible { box-shadow: 0 0 0 2px rgba(20, 241, 149, 0.5); }
         .settings-container {
             width: 100%;
             max-width: 500px;
@@ -972,8 +981,11 @@
             background: var(--bg-tertiary);
             color: var(--text-muted);
             transition: all 0.2s;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .locker-footer-back:hover { border-color: var(--accent); color: var(--accent); }
+        .locker-footer-back:focus-visible { box-shadow: 0 0 0 2px rgba(20, 241, 149, 0.5); }
         @media (min-width: 480px) {
             .locker-fullscreen { padding: max(120px, calc(env(safe-area-inset-top, 0px) + 56px)) 20px 28px 20px; }
             .locker-header { margin-bottom: 14px; }
