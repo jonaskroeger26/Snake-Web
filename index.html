@@ -1067,10 +1067,101 @@
             z-index: 9999;
             pointer-events: none;
         }
+        #snake-loading {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            box-sizing: border-box;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        #snake-loading.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .snake-loading-logo {
+            font-size: clamp(2.5rem, 12vw, 4rem);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        .snake-loading-logo span { color: #14F195; }
+        .snake-loading-tagline {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #666;
+            margin-bottom: 32px;
+        }
+        .snake-loading-message {
+            font-size: 0.95rem;
+            color: #999;
+            margin-bottom: 16px;
+        }
+        .snake-loading-bar-wrap {
+            width: 100%;
+            max-width: 280px;
+            height: 6px;
+            background: #1a1a1a;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+        .snake-loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #14F195, #0cb864);
+            border-radius: 999px;
+            transition: width 0.15s ease-out;
+        }
     </style>
 </head>
 <body>
+    <div id="snake-loading" aria-live="polite" aria-busy="true">
+        <div class="snake-loading-logo">SNA<span>K</span>E</div>
+        <div class="snake-loading-tagline">Solana</div>
+        <p class="snake-loading-message">Getting everything ready</p>
+        <div class="snake-loading-bar-wrap">
+            <div class="snake-loading-bar" id="snake-loading-bar"></div>
+        </div>
+    </div>
     <div id="root"></div>
+    <script>
+        (function() {
+            var loadingEl = document.getElementById('snake-loading');
+            var barEl = document.getElementById('snake-loading-bar');
+            var progress = 0;
+            var appReady = false;
+            var hideCalled = false;
+            function tryHide() {
+                if (hideCalled) return;
+                if (progress < 100 || !appReady) return;
+                hideCalled = true;
+                if (loadingEl) loadingEl.classList.add('hidden');
+                setTimeout(function() {
+                    if (loadingEl && loadingEl.parentNode) loadingEl.parentNode.removeChild(loadingEl);
+                }, 450);
+            }
+            function setAppReady() { appReady = true; tryHide(); }
+            window.__snakeHideLoading = setAppReady;
+            if (barEl) {
+                var start = Date.now();
+                var duration = 2200;
+                function tick() {
+                    var elapsed = Date.now() - start;
+                    progress = Math.min(100, (elapsed / duration) * 100);
+                    barEl.style.width = progress + '%';
+                    if (progress >= 100) tryHide();
+                    else requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            }
+            setTimeout(function() { if (!hideCalled) { hideCalled = true; appReady = true; if (loadingEl) loadingEl.classList.add('hidden'); setTimeout(function() { if (loadingEl && loadingEl.parentNode) loadingEl.parentNode.removeChild(loadingEl); }, 450); } }, 6000);
+        })();
+    </script>
     <script>
         (function() {
             var entered = false;
@@ -3612,8 +3703,10 @@
             try {
                 ReactDOM.render(<SnakeGame />, root);
                 console.log('✅ App rendered successfully');
+                if (typeof window.__snakeHideLoading === 'function') window.__snakeHideLoading();
             } catch (error) {
                 console.error('❌ Error rendering app:', error);
+                if (typeof window.__snakeHideLoading === 'function') window.__snakeHideLoading();
                 root.innerHTML = '<div style="color: white; padding: 20px; text-align: center;">Error: ' + error.message + '<br>Please check the console for details.</div>';
             }
         }
