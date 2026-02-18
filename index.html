@@ -1798,6 +1798,9 @@
             const ioOnlineGameOverDoneRef = useRef(false);
             const ioStateRafScheduledRef = useRef(false);
             const ioGridSizeRef = useRef(GRID_SIZE_IO);
+            const ioSnakesPrevRef = useRef(null);
+            const ioStateTimeRef = useRef(Date.now());
+            const PVP_TICK_MS = 180;
 
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
@@ -2217,7 +2220,9 @@
                         };
                     });
                     const foodList = Array.isArray(state.food) ? state.food.map(f => ({ x: Number(f.x), y: Number(f.y) })) : [];
+                    ioSnakesPrevRef.current = ioSnakesRef.current;
                     ioSnakesRef.current = snakes;
+                    ioStateTimeRef.current = Date.now();
                     ioFoodRef.current = foodList;
 
                     const player = snakes.find(s => s.id === 'player');
@@ -2999,14 +3004,23 @@ bodyLength += 1;
                     const ioSnakesNow = ioSnakesRef.current;
                     const ioFoodNow = ioFoodRef.current;
                     if (settings.gameMode === 'io' && ioSnakesNow && ioSnakesNow.length > 0) {
+                        const now = Date.now();
+                        const stateTime = ioStateTimeRef.current;
+                        const alpha = Math.min(1, Math.max(0, (now - stateTime) / PVP_TICK_MS));
+                        const prevSnakes = ioSnakesPrevRef.current;
                         const player = ioSnakesNow.find(s => s.id === 'player');
                         const half = VIEWPORT_CELLS / 2;
                         const gridSize = ioGridSizeRef.current || GRID_SIZE_IO;
                         const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
                         let camX = half, camY = half;
                         if (player && !player.dead && player.body && player.body[0]) {
-                            camX = clamp(player.body[0].x, half, gridSize - 1 - half);
-                            camY = clamp(player.body[0].y, half, gridSize - 1 - half);
+                            const prevPlayer = prevSnakes && prevSnakes.find(function(p) { return p.id === 'player'; });
+                            const pHead = prevPlayer && prevPlayer.body && prevPlayer.body[0];
+                            const curHead = player.body[0];
+                            const smoothX = pHead ? pHead.x * (1 - alpha) + curHead.x * alpha : curHead.x;
+                            const smoothY = pHead ? pHead.y * (1 - alpha) + curHead.y * alpha : curHead.y;
+                            camX = clamp(smoothX, half, gridSize - 1 - half);
+                            camY = clamp(smoothY, half, gridSize - 1 - half);
                         }
                         ctx.save();
                         ctx.translate(-camX * cellSize + canvas.width / 2, -camY * cellSize + canvas.height / 2);
@@ -3023,8 +3037,14 @@ bodyLength += 1;
                         const segW = cellSize - 2;
                         ioSnakesNow.forEach(function(s) {
                             if (s.dead || !s.body || !s.body.length) return;
+                            const prevS = prevSnakes && prevSnakes.find(function(p) { return p.id === s.id; });
+                            const pHead = prevS && prevS.body && prevS.body[0];
+                            const curHead = s.body[0];
+                            const headX = pHead ? pHead.x * (1 - alpha) + curHead.x * alpha : curHead.x;
+                            const headY = pHead ? pHead.y * (1 - alpha) + curHead.y * alpha : curHead.y;
+                            const bodyToDraw = [{ x: headX, y: headY }, ...s.body.slice(1)];
                             const color = IO_SNAKE_COLORS[s.colorIndex % IO_SNAKE_COLORS.length];
-                            s.body.forEach(function(seg) {
+                            bodyToDraw.forEach(function(seg) {
                                 const x = Math.floor(seg.x * cellSize) + 1;
                                 const y = Math.floor(seg.y * cellSize) + 1;
                                 ctx.fillStyle = color;
@@ -3035,9 +3055,13 @@ bodyLength += 1;
                         const nameYOffset = segW + 2;
                         ioSnakesNow.forEach(function(s) {
                             if (s.dead || !s.body || !s.body.length) return;
-                            const head = s.body[0];
-                            const hx = head.x * cellSize + cellSize / 2;
-                            const hy = head.y * cellSize;
+                            const prevS = prevSnakes && prevSnakes.find(function(p) { return p.id === s.id; });
+                            const pHead = prevS && prevS.body && prevS.body[0];
+                            const curHead = s.body[0];
+                            const headX = pHead ? pHead.x * (1 - alpha) + curHead.x * alpha : curHead.x;
+                            const headY = pHead ? pHead.y * (1 - alpha) + curHead.y * alpha : curHead.y;
+                            const hx = headX * cellSize + cellSize / 2;
+                            const hy = headY * cellSize;
                             const label = (s.name || 'Snake').slice(0, 20);
                             ctx.font = nameFont;
                             ctx.textAlign = 'center';
