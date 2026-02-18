@@ -2219,11 +2219,11 @@
                             lastTurnTime: 0
                         };
                     });
-                    const foodList = Array.isArray(state.food) ? state.food.map(f => ({ x: Number(f.x), y: Number(f.y) })) : [];
+                    const foodList = Array.isArray(state.food) ? state.food.map(f => ({ x: Number(f.x), y: Number(f.y) })) : null;
                     ioSnakesPrevRef.current = ioSnakesRef.current;
                     ioSnakesRef.current = snakes;
                     ioStateTimeRef.current = Date.now();
-                    ioFoodRef.current = foodList;
+                    if (foodList !== null) ioFoodRef.current = foodList;
 
                     const player = snakes.find(s => s.id === 'player');
                     if (player && player.body && player.body.length > 0) {
