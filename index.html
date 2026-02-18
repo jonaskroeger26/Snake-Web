@@ -1797,6 +1797,7 @@
             const ioSocketRef = useRef(null);
             const ioOnlineGameOverDoneRef = useRef(false);
             const ioStateRafScheduledRef = useRef(false);
+            const ioGridSizeRef = useRef(GRID_SIZE_IO);
 
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
@@ -2199,6 +2200,7 @@
                 });
                 socket.on('state', (state) => {
                     if (!state || !Array.isArray(state.snakes)) return;
+                    if (state.gridSize != null) ioGridSizeRef.current = state.gridSize;
                     const myId = ioSocketRef.current?.id;
                     const snakes = state.snakes.map((s, idx) => {
                         const isMe = myId && s.id === myId;
@@ -2294,6 +2296,7 @@
                         setScreen('playing');
                         return;
                     }
+                    ioGridSizeRef.current = GRID_SIZE_IO;
                     ioGameStartRef.current = performance.now();
                     ioNextAiIdRef.current = IO_AI_COUNT + 1;
                     const playerDisplayName = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
@@ -2998,17 +3001,20 @@ bodyLength += 1;
                     if (settings.gameMode === 'io' && ioSnakesNow && ioSnakesNow.length > 0) {
                         const player = ioSnakesNow.find(s => s.id === 'player');
                         const half = VIEWPORT_CELLS / 2;
+                        const gridSize = ioGridSizeRef.current || GRID_SIZE_IO;
                         const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
                         let camX = half, camY = half;
                         if (player && !player.dead && player.body && player.body[0]) {
-                            camX = clamp(player.body[0].x, half, GRID_SIZE_IO - 1 - half);
-                            camY = clamp(player.body[0].y, half, GRID_SIZE_IO - 1 - half);
+                            camX = clamp(player.body[0].x, half, gridSize - 1 - half);
+                            camY = clamp(player.body[0].y, half, gridSize - 1 - half);
                         }
                         ctx.save();
                         ctx.translate(-camX * cellSize + canvas.width / 2, -camY * cellSize + canvas.height / 2);
                         (ioFoodNow || []).forEach(function(f) {
-                            const cx = f.x * cellSize + cellSize / 2;
-                            const cy = f.y * cellSize + cellSize / 2;
+                            const cellX = Math.floor(Number(f.x));
+                            const cellY = Math.floor(Number(f.y));
+                            const cx = (cellX + 0.5) * cellSize;
+                            const cy = (cellY + 0.5) * cellSize;
                             ctx.textAlign = 'center';
                             ctx.textBaseline = 'middle';
                             ctx.font = (cellSize - 2) + 'px sans-serif';

@@ -11,9 +11,9 @@ const io = new Server(server, {
   transports: ['websocket', 'polling'],
 });
 
-const GRID_SIZE = 80;
+const GRID_SIZE = 600;
 const TICK_MS = 180;
-const NUM_FOOD = 45;
+const NUM_FOOD = 150;
 const INITIAL_LENGTH = 5;
 const MAX_BODY_PAYLOAD = 80;
 
@@ -39,9 +39,10 @@ function getOccupiedCells(snakes, food) {
 function spawnSnake(socketId) {
   const snakes = Object.values(state.snakes);
   const occupied = getOccupiedCells(snakes, state.food);
-  for (let tries = 0; tries < 80; tries++) {
-    const x = randomInt(8, GRID_SIZE - 9);
-    const y = randomInt(8, GRID_SIZE - 9);
+  const margin = Math.min(80, Math.floor(GRID_SIZE / 8));
+  for (let tries = 0; tries < 120; tries++) {
+    const x = randomInt(margin, GRID_SIZE - margin - 1);
+    const y = randomInt(margin, GRID_SIZE - margin - 1);
     const key = `${x},${y}`;
     if (!occupied.has(key)) {
       state.snakes[socketId] = {
@@ -58,10 +59,11 @@ function spawnSnake(socketId) {
       return;
     }
   }
+  const fallback = Math.floor(GRID_SIZE / 2) - 5;
   state.snakes[socketId] = {
     id: socketId,
     name: 'Player',
-    body: [{ x: 10, y: 10 }],
+    body: [{ x: fallback, y: fallback }],
     length: INITIAL_LENGTH,
     dx: 1,
     dy: 0,
