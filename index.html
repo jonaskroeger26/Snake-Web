@@ -28,6 +28,8 @@
     <script defer src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script defer src="https://unpkg.com/@bonfida/spl-name-service@2.1.0/dist/index.umd.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Socket.io client for online PvP (local dev server on :4000 by default) -->
+    <script defer src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script defer src="mwa-bundle.js"></script>
     <script>
         if (typeof window.__snakeWalletAdapter === 'undefined') {
@@ -1293,6 +1295,10 @@
         
         // Initialize Supabase client
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Online PvP server URL. Replace with your deployed server (Railway, Render, etc.). See server/README.md.
+        // On localhost the client still uses http://localhost:4000 for dev.
+        const PVP_SERVER_URL = (typeof window !== 'undefined' && window.__SNAKE_PVP_SERVER__) ? window.__SNAKE_PVP_SERVER__ : 'https://snake-pvp-server.onrender.com';
         
         const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 
@@ -1782,6 +1788,14 @@
             const ioAccumRef = useRef(0);
             const ioFrameCountRef = useRef(0);
 
+            // Online PvP (uses PVP_SERVER_URL when not on localhost)
+            const [ioOnline, setIoOnline] = useState(false);
+            const [ioRoomCode, setIoRoomCode] = useState('');
+            const [ioIsHost, setIoIsHost] = useState(false);
+            const [ioStatus, setIoStatus] = useState('offline'); // offline | connecting | waiting | playing | error
+            const [ioError, setIoError] = useState(null);
+            const ioSocketRef = useRef(null);
+
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
             const directionRef = useRef(INITIAL_DIRECTION);
@@ -2161,6 +2175,96 @@
                 vibrate(10);
             };
 
+            const getIoSocket = useCallback(() => {
+                if (ioSocketRef.current) return ioSocketRef.current;
+                if (typeof window === 'undefined' || typeof window.io === 'undefined') {
+                    alert('Online PvP needs Socket.io client. It is only available when loaded in a browser.');
+                    return null;
+                }
+                const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+                const url = isLocal ? 'http://localhost:4000' : (typeof PVP_SERVER_URL !== 'undefined' ? PVP_SERVER_URL : undefined);
+                const socket = window.io(url, { transports: ['websocket', 'polling'] });
+                ioSocketRef.current = socket;
+                socket.on('disconnect', () => {
+                    setIoStatus('offline');
+                    setIoOnline(false);
+                    setIoRoomCode('');
+                });
+                socket.on('connect_error', (err) => {
+                    console.error('PvP socket error', err);
+                    setIoStatus('error');
+                    setIoError(err?.message || 'Connection error');
+                });
+                socket.on('state', (state) => {
+                    if (!state || !Array.isArray(state.snakes)) return;
+                    const snakes = state.snakes.map((s, idx) => ({
+                        id: s.id || ('net_' + idx),
+                        name: s.name || 'Player',
+                        body: Array.isArray(s.body) ? s.body.map(p => ({ x: p.x, y: p.y })) : [],
+                        bodyLength: s.length || (s.body ? s.body.length : 0),
+                        direction: { x: 1, y: 0 },
+                        isAI: false,
+                        colorIndex: idx % IO_SNAKE_COLORS.length,
+                        dead: !s.alive,
+                        lastTurnTime: 0
+                    }));
+                    ioSnakesRef.current = snakes;
+                    setIoSnakes(snakes);
+                });
+                return socket;
+            }, []);
+
+            const startIoOnlineHost = () => {
+                const socket = getIoSocket();
+                if (!socket) return;
+                setIoStatus('connecting');
+                setIoError(null);
+                socket.emit('create_room', (res) => {
+                    if (!res || !res.ok) {
+                        setIoStatus('error');
+                        setIoError('Could not create room');
+                        return;
+                    }
+                    setIoOnline(true);
+                    setIoIsHost(true);
+                    setIoRoomCode(res.roomCode);
+                    setIoStatus('waiting');
+                    const name = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
+                    socket.emit('set_name', name);
+                    // Start immediately for now – other player can join mid-game
+                    socket.emit('start_game');
+                    setIoStatus('playing');
+                    setScreen('playing');
+                    startGame({ gameMode: 'io', difficulty: settings.difficulty, _internalIoOnline: true });
+                });
+            };
+
+            const startIoOnlineJoin = () => {
+                const socket = getIoSocket();
+                if (!socket) return;
+                const code = window.prompt('Enter room code from host:');
+                if (!code) return;
+                setIoStatus('connecting');
+                setIoError(null);
+                socket.emit('join_room', { roomCode: code.trim().toUpperCase() }, (res) => {
+                    if (!res || !res.ok) {
+                        setIoStatus('error');
+                        setIoError('Room not found');
+                        alert('Room not found. Check the code and try again.');
+                        return;
+                    }
+                    setIoOnline(true);
+                    setIoIsHost(false);
+                    setIoRoomCode(code.trim().toUpperCase());
+                    setIoStatus('waiting');
+                    const name = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
+                    socket.emit('set_name', name);
+                    setIoStatus('playing');
+                    setScreen('playing');
+                    startGame({ gameMode: 'io', difficulty: settings.difficulty, _internalIoOnline: true });
+                });
+            };
+
             const startGame = (overrides) => {
                 const mode = overrides?.gameMode ?? settings.gameMode;
                 const difficulty = overrides?.difficulty ?? settings.difficulty;
@@ -2171,6 +2275,15 @@
                 gameSessionRef.current = { gameMode: mode, difficulty };
                 setIoLeaderboard([]);
                 if (mode === 'io') {
+                    const useOnline = overrides && overrides._internalIoOnline;
+                    if (useOnline) {
+                        // Online PvP: server drives state, we just render
+                        setIoOnline(true);
+                        setFoodEaten(0);
+                        setObstacles([]);
+                        setScreen('playing');
+                        return;
+                    }
                     ioGameStartRef.current = performance.now();
                     ioNextAiIdRef.current = IO_AI_COUNT + 1;
                     const playerDisplayName = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
@@ -2409,6 +2522,7 @@
             }
 
             const ioFreeMoveLoop = useCallback((now) => {
+                if (ioOnline) return; // server drives state in online mode
                 const snakes = ioSnakesRef.current;
                 const foodList = ioFoodRef.current;
                 if (!snakes || !Array.isArray(snakes) || snakes.length === 0) return;
@@ -2701,7 +2815,7 @@ bodyLength += 1;
                     vibrate([200, 100, 200]);
                     setScreen('gameOver');
                 }
-            }, [settings.sound, settings.vibration]);
+            }, [settings.sound, settings.vibration, ioOnline]);
 
             function ioRafLoop(now) {
                 ioFreeMoveLoop(now);
@@ -2709,7 +2823,7 @@ bodyLength += 1;
             }
 
             useEffect(() => {
-                if (screen === 'playing' && settings.gameMode === 'io') {
+                if (screen === 'playing' && settings.gameMode === 'io' && !ioOnline) {
                     if (ioSnakes && Array.isArray(ioSnakes) && ioSnakes.length > 0) {
                         ioSnakesRef.current = ioSnakes;
                     }
@@ -2728,7 +2842,7 @@ bodyLength += 1;
                         ioRafRef.current = null;
                     };
                 }
-            }, [screen, settings.gameMode]);
+            }, [screen, settings.gameMode, ioOnline]);
 
             useEffect(() => {
                 if (screen === 'playing' && settings.gameMode === 'survival') {
@@ -2752,6 +2866,9 @@ bodyLength += 1;
                         const setIoDir = (dx, dy) => {
                             e.preventDefault();
                             ioDirRef.current = { x: dx, y: dy };
+                            if (ioOnline && ioSocketRef.current) {
+                                ioSocketRef.current.emit('input', { dx, dy });
+                            }
                         };
                         const cur = ioDirRef.current;
                         if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { if (cur.y !== 1) setIoDir(0, -1); }
@@ -2800,14 +2917,21 @@ bodyLength += 1;
                     if (Math.abs(deltaX) < SWIPE_THRESHOLD && Math.abs(deltaY) < SWIPE_THRESHOLD) return false;
                     if (settings.gameMode === 'io') {
                         const cur = ioDirRef.current;
+                        let dx = cur.x;
+                        let dy = cur.y;
                         if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                            if (deltaX > 0 && cur.x !== -1) { ioDirRef.current = { x: 1, y: 0 }; return true; }
-                            if (deltaX < 0 && cur.x !== 1) { ioDirRef.current = { x: -1, y: 0 }; return true; }
+                            if (deltaX > 0 && cur.x !== -1) { dx = 1; dy = 0; }
+                            if (deltaX < 0 && cur.x !== 1) { dx = -1; dy = 0; }
                         } else {
-                            if (deltaY > 0 && cur.y !== -1) { ioDirRef.current = { x: 0, y: 1 }; return true; }
-                            if (deltaY < 0 && cur.y !== 1) { ioDirRef.current = { x: 0, y: -1 }; return true; }
+                            if (deltaY > 0 && cur.y !== -1) { dx = 0; dy = 1; }
+                            if (deltaY < 0 && cur.y !== 1) { dx = 0; dy = -1; }
                         }
-                        return false;
+                        if (dx === cur.x && dy === cur.y) return false;
+                        ioDirRef.current = { x: dx, y: dy };
+                        if (ioOnline && ioSocketRef.current) {
+                            ioSocketRef.current.emit('input', { dx, dy });
+                        }
+                        return true;
                     }
                     const currentDir = directionRef.current;
                     if (Math.abs(deltaX) > Math.abs(deltaY)) {
@@ -3196,7 +3320,7 @@ bodyLength += 1;
                 { id: 'portal', name: 'Portal', desc: 'Wrap around edges' },
                 { id: 'speed', name: 'Speed', desc: 'Collect orbs for boost' },
                 { id: 'survival', name: 'Survival', desc: 'Eat to add time' },
-                { id: 'io', name: 'Multiplayer (Beta)', desc: 'Collect apples to grow. Kill others (hit their body) to take their length. Goal: become the longest snake.' }
+                { id: 'io', name: 'Multiplayer (Bots)', desc: 'Local battle royale with AI snakes.' }
             ];
 
             if (screen === 'playSelect') {
@@ -3221,16 +3345,56 @@ bodyLength += 1;
                                 </div>
                             </div>
                             {GAME_MODES.map((m) => (
-                                <div
-                                    key={m.id}
-                                    className="mode-row"
-                                    onClick={() => startGame({ gameMode: m.id, difficulty: settings.difficulty })}
-                                >
-                                    <div>
-                                        <div className="mode-name">{m.name}</div>
-                                        <div className="mode-desc">{m.desc}</div>
+                                m.id === 'io' ? (
+                                    <div key={m.id} className="mode-row">
+                                        <div>
+                                            <div className="mode-name">{m.name}</div>
+                                            <div className="mode-desc">{m.desc}</div>
+                                            <div style={{ marginTop: 8, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                                                <button
+                                                    type="button"
+                                                    className="menu-button secondary"
+                                                    style={{ flex: '0 0 auto', fontSize: '0.75rem', padding: '6px 10px' }}
+                                                    onClick={() => startGame({ gameMode: 'io', difficulty: settings.difficulty })}
+                                                >
+                                                    Play vs bots
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="menu-button secondary"
+                                                    style={{ flex: '0 0 auto', fontSize: '0.75rem', padding: '6px 10px' }}
+                                                    onClick={startIoOnlineHost}
+                                                >
+                                                    Online PvP (host)
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="menu-button secondary"
+                                                    style={{ flex: '0 0 auto', fontSize: '0.75rem', padding: '6px 10px' }}
+                                                    onClick={startIoOnlineJoin}
+                                                >
+                                                    Online PvP (join)
+                                                </button>
+                                                {ioOnline && ioRoomCode && (
+                                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                                                        Room code: <strong>{ioRoomCode}</strong> ({ioIsHost ? 'Host' : 'Guest'})
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                ) : (
+                                    <div
+                                        key={m.id}
+                                        className="mode-row"
+                                        onClick={() => startGame({ gameMode: m.id, difficulty: settings.difficulty })}
+                                    >
+                                        <div>
+                                            <div className="mode-name">{m.name}</div>
+                                            <div className="mode-desc">{m.desc}</div>
+                                        </div>
+                                    </div>
+                                )
                             ))}
                             <button className="menu-button secondary" style={{ marginTop: 24 }} onClick={() => setScreen('menu')}>
                                 BACK
