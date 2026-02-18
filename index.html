@@ -6,6 +6,7 @@
     <script src="https://unpkg.com/@onsol/tldparser@0.5.2/lib/index.iife.js"></script>
     
     <meta charset="UTF-8">
+    <!-- Primary target: Seeker app (e.g. 2670×1200 logical, ~460 PPI). Works in browser too. -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
     <meta name="mobile-web-app-capable" content="yes">
@@ -31,9 +32,11 @@
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Seeker target: 2670×1200 (~460 PPI). Use dvh so height matches visible area in WebView. */
         html {
             font-size: clamp(14px, 2.5vmin, 16px);
             -webkit-text-size-adjust: 100%;
+            height: 100%;
         }
         :root, [data-theme="dark"] {
             --bg: #000;
@@ -82,6 +85,7 @@
             background: var(--bg);
             min-height: 100vh;
             min-height: 100dvh;
+            height: 100%;
             overflow: auto;
             display: flex;
             align-items: center;
@@ -101,6 +105,7 @@
             width: 100%;
             height: 100%;
             min-height: 100%;
+            min-height: 100dvh;
             overflow: hidden;
         }
         .fullscreen {
