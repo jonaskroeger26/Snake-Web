@@ -2546,7 +2546,6 @@
                 });
 
                 const deaths = new Set();
-                const lengthBonus = {};
                 newSnakes.forEach(s => {
                     if (s.dead) return;
                     if (s.id === 'player' && playerGrace) return;
@@ -2580,9 +2579,8 @@
                         if (other.id === s.id || deaths.has(other.id)) return;
                         for (let i = 1; i < other.body.length; i++) {
                             if (dist(h, other.body[i]) < IO_COLLIDE_RADIUS + IO_SEGMENT_RADIUS) {
-                                deaths.add(other.id);
-                                lengthBonus[s.id] = (lengthBonus[s.id] || 0) + Math.max(1, Math.round(other.bodyLength));
-                                return;
+                                deaths.add(s.id);
+                                break;
                             }
                         }
                     });
@@ -2590,23 +2588,26 @@
 
                 const eatenIndices = new Set();
                 let newFood = [...lastFood];
+                newSnakes.forEach(s => {
+                    if (!deaths.has(s.id) || !s.body || s.body.length === 0) return;
+                    const dropCount = Math.max(1, Math.floor(s.bodyLength));
+                    for (let i = 0; i < dropCount && i < s.body.length; i++) {
+                        const seg = s.body[Math.floor((i / dropCount) * s.body.length)] || s.body[0];
+                        newFood.push({ x: seg.x, y: seg.y });
+                    }
+                });
                 const updatedSnakes = newSnakes.map(s => {
                     if (s.dead || deaths.has(s.id)) return { ...s, dead: s.dead || deaths.has(s.id) };
                     const h = s.body[0];
                     let bodyLength = s.bodyLength;
                     let ateThisStep = false;
-                    const idx = lastFood.findIndex(f => dist(h, f) < IO_EAT_RADIUS);
+                    const idx = newFood.findIndex(f => dist(h, f) < IO_EAT_RADIUS);
                     if (idx >= 0 && !eatenIndices.has(idx)) {
                         eatenIndices.add(idx);
                         if (s.id === 'player') setAppleCoins(c => c + 1);
                         newFood = newFood.filter((_, i) => i !== idx);
-                        bodyLength += 1;
-                        ateThisStep = true;
-                    }
-                    const killBonus = lengthBonus[s.id] || 0;
-                    if (killBonus > 0) {
-                        bodyLength += killBonus;
-                        ateThisStep = true;
+bodyLength += 1;
+                    ateThisStep = true;
                     }
                     return { ...s, bodyLength, ateThisStep };
                 }).map(s => deaths.has(s.id) ? { ...s, dead: true } : s);
