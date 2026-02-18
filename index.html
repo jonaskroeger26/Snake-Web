@@ -1796,6 +1796,7 @@
             const [ioError, setIoError] = useState(null);
             const ioSocketRef = useRef(null);
             const ioOnlineGameOverDoneRef = useRef(false);
+            const ioStateRafScheduledRef = useRef(false);
 
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
@@ -2203,7 +2204,7 @@
                         const isMe = myId && s.id === myId;
                         return {
                             id: isMe ? 'player' : (s.id || ('net_' + idx)),
-                            name: s.name || 'Player',
+                            name: (s.name || 'Player').slice(0, 24),
                             body: Array.isArray(s.body) ? s.body.map(p => ({ x: Number(p.x), y: Number(p.y) })) : [],
                             bodyLength: s.length != null ? s.length : (s.body ? s.body.length : 0),
                             direction: { x: 1, y: 0 },
@@ -2216,15 +2217,11 @@
                     const foodList = Array.isArray(state.food) ? state.food.map(f => ({ x: Number(f.x), y: Number(f.y) })) : [];
                     ioSnakesRef.current = snakes;
                     ioFoodRef.current = foodList;
-                    setIoSnakes(snakes);
-                    setIoFood(foodList);
 
                     const player = snakes.find(s => s.id === 'player');
                     if (player && player.body && player.body.length > 0) {
                         snakeRef.current = player.body;
                         lastHeadRef.current = player.body[0];
-                        setSnake(player.body);
-                        setFoodEaten(Math.round(player.bodyLength || player.body.length));
                     }
                     if (player && player.dead && !ioOnlineGameOverDoneRef.current) {
                         ioOnlineGameOverDoneRef.current = true;
@@ -2236,6 +2233,23 @@
                         if (settings.sound) playSound(100, 0.3, 0.3);
                         vibrate([200, 100, 200]);
                         setScreen('gameOver');
+                        return;
+                    }
+
+                    if (!ioStateRafScheduledRef.current) {
+                        ioStateRafScheduledRef.current = true;
+                        requestAnimationFrame(() => {
+                            ioStateRafScheduledRef.current = false;
+                            const latest = ioSnakesRef.current;
+                            const latestFood = ioFoodRef.current;
+                            setIoSnakes(latest || []);
+                            setIoFood(latestFood || []);
+                            const pl = latest && latest.find(s => s.id === 'player');
+                            if (pl && pl.body && pl.body.length > 0) {
+                                setSnake(pl.body);
+                                setFoodEaten(Math.round(pl.bodyLength || pl.body.length));
+                            }
+                        });
                     }
                 });
                 return socket;

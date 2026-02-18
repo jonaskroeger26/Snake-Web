@@ -2,6 +2,8 @@
 
 This folder contains the Socket.io game server for **Online PvP**. By default the app uses it **online** when not on localhost.
 
+**Performance:** 512 MB RAM is enough for ~30–50 players. Lag is usually from network latency or client re-renders, not server memory. The server sends one state update every ~180 ms; the client batches React updates to reduce jank. For 50+ concurrent players, consider 1 GB RAM and the same deploy steps.
+
 ## Run locally
 
 From the **project root**:
