@@ -2216,7 +2216,7 @@
                             direction: { x: 1, y: 0 },
                             isAI: false,
                             colorIndex: idx % IO_SNAKE_COLORS.length,
-                            dead: !s.alive,
+                            dead: s.alive === false,
                             lastTurnTime: 0
                         };
                     });
@@ -2277,6 +2277,12 @@
             }, []);
 
             const startIoOnline = () => {
+                // Force fresh connection so server spawns us (avoid reusing dead snake from previous round)
+                if (ioSocketRef.current) {
+                    ioSocketRef.current.removeAllListeners();
+                    ioSocketRef.current.disconnect();
+                    ioSocketRef.current = null;
+                }
                 const socket = getIoSocket();
                 if (!socket) return;
                 setIoStatus('connecting');
