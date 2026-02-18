@@ -11,9 +11,9 @@ const io = new Server(server, {
   transports: ['websocket', 'polling'],
 });
 
-const GRID_SIZE = 20; // 20x20 blocks, 1 segment per block
+const GRID_SIZE = 100; // 100x100 blocks, 1 segment per block
 const TICK_MS = 180;
-const NUM_FOOD = 20;
+const NUM_FOOD = 100;
 const INITIAL_LENGTH = 5;
 const MAX_BODY_PAYLOAD = 80;
 
