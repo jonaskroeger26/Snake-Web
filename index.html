@@ -1795,6 +1795,7 @@
             const [ioStatus, setIoStatus] = useState('offline'); // offline | connecting | waiting | playing | error
             const [ioError, setIoError] = useState(null);
             const ioSocketRef = useRef(null);
+            const ioOnlineGameOverDoneRef = useRef(false);
 
             const canvasRef = useRef(null);
             const gameLoopRef = useRef(null);
@@ -2197,19 +2198,42 @@
                 });
                 socket.on('state', (state) => {
                     if (!state || !Array.isArray(state.snakes)) return;
-                    const snakes = state.snakes.map((s, idx) => ({
-                        id: s.id || ('net_' + idx),
-                        name: s.name || 'Player',
-                        body: Array.isArray(s.body) ? s.body.map(p => ({ x: p.x, y: p.y })) : [],
-                        bodyLength: s.length || (s.body ? s.body.length : 0),
-                        direction: { x: 1, y: 0 },
-                        isAI: false,
-                        colorIndex: idx % IO_SNAKE_COLORS.length,
-                        dead: !s.alive,
-                        lastTurnTime: 0
-                    }));
+                    const myId = ioSocketRef.current?.id;
+                    const snakes = state.snakes.map((s, idx) => {
+                        const isMe = myId && s.id === myId;
+                        return {
+                            id: isMe ? 'player' : (s.id || ('net_' + idx)),
+                            name: s.name || 'Player',
+                            body: Array.isArray(s.body) ? s.body.map(p => ({ x: Number(p.x), y: Number(p.y) })) : [],
+                            bodyLength: s.length != null ? s.length : (s.body ? s.body.length : 0),
+                            direction: { x: 1, y: 0 },
+                            isAI: false,
+                            colorIndex: idx % IO_SNAKE_COLORS.length,
+                            dead: !s.alive,
+                            lastTurnTime: 0
+                        };
+                    });
                     ioSnakesRef.current = snakes;
                     setIoSnakes(snakes);
+
+                    const player = snakes.find(s => s.id === 'player');
+                    if (player && player.body && player.body.length > 0) {
+                        snakeRef.current = player.body;
+                        lastHeadRef.current = player.body[0];
+                        setSnake(player.body);
+                        setFoodEaten(Math.round(player.bodyLength || player.body.length));
+                    }
+                    if (player && player.dead && !ioOnlineGameOverDoneRef.current) {
+                        ioOnlineGameOverDoneRef.current = true;
+                        const leaderboard = [...snakes].sort((a, b) => (b.bodyLength || 0) - (a.bodyLength || 0))
+                            .map(s => ({ name: s.name, length: Math.round(s.bodyLength || 1), isPlayer: s.id === 'player', dead: s.dead }));
+                        setIoLeaderboard(leaderboard);
+                        setFoodEaten(Math.round(player.bodyLength || player.body.length));
+                        submitScore(Math.round(player.bodyLength || player.body.length));
+                        if (settings.sound) playSound(100, 0.3, 0.3);
+                        vibrate([200, 100, 200]);
+                        setScreen('gameOver');
+                    }
                 });
                 return socket;
             }, []);
@@ -2234,6 +2258,7 @@
                     // Start immediately for now – other player can join mid-game
                     socket.emit('start_game');
                     setIoStatus('playing');
+                    ioOnlineGameOverDoneRef.current = false;
                     setScreen('playing');
                     startGame({ gameMode: 'io', difficulty: settings.difficulty, _internalIoOnline: true });
                 });
@@ -2260,6 +2285,7 @@
                     const name = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
                     socket.emit('set_name', name);
                     setIoStatus('playing');
+                    ioOnlineGameOverDoneRef.current = false;
                     setScreen('playing');
                     startGame({ gameMode: 'io', difficulty: settings.difficulty, _internalIoOnline: true });
                 });
@@ -2277,8 +2303,12 @@
                 if (mode === 'io') {
                     const useOnline = overrides && overrides._internalIoOnline;
                     if (useOnline) {
-                        // Online PvP: server drives state, we just render
+                        // Online PvP: server drives state, we just render (same look as bots)
                         setIoOnline(true);
+                        setIoSnakes([]);
+                        setIoFood([]);
+                        ioSnakesRef.current = [];
+                        ioFoodRef.current = [];
                         setFoodEaten(0);
                         setObstacles([]);
                         setScreen('playing');
