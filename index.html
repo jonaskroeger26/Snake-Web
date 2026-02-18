@@ -2834,6 +2834,7 @@ bodyLength += 1;
                     setSnake(playerAlive.body);
                 }
                 if (playerAny && playerAny.dead) {
+                    if (ioOnline) return; // never overwrite leaderboard with bot data when in online mode
                     if (ioRafRef.current) cancelAnimationFrame(ioRafRef.current);
                     ioRafRef.current = null;
                     const deadOnly = lastUpdatedSnakes.filter(s => s.dead);
@@ -3374,7 +3375,7 @@ bodyLength += 1;
                 { id: 'portal', name: 'Portal', desc: 'Wrap around edges' },
                 { id: 'speed', name: 'Speed', desc: 'Collect orbs for boost' },
                 { id: 'survival', name: 'Survival', desc: 'Eat to add time' },
-                { id: 'io', name: 'Multiplayer (Bots)', desc: 'Local battle royale with AI snakes.' }
+                { id: 'io', name: 'Play Online', desc: 'Compete with other players online.' }
             ];
 
             if (screen === 'playSelect') {
@@ -3399,43 +3400,16 @@ bodyLength += 1;
                                 </div>
                             </div>
                             {GAME_MODES.map((m) => (
-                                m.id === 'io' ? (
-                                    <div key={m.id} className="mode-row">
-                                        <div>
-                                            <div className="mode-name">{m.name}</div>
-                                            <div className="mode-desc">{m.desc}</div>
-                                            <div style={{ marginTop: 8, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                                                <button
-                                                    type="button"
-                                                    className="menu-button secondary"
-                                                    style={{ flex: '0 0 auto', fontSize: '0.75rem', padding: '6px 10px' }}
-                                                    onClick={() => startGame({ gameMode: 'io', difficulty: settings.difficulty })}
-                                                >
-                                                    Play vs bots
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="menu-button secondary"
-                                                    style={{ flex: '0 0 auto', fontSize: '0.75rem', padding: '6px 10px' }}
-                                                    onClick={startIoOnline}
-                                                >
-                                                    Play Online
-                                                </button>
-                                            </div>
-                                        </div>
+                                <div
+                                    key={m.id}
+                                    className="mode-row"
+                                    onClick={() => m.id === 'io' ? startIoOnline() : startGame({ gameMode: m.id, difficulty: settings.difficulty })}
+                                >
+                                    <div>
+                                        <div className="mode-name">{m.name}</div>
+                                        <div className="mode-desc">{m.desc}</div>
                                     </div>
-                                ) : (
-                                    <div
-                                        key={m.id}
-                                        className="mode-row"
-                                        onClick={() => startGame({ gameMode: m.id, difficulty: settings.difficulty })}
-                                    >
-                                        <div>
-                                            <div className="mode-name">{m.name}</div>
-                                            <div className="mode-desc">{m.desc}</div>
-                                        </div>
-                                    </div>
-                                )
+                                </div>
                             ))}
                             <button className="menu-button secondary" style={{ marginTop: 24 }} onClick={() => setScreen('menu')}>
                                 BACK
@@ -3937,7 +3911,7 @@ bodyLength += 1;
                                 <div className="overlay-buttons">
                                     <button 
                                         className="overlay-button" 
-                                        onClick={levelId ? () => startLevel(levelId) : () => startGame({ gameMode: settings.gameMode, difficulty: settings.difficulty })}
+                                        onClick={levelId ? () => startLevel(levelId) : settings.gameMode === 'io' ? startIoOnline : () => startGame({ gameMode: settings.gameMode, difficulty: settings.difficulty })}
                                         disabled={submittingScore}
                                     >
                                         PLAY AGAIN
