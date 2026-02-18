@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
 
   socket.on('set_name', (name) => {
     const snake = state.snakes[socket.id];
-    if (snake) snake.name = (name && String(name).slice(0, 24)) || 'Player';
+    if (snake) snake.name = (name && String(name).slice(0, 32)) || 'Player';
   });
 
   socket.on('input', (dir) => {

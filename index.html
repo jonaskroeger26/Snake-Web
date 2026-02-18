@@ -1307,6 +1307,7 @@
         const INITIAL_DIRECTION = {x: 1, y: 0};
         const GRID_SIZE_IO = 80;
         const VIEWPORT_CELLS = 27;
+        const PVP_INITIAL_LENGTH = 5;
         const IO_NUM_APPLES = 45;
         const IO_AI_COUNT = 25;
         const IO_AI_NAMES = ['Bot Red', 'Bot Blue', 'Bot Green', 'Bot Violet', 'Bot Orange'];
@@ -2219,11 +2220,12 @@
                             lastTurnTime: 0
                         };
                     });
-                    const foodList = Array.isArray(state.food) ? state.food.map(f => ({ x: Number(f.x), y: Number(f.y) })) : null;
+                    if (Array.isArray(state.food) && state.food.length > 0) {
+                        ioFoodRef.current = state.food.map(f => ({ x: Number(f.x), y: Number(f.y) }));
+                    }
                     ioSnakesPrevRef.current = ioSnakesRef.current;
                     ioSnakesRef.current = snakes;
                     ioStateTimeRef.current = Date.now();
-                    if (foodList !== null) ioFoodRef.current = foodList;
 
                     const player = snakes.find(s => s.id === 'player');
                     if (player && player.body && player.body.length > 0) {
@@ -2233,12 +2235,13 @@
                     function doGameOver(snakeList) {
                         if (ioOnlineGameOverDoneRef.current) return;
                         ioOnlineGameOverDoneRef.current = true;
-                        const list = snakeList || snakes;
+                        const list = (snakeList || snakes).filter(s => !s.dead);
                         const me = list.find(s => s.id === 'player');
                         const leaderboard = [...list].sort((a, b) => (b.bodyLength || 0) - (a.bodyLength || 0))
-                            .map(s => ({ name: s.name, length: Math.round(s.bodyLength || 1), isPlayer: s.id === 'player', dead: s.dead }));
+                            .map(s => ({ name: s.name, length: Math.max(0, Math.round(s.bodyLength || 1) - PVP_INITIAL_LENGTH), isPlayer: s.id === 'player' }));
                         setIoLeaderboard(leaderboard);
-                        const len = me ? Math.round(me.bodyLength || me.body?.length || 0) : 0;
+                        const rawLen = me ? Math.round(me.bodyLength || me.body?.length || 0) : 0;
+                        const len = Math.max(0, rawLen - PVP_INITIAL_LENGTH);
                         setFoodEaten(len);
                         submitScore(len);
                         if (settings.sound) playSound(100, 0.3, 0.3);
@@ -2265,7 +2268,7 @@
                             setIoFood(latestFood || []);
                             if (pl && pl.body && pl.body.length > 0) {
                                 setSnake(pl.body);
-                                setFoodEaten(Math.round(pl.bodyLength || pl.body.length));
+                                setFoodEaten(Math.max(0, Math.round(pl.bodyLength || pl.body.length) - PVP_INITIAL_LENGTH));
                             }
                         });
                     }
@@ -3781,22 +3784,22 @@ bodyLength += 1;
                                 ) : settings.gameMode === 'io' ? (
                                     <>
                                         <div className="stat-pill" data-score-type="apples">
-                                            <span className="label">LENGTH</span>
-                                            <span>{Math.round((ioSnakes.find(s => s.id === 'player') || {}).bodyLength || 1)}</span>
+                                            <span className="label">SCORE</span>
+                                            <span>{Math.max(0, Math.round((ioSnakes.find(s => s.id === 'player') || {}).bodyLength || 1) - PVP_INITIAL_LENGTH)}</span>
                                         </div>
                                         {ioOnline && (
-                                            <div className="stat-pill" title="Snakes in this server instance">
+                                            <div className="stat-pill" title="Alive players">
                                                 <span className="label">Players</span>
-                                                <span>{ioSnakes.length}</span>
+                                                <span>{ioSnakes.filter(s => !s.dead).length}</span>
                                             </div>
                                         )}
                                         <div className="io-leaderboard-hud">
                                             <div className="io-leaderboard-hud-title">Leaderboard</div>
-                                            {(ioSnakes.length ? [...ioSnakes].sort((a, b) => (b.bodyLength || 1) - (a.bodyLength || 1)) : []).slice(0, 6).map((s, i) => (
-                                                <div key={s.id} className={`io-leaderboard-row ${s.dead ? 'dead' : ''} ${s.id === 'player' ? 'player' : ''}`}>
+                                            {(ioSnakes.length ? [...ioSnakes].filter(s => !s.dead).sort((a, b) => (b.bodyLength || 1) - (a.bodyLength || 1)) : []).slice(0, 6).map((s, i) => (
+                                                <div key={s.id} className={`io-leaderboard-row ${s.id === 'player' ? 'player' : ''}`}>
                                                     <span className="io-rank">#{i + 1}</span>
-                                                    <span className="io-name">{s.name}</span>
-                                                    <span className="io-len">{Math.round(s.bodyLength || 1)}</span>
+                                                    <span className="io-name">{s.name || 'Player'}</span>
+                                                    <span className="io-len">{Math.max(0, Math.round(s.bodyLength || 1) - PVP_INITIAL_LENGTH)}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -3878,22 +3881,36 @@ bodyLength += 1;
                             <div className="overlay">
                                 <div className="overlay-title">GAME OVER</div>
                                 {settings.gameMode === 'io' ? (
-                                    <div className="overlay-score">
-                                        YOUR LENGTH
-                                        <span>{Number(foodEaten)}</span>
-                                    </div>
+                                    <>
+                                        <div className="overlay-score">
+                                            APPLES EATEN
+                                            <span>{Number(foodEaten)}</span>
+                                        </div>
+                                        {ioLeaderboard.length > 0 && (
+                                            <div className="io-leaderboard-final">
+                                                <div className="io-leaderboard-final-title">Final standings (alive only)</div>
+                                                {ioLeaderboard.map((e, i) => (
+                                                    <div key={i} className={`io-leaderboard-final-row ${e.isPlayer ? 'player' : ''}`}>
+                                                        <span className="io-rank">#{i + 1}</span>
+                                                        <span className="io-name">{e.name || 'Player'}</span>
+                                                        <span className="io-len">{e.length}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </>
                                 ) : ioLeaderboard.length > 0 ? (
                                     <>
                                         <div className="overlay-score">
-                                            YOUR LENGTH
+                                            APPLES EATEN
                                             <span>{ioLeaderboard.find(e => e.isPlayer)?.length ?? 0}</span>
                                         </div>
                                         <div className="io-leaderboard-final">
-                                            <div className="io-leaderboard-final-title">Final standings</div>
+                                            <div className="io-leaderboard-final-title">Final standings (alive only)</div>
                                             {ioLeaderboard.map((e, i) => (
                                                 <div key={i} className={`io-leaderboard-final-row ${e.isPlayer ? 'player' : ''}`}>
                                                     <span className="io-rank">#{i + 1}</span>
-                                                    <span className="io-name">{e.name}</span>
+                                                    <span className="io-name">{e.name || 'Player'}</span>
                                                     <span className="io-len">{e.length}</span>
                                                 </div>
                                             ))}
