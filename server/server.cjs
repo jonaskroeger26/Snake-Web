@@ -75,6 +75,8 @@ function spawnSnake(socketId) {
 
 io.on('connection', (socket) => {
   spawnSnake(socket.id);
+  const n = Object.keys(state.snakes).length;
+  console.log('PvP connect', socket.id.slice(0, 8), '| players:', n);
 
   socket.on('set_name', (name) => {
     const snake = state.snakes[socket.id];
@@ -96,6 +98,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     delete state.snakes[socket.id];
+    console.log('PvP disconnect', socket.id.slice(0, 8), '| players:', Object.keys(state.snakes).length);
   });
 });
 

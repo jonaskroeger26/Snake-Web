@@ -1788,7 +1788,7 @@
             const ioAccumRef = useRef(0);
             const ioFrameCountRef = useRef(0);
 
-            // Online PvP (uses PVP_SERVER_URL when not on localhost)
+            // Online PvP: localhost → local server; else → global PVP_SERVER_URL (everyone worldwide shares one game)
             const [ioOnline, setIoOnline] = useState(false);
             const [ioRoomCode, setIoRoomCode] = useState('');
             const [ioIsHost, setIoIsHost] = useState(false);
@@ -3773,6 +3773,12 @@ bodyLength += 1;
                                             <span className="label">LENGTH</span>
                                             <span>{Math.round((ioSnakes.find(s => s.id === 'player') || {}).bodyLength || 1)}</span>
                                         </div>
+                                        {ioOnline && (
+                                            <div className="stat-pill" title="Snakes in this server instance">
+                                                <span className="label">Players</span>
+                                                <span>{ioSnakes.length}</span>
+                                            </div>
+                                        )}
                                         <div className="io-leaderboard-hud">
                                             <div className="io-leaderboard-hud-title">Leaderboard</div>
                                             {(ioSnakes.length ? [...ioSnakes].sort((a, b) => (b.bodyLength || 1) - (a.bodyLength || 1)) : []).slice(0, 6).map((s, i) => (

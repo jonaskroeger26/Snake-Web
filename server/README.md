@@ -4,6 +4,10 @@ This folder contains the Socket.io game server for **Online PvP**. By default th
 
 **Performance:** 512 MB RAM is enough for ~30–50 players. Lag is usually from network latency or client re-renders, not server memory. The server sends one state update every ~180 ms; the client batches React updates to reduce jank. For 50+ concurrent players, consider 1 GB RAM and the same deploy steps.
 
+**Global multiplayer:** The server runs in the cloud (e.g. on Render). Everyone who opens your game (from any country or network) connects to the same server URL, so laptop + phone (or any two players worldwide) share one game — it’s global, not local-only.
+
+**Only one player visible?** All clients must hit the **same** server process. On Render: open your Web Service → **Settings** → set **Instances** to **1**. With one instance, there is a single global endpoint; every device that opens your app connects there and sees each other. If you set Instances &gt; 1, each instance has its own in-memory state and players on different instances won’t see each other. The in-game "Players" count shows how many snakes your client received from the server.
+
 ## Run locally
 
 From the **project root**:
