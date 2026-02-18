@@ -13,7 +13,7 @@ const io = new Server(server, {
 
 const GRID_SIZE = 600; // 600x600 blocks, 1 segment per block
 const TICK_MS = 180;
-const NUM_FOOD = 150;
+const NUM_FOOD = 500;
 const INITIAL_LENGTH = 5;
 const MAX_BODY_PAYLOAD = 80;
 
