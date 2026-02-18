@@ -94,9 +94,12 @@ io.on('connection', (socket) => {
   socket.on('input', (dir) => {
     const snake = state.snakes[socket.id];
     if (!snake || !snake.alive) return;
-    const dx = Number(dir.dx) || 0;
-    const dy = Number(dir.dy) || 0;
-    if ((dx === 0 && dy === 0) || (dx === -snake.dx && dy === -snake.dy)) return;
+    let dx = Math.floor(Number(dir.dx)) || 0;
+    let dy = Math.floor(Number(dir.dy)) || 0;
+    if (dx !== 0) dx = dx > 0 ? 1 : -1;
+    if (dy !== 0) dy = dy > 0 ? 1 : -1;
+    if (dx === 0 && dy === 0) return;
+    if (dx === -snake.dx && dy === -snake.dy) return;
     snake.nextDx = dx;
     snake.nextDy = dy;
   });
@@ -109,17 +112,20 @@ io.on('connection', (socket) => {
 // Keep food count at NUM_FOOD
 function maintainFood() {
   const occupied = getOccupiedCells();
-  while (state.food.length < NUM_FOOD) {
-    for (let t = 0; t < 50; t++) {
+  for (let i = state.food.length; i < NUM_FOOD; i++) {
+    let placed = false;
+    for (let t = 0; t < 80; t++) {
       const x = randomInt(1, GRID_SIZE - 1) + 0.5;
       const y = randomInt(1, GRID_SIZE - 1) + 0.5;
       const key = `${Math.floor(x)},${Math.floor(y)}`;
       if (!occupied.has(key)) {
         state.food.push({ x, y });
         occupied.add(key);
+        placed = true;
         break;
       }
     }
+    if (!placed) break;
   }
 }
 
@@ -134,18 +140,22 @@ setInterval(() => {
 
   snakes.forEach((s) => {
     if (!s.alive) return;
-    if (typeof s.nextDx === 'number' && typeof s.nextDy === 'number') {
-      s.dx = s.nextDx;
-      s.dy = s.nextDy;
+    const ndx = s.nextDx;
+    const ndy = s.nextDy;
+    if (typeof ndx === 'number' && typeof ndy === 'number' && !(ndx === 0 && ndy === 0)) {
+      s.dx = ndx;
+      s.dy = ndy;
     }
   });
 
   snakes.forEach((s) => {
-    if (!s.alive) return;
+    if (!s.alive || !s.body || s.body.length === 0) return;
     const head = s.body[0];
+    const hx = Math.floor(Number(head.x));
+    const hy = Math.floor(Number(head.y));
     const newHead = {
-      x: head.x + s.dx,
-      y: head.y + s.dy,
+      x: hx + s.dx,
+      y: hy + s.dy,
     };
     if (
       newHead.x < 0 ||
