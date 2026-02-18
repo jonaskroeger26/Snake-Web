@@ -216,6 +216,19 @@ setInterval(() => {
     });
   });
 
+  // Drop food from dead snakes (once per snake)
+  snakes.forEach((s) => {
+    if (s.alive || s.droppedFood || !s.body || s.body.length === 0) return;
+    s.body.forEach((seg) => {
+      const x = Math.floor(Number(seg.x)) + 0.5;
+      const y = Math.floor(Number(seg.y)) + 0.5;
+      if (x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE) {
+        state.food.push({ x, y });
+      }
+    });
+    s.droppedFood = true;
+  });
+
   io.emit('state', {
     gridSize: GRID_SIZE,
     snakes: snakes.map((s) => ({
