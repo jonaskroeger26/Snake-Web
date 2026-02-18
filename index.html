@@ -2230,16 +2230,23 @@
                         snakeRef.current = player.body;
                         lastHeadRef.current = player.body[0];
                     }
-                    if (player && player.dead && !ioOnlineGameOverDoneRef.current) {
+                    function doGameOver(snakeList) {
+                        if (ioOnlineGameOverDoneRef.current) return;
                         ioOnlineGameOverDoneRef.current = true;
-                        const leaderboard = [...snakes].sort((a, b) => (b.bodyLength || 0) - (a.bodyLength || 0))
+                        const list = snakeList || snakes;
+                        const me = list.find(s => s.id === 'player');
+                        const leaderboard = [...list].sort((a, b) => (b.bodyLength || 0) - (a.bodyLength || 0))
                             .map(s => ({ name: s.name, length: Math.round(s.bodyLength || 1), isPlayer: s.id === 'player', dead: s.dead }));
                         setIoLeaderboard(leaderboard);
-                        setFoodEaten(Math.round(player.bodyLength || player.body.length));
-                        submitScore(Math.round(player.bodyLength || player.body.length));
+                        const len = me ? Math.round(me.bodyLength || me.body?.length || 0) : 0;
+                        setFoodEaten(len);
+                        submitScore(len);
                         if (settings.sound) playSound(100, 0.3, 0.3);
                         vibrate([200, 100, 200]);
                         setScreen('gameOver');
+                    }
+                    if (player && player.dead) {
+                        doGameOver(snakes);
                         return;
                     }
 
@@ -2249,9 +2256,13 @@
                             ioStateRafScheduledRef.current = false;
                             const latest = ioSnakesRef.current;
                             const latestFood = ioFoodRef.current;
+                            const pl = latest && latest.find(s => s.id === 'player');
+                            if (pl && pl.dead) {
+                                doGameOver(latest);
+                                return;
+                            }
                             setIoSnakes(latest || []);
                             setIoFood(latestFood || []);
-                            const pl = latest && latest.find(s => s.id === 'player');
                             if (pl && pl.body && pl.body.length > 0) {
                                 setSnake(pl.body);
                                 setFoodEaten(Math.round(pl.bodyLength || pl.body.length));

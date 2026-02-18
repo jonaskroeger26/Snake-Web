@@ -26,6 +26,14 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+// Seed food at startup so apples exist from first tick
+for (let i = 0; i < NUM_FOOD; i++) {
+  state.food.push({
+    x: randomInt(1, GRID_SIZE - 1) + 0.5,
+    y: randomInt(1, GRID_SIZE - 1) + 0.5,
+  });
+}
+
 function getOccupiedCells(snakes, food) {
   const cells = new Set();
   snakes.forEach((s) => {
