@@ -739,7 +739,7 @@
             -webkit-overflow-scrolling: touch;
         }
         .locker-container { width: 100%; max-width: 640px; margin: 0 auto; min-height: 0; overflow-x: hidden; }
-        .locker-header { margin-bottom: 12px; }
+        .locker-header { margin-bottom: 16px; }
         .locker-title {
             font-size: 1.75rem;
             font-weight: 700;
@@ -750,8 +750,8 @@
         .locker-tabs {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 12px;
+            gap: 8px;
+            margin-bottom: 16px;
         }
         .locker-tab {
             padding: 8px 14px;
@@ -777,16 +777,17 @@
             display: flex;
             gap: 10px;
             align-items: stretch;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             position: sticky;
             top: max(120px, calc(env(safe-area-inset-top, 0px) + 56px));
             z-index: 10;
             background: var(--bg);
-            padding: 2px 0 10px;
+            padding: 4px 0 12px;
             margin-left: -2px;
             margin-right: -2px;
             padding-left: 2px;
             padding-right: 2px;
+            border-bottom: 1px solid var(--border);
         }
         .locker-search-wrap {
             flex: 1;
@@ -833,23 +834,24 @@
         .locker-preview-strip {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
+            gap: 16px;
+            padding: 16px 20px;
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            margin-bottom: 16px;
+            border-radius: 14px;
+            margin-bottom: 20px;
         }
         .locker-preview-strip-snake { flex-shrink: 0; }
-        .locker-preview-strip-snake canvas { border-radius: 8px; }
-        .locker-preview-strip-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-        .locker-preview-strip-name { font-size: 1rem; font-weight: 700; color: var(--text); }
+        .locker-preview-strip-snake canvas { border-radius: 10px; display: block; }
+        .locker-preview-strip-info { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+        .locker-preview-strip-name { font-size: 1.1rem; font-weight: 700; color: var(--text); }
         .locker-preview-strip-rarity { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-        .locker-grid-wrap { flex: 1; min-height: 0; margin-bottom: 16px; }
+        .locker-grid-wrap { flex: 1; min-height: 0; margin-bottom: 20px; }
+        .locker-section-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text-muted); margin-bottom: 10px; }
         .locker-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
         @media (min-width: 420px) {
             .locker-grid { grid-template-columns: repeat(5, 1fr); }
@@ -862,7 +864,7 @@
             background: var(--bg-tertiary);
             border: 2px solid var(--border);
             border-radius: 12px;
-            padding: 8px 6px 8px;
+            padding: 10px 8px 10px;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
@@ -887,8 +889,14 @@
         .locker-skin-card[data-rarity="epic"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 0 2px var(--locker-card-border), 0 0 18px var(--locker-card-glow); }
         .locker-skin-card[data-rarity="rare"].selected { border-color: var(--locker-card-border); box-shadow: 0 0 0 2px var(--locker-card-border), 0 0 14px var(--locker-card-glow); }
         .locker-skin-card[data-rarity="uncommon"].selected { border-color: var(--locker-card-border); }
-        .locker-skin-card-preview { display: flex; justify-content: center; margin-bottom: 6px; }
-        .locker-skin-card-preview canvas { border-radius: 8px; max-width: 100%; }
+        .locker-skin-card-preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 48px;
+            margin-bottom: 8px;
+        }
+        .locker-skin-card-preview canvas { border-radius: 8px; max-width: 100%; max-height: 44px; width: auto; height: auto; display: block; }
         .locker-skin-card-name { font-size: 0.7rem; font-weight: 600; color: var(--text); line-height: 1.2; }
         .locker-skin-equipped {
             position: absolute;
@@ -955,7 +963,7 @@
         }
         .locker-footer-back:hover { border-color: var(--accent); color: var(--accent); }
         @media (min-width: 480px) {
-            .locker-fullscreen { padding: 20px 20px 28px; }
+            .locker-fullscreen { padding: max(120px, calc(env(safe-area-inset-top, 0px) + 56px)) 20px 28px 20px; }
             .locker-header { margin-bottom: 14px; }
             .locker-title { font-size: 1.9rem; }
             .locker-tabs { margin-bottom: 14px; }
@@ -1285,12 +1293,13 @@
             const canvasRef = React.useRef(null);
             const isLarge = size === 'large';
             const isLocker = size === 'locker';
+            const isCard = size === 'card';
             React.useEffect(() => {
                 const canvas = canvasRef.current;
                 if (!canvas) return;
-                const cellSize = isLocker ? 36 : (isLarge ? 28 : 22);
+                const cellSize = isLocker ? 36 : (isLarge ? 28 : (isCard ? 20 : 22));
                 const segCount = isLocker ? 8 : 6;
-                const pad = isLocker ? 24 : (isLarge ? 18 : 14);
+                const pad = isLocker ? 24 : (isLarge ? 18 : (isCard ? 10 : 14));
                 const w = segCount * cellSize + pad * 2;
                 const h = cellSize + pad * 2;
                 const dpr = window.devicePixelRatio || 1;
@@ -1355,7 +1364,7 @@
                     ];
                     spots.forEach(([sx, sy]) => ctx.fillRect(sx, sy, spotSize, spotSize));
                 }
-            }, [skinId, isLarge, isLocker]);
+            }, [skinId, isLarge, isLocker, isCard]);
             return <canvas ref={canvasRef} style={{ borderRadius: 10, display: 'block' }} />;
         }
 
@@ -2966,6 +2975,7 @@
                                     </button>
                                 </div>
                             </div>
+                            <p className="locker-section-label">Selected</p>
                             <div className="locker-preview-strip">
                                 <div className="locker-preview-strip-snake">
                                     <ShopSnakePreview skinId={selectedLockerSkin} size="large" />
@@ -2975,6 +2985,7 @@
                                     <span className="locker-preview-strip-rarity" style={{ color: rarityInfo.color }}>{rarityInfo.label}</span>
                                 </div>
                             </div>
+                            <p className="locker-section-label">All skins</p>
                             <div className="locker-grid-wrap">
                                 <div className="locker-grid">
                                     {displayIds.map((id) => {
@@ -2991,7 +3002,7 @@
                                                 onClick={() => setSelectedLockerSkin(id)}
                                             >
                                                 <div className="locker-skin-card-preview">
-                                                    <ShopSnakePreview skinId={id} size="large" />
+                                                    <ShopSnakePreview skinId={id} size="card" />
                                                 </div>
                                                 <div className="locker-skin-card-name">{getSkinDisplayName(id)}</div>
                                                 {equipped && <span className="locker-skin-equipped" aria-hidden>✓</span>}
