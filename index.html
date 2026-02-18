@@ -2213,8 +2213,11 @@
                             lastTurnTime: 0
                         };
                     });
+                    const foodList = Array.isArray(state.food) ? state.food.map(f => ({ x: Number(f.x), y: Number(f.y) })) : [];
                     ioSnakesRef.current = snakes;
+                    ioFoodRef.current = foodList;
                     setIoSnakes(snakes);
+                    setIoFood(foodList);
 
                     const player = snakes.find(s => s.id === 'player');
                     if (player && player.body && player.body.length > 0) {
@@ -2238,57 +2241,18 @@
                 return socket;
             }, []);
 
-            const startIoOnlineHost = () => {
+            const startIoOnline = () => {
                 const socket = getIoSocket();
                 if (!socket) return;
                 setIoStatus('connecting');
                 setIoError(null);
-                socket.emit('create_room', (res) => {
-                    if (!res || !res.ok) {
-                        setIoStatus('error');
-                        setIoError('Could not create room');
-                        return;
-                    }
-                    setIoOnline(true);
-                    setIoIsHost(true);
-                    setIoRoomCode(res.roomCode);
-                    setIoStatus('waiting');
-                    const name = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
-                    socket.emit('set_name', name);
-                    // Start immediately for now – other player can join mid-game
-                    socket.emit('start_game');
-                    setIoStatus('playing');
-                    ioOnlineGameOverDoneRef.current = false;
-                    setScreen('playing');
-                    startGame({ gameMode: 'io', difficulty: settings.difficulty, _internalIoOnline: true });
-                });
-            };
-
-            const startIoOnlineJoin = () => {
-                const socket = getIoSocket();
-                if (!socket) return;
-                const code = window.prompt('Enter room code from host:');
-                if (!code) return;
-                setIoStatus('connecting');
-                setIoError(null);
-                socket.emit('join_room', { roomCode: code.trim().toUpperCase() }, (res) => {
-                    if (!res || !res.ok) {
-                        setIoStatus('error');
-                        setIoError('Room not found');
-                        alert('Room not found. Check the code and try again.');
-                        return;
-                    }
-                    setIoOnline(true);
-                    setIoIsHost(false);
-                    setIoRoomCode(code.trim().toUpperCase());
-                    setIoStatus('waiting');
-                    const name = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
-                    socket.emit('set_name', name);
-                    setIoStatus('playing');
-                    ioOnlineGameOverDoneRef.current = false;
-                    setScreen('playing');
-                    startGame({ gameMode: 'io', difficulty: settings.difficulty, _internalIoOnline: true });
-                });
+                setIoOnline(true);
+                ioOnlineGameOverDoneRef.current = false;
+                const name = snsName || (wallet ? `${wallet.slice(0, 4)}...${wallet.slice(-4)}` : 'You');
+                socket.emit('set_name', name);
+                setIoStatus('playing');
+                setScreen('playing');
+                startGame({ gameMode: 'io', difficulty: settings.difficulty, _internalIoOnline: true });
             };
 
             const startGame = (overrides) => {
@@ -3393,23 +3357,10 @@ bodyLength += 1;
                                                     type="button"
                                                     className="menu-button secondary"
                                                     style={{ flex: '0 0 auto', fontSize: '0.75rem', padding: '6px 10px' }}
-                                                    onClick={startIoOnlineHost}
+                                                    onClick={startIoOnline}
                                                 >
-                                                    Online PvP (host)
+                                                    Play Online
                                                 </button>
-                                                <button
-                                                    type="button"
-                                                    className="menu-button secondary"
-                                                    style={{ flex: '0 0 auto', fontSize: '0.75rem', padding: '6px 10px' }}
-                                                    onClick={startIoOnlineJoin}
-                                                >
-                                                    Online PvP (join)
-                                                </button>
-                                                {ioOnline && ioRoomCode && (
-                                                    <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-                                                        Room code: <strong>{ioRoomCode}</strong> ({ioIsHost ? 'Host' : 'Guest'})
-                                                    </div>
-                                                )}
                                             </div>
                                         </div>
                                     </div>
