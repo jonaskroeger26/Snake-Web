@@ -1,4 +1,5 @@
 node_modules
+candy-crush-dapp
 dapp-store-app/*.apk
 .DS_Store
 target/
