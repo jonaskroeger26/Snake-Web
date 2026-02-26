@@ -53,6 +53,18 @@ function libraryHasArtistTitle(artist: string, title: string): boolean {
   return false
 }
 
+/** True if the library already has the one Fearless song (Lost Sky). Used to never add a second Fearless from blob. */
+function libraryAlreadyHasFearlessSong(): boolean {
+  for (const a of musicLibrary) {
+    for (const album of a.albums) {
+      for (const song of album.songs) {
+        if (norm(song.title).includes("fearless")) return true
+      }
+    }
+  }
+  return false
+}
+
 /**
  * Parse "Artist - Song Title.ext" into { artist, title }. If no " - ", treat whole filename as title and artist as "Unknown Artist".
  */
@@ -76,19 +88,20 @@ function artistNameMatch(a: string, b: string): boolean {
 
 /**
  * Merge new tracks from the store into the library. No UI section is ever labeled "blob".
- * - Tracks already in the library (by r2Key/pathname/fallbacks or artist+title) are skipped (no duplicates).
- * - For each new track, parse artist from filename ("Artist - Song.ext").
- * - Album name: if only one song, use the song title; otherwise "Tracks".
- * - If that artist already exists on the pod, add the album there; else add new artist.
+ * Duplicate detection: skip a blob track if it's already in the library by (1) exact path/filename,
+ * (2) normalized basename (catches "Fearless.mp3" vs "Fearless (NCS).mp3" as same song), or
+ * (3) same artist + same/similar title. No song-specific filters; works for any number of songs.
  */
 function mergeBlobTracksIntoLibrary(
   library: Artist[],
   blobTracks: { pathname: string; url: string }[]
 ): Artist[] {
   const staticKeys = getStaticR2Keys()
+  const staticNormBasenames = getStaticNormalizedBasenames()
   const newTracks = blobTracks.filter((t) => {
     const filename = t.pathname.replace(/^.*\//, "")
     if (staticKeys.has(t.pathname) || staticKeys.has(filename)) return false
+    if (staticNormBasenames.has(normBasename(t.pathname))) return false
     const { artist, title } = parseBlobFilename(t.pathname)
     if (libraryHasArtistTitle(artist, title)) return false
     return true
@@ -114,6 +127,7 @@ function mergeBlobTracksIntoLibrary(
 
   const artists = Array.from(library)
   for (const { displayName, songs } of byArtist.values()) {
+    if (!songs.length) continue
     const existingIndex = artists.findIndex((a) => artistNameMatch(a.name, displayName))
     const albumName = songs.length === 1 ? songs[0].title : "Tracks"
     const album: Album = { name: albumName, songs }

@@ -96,10 +96,14 @@ export const musicLibrary: Artist[] = [
         name: "NCS",
         songs: [
           {
-            id: "lost-sky-fearless-part-2",
-            title: "Fearless Part 2",
+            id: "lost-sky-fearless",
+            title: "Fearless",
             r2Key: "Lost Sky - Fearless Part 2.mp3",
-            audioUrlFallbacks: ["Fearless Part 2.mp3"],
+            audioUrlFallbacks: [
+              "Lost Sky - Fearless.mp3",
+              "Fearless Part 2.mp3",
+              "Fearless.mp3",
+            ],
           },
         ],
       },
