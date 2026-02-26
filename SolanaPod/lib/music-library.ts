@@ -78,31 +78,10 @@ export const musicLibrary: Artist[] = [
             id: "janji-heroes-tonight",
             title: "Heroes Tonight (feat. Johnning)",
             duration: "3:28",
-            r2Key: "Janji - Heroes Tonight (feat. Johnning) Progressive House NCS Release.mp3",
+            r2Key: "Janji - Heroes Tonight (feat. Johnning)  Progressive House  NCS - Copyright Free Music.mp3",
             audioUrlFallbacks: [
-              "Janji - Heroes Tonight (feat. Johnning) Progressive House NCS - Release.mp3",
-              "Janji - Heroes Tonight (feat. Johnning) [NCS Release].mp3",
+              "Janji - Heroes Tonight (feat. Johnning) Progressive House NCS Release.mp3",
               "Janji - Heroes Tonight (feat. Johnning).mp3",
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
-    name: "Lost Sky",
-    albums: [
-      {
-        name: "NCS",
-        songs: [
-          {
-            id: "lost-sky-fearless",
-            title: "Fearless",
-            r2Key: "Lost Sky - Fearless Part 2.mp3",
-            audioUrlFallbacks: [
-              "Lost Sky - Fearless.mp3",
-              "Fearless Part 2.mp3",
-              "Fearless.mp3",
             ],
           },
         ],
