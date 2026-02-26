@@ -161,21 +161,21 @@ export function SnakeEmbedded() {
   return (
     <div
       ref={containerRef}
-      className="absolute inset-0 w-full h-full bg-black flex flex-col items-center justify-center overflow-hidden rounded-[14px] md:rounded-[11px] lg:rounded-[14px]"
+      className="absolute inset-0 w-full h-full min-w-0 min-h-0 bg-black flex flex-col items-center justify-center overflow-hidden rounded-[14px] md:rounded-[11px] lg:rounded-[14px]"
     >
-      <div className="absolute top-1 left-1 text-[10px] font-mono text-white/80 z-10">
-        Score: {score}
+      <div className="absolute top-0.5 left-1 text-[8px] md:text-[9px] font-mono text-white/80 z-10 leading-tight">
+        {score}
       </div>
       <canvas
         ref={canvasRef}
-        className="max-w-full max-h-full"
+        className="max-w-full max-h-full object-contain"
         style={{ imageRendering: "pixelated" }}
       />
       {screen === "gameOver" && (
-        <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-2 z-20">
-          <div className="text-white font-bold text-lg">Game Over</div>
-          <div className="text-white/90 text-sm">Score: {score}</div>
-          <div className="text-white/70 text-xs">Select to play again · Menu to exit</div>
+        <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center gap-0.5 md:gap-1 z-20 px-1">
+          <div className="text-white font-bold text-xs md:text-sm">Game Over</div>
+          <div className="text-white/90 text-[10px] md:text-xs">Score: {score}</div>
+          <div className="text-white/60 text-[8px] md:text-[9px] text-center">Select: again · Menu: exit</div>
         </div>
       )}
     </div>
