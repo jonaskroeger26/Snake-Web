@@ -28,9 +28,32 @@ function getStaticR2Keys(): Set<string> {
 }
 
 /**
- * Merge blob track list into the library:
- * - Library songs already reference the blob via r2Key → no separate section.
- * - New blob files (not in the static library) are added as one album "New from Blob" on the first artist.
+ * Parse "Artist - Song Title.ext" into { artist, title }. If no " - ", treat whole filename as title and artist as "Unknown Artist".
+ */
+function parseBlobFilename(pathname: string): { artist: string; title: string } {
+  const filename = pathname.replace(/^.*\//, "")
+  const base = filename.replace(/\.[^./]+$/, "").trim()
+  const sep = " - "
+  const i = base.indexOf(sep)
+  if (i !== -1) {
+    return {
+      artist: base.slice(0, i).trim() || "Unknown Artist",
+      title: base.slice(i + sep.length).trim() || base,
+    }
+  }
+  return { artist: "Unknown Artist", title: base || pathname }
+}
+
+function artistNameMatch(a: string, b: string): boolean {
+  return a.trim().toLowerCase() === b.trim().toLowerCase()
+}
+
+/**
+ * Merge new blob tracks into the library. No "New from Blob" section.
+ * - Tracks already in the library (by r2Key/pathname) are skipped (no duplicates).
+ * - For each new track, parse artist from filename ("Artist - Song.ext").
+ * - If that artist already exists on the pod, add the song to that artist (one album "From Blob").
+ * - If the artist is new (e.g. Lost Sky), add the artist and the song there.
  */
 function mergeBlobTracksIntoLibrary(
   library: Artist[],
@@ -41,21 +64,39 @@ function mergeBlobTracksIntoLibrary(
     const filename = t.pathname.replace(/^.*\//, "")
     return !staticKeys.has(t.pathname) && !staticKeys.has(filename)
   })
-  if (!newTracks.length || !library.length) return library
+  if (!newTracks.length) return library
 
-  const newSongs: Song[] = newTracks.map((t) => {
-    const base = t.pathname.replace(/\.[^./]+$/, "").replace(/^.*\//, "")
-    return {
+  const byArtist = new Map<string, { displayName: string; songs: Song[] }>()
+  for (const t of newTracks) {
+    const { artist, title } = parseBlobFilename(t.pathname)
+    const key = artist.trim().toLowerCase()
+    const song: Song = {
       id: `blob-${t.pathname}`,
-      title: base || t.pathname,
+      title,
       audioUrl: t.url,
     }
-  })
-  const newAlbum: Album = { name: "New from Blob", songs: newSongs }
+    const existing = byArtist.get(key)
+    if (existing) {
+      existing.songs.push(song)
+    } else {
+      byArtist.set(key, { displayName: artist, songs: [song] })
+    }
+  }
 
-  return library.map((artist, i) =>
-    i === 0 ? { ...artist, albums: [...artist.albums, newAlbum] } : artist
-  )
+  const artists = Array.from(library)
+  for (const { displayName, songs } of byArtist.values()) {
+    const existingIndex = artists.findIndex((a) => artistNameMatch(a.name, displayName))
+    const album: Album = { name: "From Blob", songs }
+    if (existingIndex !== -1) {
+      artists[existingIndex] = {
+        ...artists[existingIndex],
+        albums: [...artists[existingIndex].albums, album],
+      }
+    } else {
+      artists.push({ name: displayName, albums: [album] })
+    }
+  }
+  return artists
 }
 
 /** Flat list of all songs in library for shuffle */
