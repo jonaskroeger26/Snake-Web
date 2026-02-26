@@ -71,7 +71,7 @@ export const musicLibrary: Artist[] = [
     name: "Janji",
     albums: [
       {
-        name: "NCS Release",
+        name: "NCS",
         year: "2025",
         songs: [
           {
@@ -87,14 +87,19 @@ export const musicLibrary: Artist[] = [
           },
         ],
       },
+    ],
+  },
+  {
+    name: "Lost Sky",
+    albums: [
       {
         name: "NCS",
         songs: [
           {
-            id: "janji-fearless",
-            title: "Fearless",
-            r2Key: "Janji - Fearless.mp3",
-            audioUrlFallbacks: ["Fearless.mp3"],
+            id: "lost-sky-fearless-part-2",
+            title: "Fearless Part 2",
+            r2Key: "Lost Sky - Fearless Part 2.mp3",
+            audioUrlFallbacks: ["Fearless Part 2.mp3"],
           },
         ],
       },
