@@ -37,6 +37,29 @@ function norm(s: string): string {
   return s.trim().toLowerCase()
 }
 
+/** Normalize a path/filename for duplicate scan: basename, no extension, lowercase, strip trailing " (x)" / " [x]". */
+function normBasename(pathOrFilename: string): string {
+  const base = pathOrFilename.replace(/^.*\//, "").replace(/\.[^./]+$/, "").trim().toLowerCase()
+  return base.replace(/\s*[(\[]([^)\]]*)[)\]]\s*$/, "").trim() || base
+}
+
+/** Set of normalized basenames from every library song (r2Key + fallbacks). Used to detect duplicate blob tracks by filename. */
+function getStaticNormalizedBasenames(): Set<string> {
+  const set = new Set<string>()
+  for (const artist of musicLibrary) {
+    for (const album of artist.albums) {
+      for (const song of album.songs) {
+        if (song.r2Key) set.add(normBasename(song.r2Key))
+        song.audioUrlFallbacks?.forEach((entry) => {
+          const key = entry.startsWith("http") ? entry.replace(/^.*\//, "").replace(/\?.*$/, "") : entry
+          set.add(normBasename(key))
+        })
+      }
+    }
+  }
+  return set
+}
+
 /** True if the library already has this artist+title (avoids duplicate e.g. Janji Heroes Tonight from blob). */
 function libraryHasArtistTitle(artist: string, title: string): boolean {
   const nArtist = norm(artist)
