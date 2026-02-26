@@ -11,7 +11,7 @@ import { trackAutoplay } from "@/lib/analytics"
 type NavigationLevel = "artists" | "albums" | "songs" | "nowPlaying"
 export type RepeatMode = "off" | "one" | "all"
 
-/** Pathnames/r2Keys that already exist in the static library (from music-library.ts). */
+/** Pathnames/r2Keys that already exist in the static library (from music-library.ts). Includes fallbacks so we don't add the same song twice. */
 function getStaticR2Keys(): Set<string> {
   const keys = new Set<string>()
   for (const artist of musicLibrary) {
@@ -21,10 +21,36 @@ function getStaticR2Keys(): Set<string> {
           keys.add(song.r2Key)
           keys.add(song.r2Key.replace(/^.*\//, ""))
         }
+        song.audioUrlFallbacks?.forEach((entry) => {
+          const key = entry.startsWith("http") ? entry.replace(/^.*\//, "").replace(/\?.*$/, "") : entry.replace(/^.*\//, "")
+          keys.add(entry)
+          keys.add(key)
+        })
       }
     }
   }
   return keys
+}
+
+/** Normalize for artist/title comparison (lowercase, trim). */
+function norm(s: string): string {
+  return s.trim().toLowerCase()
+}
+
+/** True if the library already has this artist+title (avoids duplicate e.g. Janji Heroes Tonight from blob). */
+function libraryHasArtistTitle(artist: string, title: string): boolean {
+  const nArtist = norm(artist)
+  const nTitle = norm(title)
+  for (const a of musicLibrary) {
+    if (norm(a.name) !== nArtist) continue
+    for (const album of a.albums) {
+      for (const song of album.songs) {
+        if (norm(song.title) === nTitle) return true
+        if (norm(song.title).includes(nTitle) || nTitle.includes(norm(song.title))) return true
+      }
+    }
+  }
+  return false
 }
 
 /**
@@ -50,10 +76,10 @@ function artistNameMatch(a: string, b: string): boolean {
 
 /**
  * Merge new tracks from the store into the library. No UI section is ever labeled "blob".
- * - Tracks already in the library (by r2Key/pathname) are skipped (no duplicates).
+ * - Tracks already in the library (by r2Key/pathname/fallbacks or artist+title) are skipped (no duplicates).
  * - For each new track, parse artist from filename ("Artist - Song.ext").
- * - If that artist already exists on the pod, add the song to that artist (one album "Tracks").
- * - If the artist is new (e.g. Lost Sky), add the artist and the song there.
+ * - Album name: if only one song, use the song title; otherwise "Tracks".
+ * - If that artist already exists on the pod, add the album there; else add new artist.
  */
 function mergeBlobTracksIntoLibrary(
   library: Artist[],
@@ -62,7 +88,10 @@ function mergeBlobTracksIntoLibrary(
   const staticKeys = getStaticR2Keys()
   const newTracks = blobTracks.filter((t) => {
     const filename = t.pathname.replace(/^.*\//, "")
-    return !staticKeys.has(t.pathname) && !staticKeys.has(filename)
+    if (staticKeys.has(t.pathname) || staticKeys.has(filename)) return false
+    const { artist, title } = parseBlobFilename(t.pathname)
+    if (libraryHasArtistTitle(artist, title)) return false
+    return true
   })
   if (!newTracks.length) return library
 
@@ -86,7 +115,8 @@ function mergeBlobTracksIntoLibrary(
   const artists = Array.from(library)
   for (const { displayName, songs } of byArtist.values()) {
     const existingIndex = artists.findIndex((a) => artistNameMatch(a.name, displayName))
-    const album: Album = { name: "Tracks", songs }
+    const albumName = songs.length === 1 ? songs[0].title : "Tracks"
+    const album: Album = { name: albumName, songs }
     if (existingIndex !== -1) {
       artists[existingIndex] = {
         ...artists[existingIndex],

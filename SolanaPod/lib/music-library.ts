@@ -78,13 +78,23 @@ export const musicLibrary: Artist[] = [
             id: "janji-heroes-tonight",
             title: "Heroes Tonight (feat. Johnning)",
             duration: "3:28",
-            // Exact name from Blob browser (at root): "Janji - Heroes Tonight (feat. Johnning) Progressive H..." → full name below
             r2Key: "Janji - Heroes Tonight (feat. Johnning) Progressive House NCS Release.mp3",
             audioUrlFallbacks: [
               "Janji - Heroes Tonight (feat. Johnning) Progressive House NCS - Release.mp3",
               "Janji - Heroes Tonight (feat. Johnning) [NCS Release].mp3",
               "Janji - Heroes Tonight (feat. Johnning).mp3",
             ],
+          },
+        ],
+      },
+      {
+        name: "NCS",
+        songs: [
+          {
+            id: "janji-fearless",
+            title: "Fearless",
+            r2Key: "Janji - Fearless.mp3",
+            audioUrlFallbacks: ["Fearless.mp3"],
           },
         ],
       },
