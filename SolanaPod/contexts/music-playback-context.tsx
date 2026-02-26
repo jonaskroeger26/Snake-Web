@@ -11,10 +11,39 @@ import { trackAutoplay } from "@/lib/analytics"
 type NavigationLevel = "artists" | "albums" | "songs" | "nowPlaying"
 export type RepeatMode = "off" | "one" | "all"
 
-/** Build "Your uploads" artist from blob track list (from /api/audio/tracks). */
-function blobTracksToArtist(tracks: { pathname: string; url: string }[]): Artist | null {
-  if (!tracks.length) return null
-  const songs: Song[] = tracks.map((t) => {
+/** Pathnames/r2Keys that already exist in the static library (from music-library.ts). */
+function getStaticR2Keys(): Set<string> {
+  const keys = new Set<string>()
+  for (const artist of musicLibrary) {
+    for (const album of artist.albums) {
+      for (const song of album.songs) {
+        if (song.r2Key) {
+          keys.add(song.r2Key)
+          keys.add(song.r2Key.replace(/^.*\//, ""))
+        }
+      }
+    }
+  }
+  return keys
+}
+
+/**
+ * Merge blob track list into the library:
+ * - Library songs already reference the blob via r2Key → no separate section.
+ * - New blob files (not in the static library) are added as one album "New from Blob" on the first artist.
+ */
+function mergeBlobTracksIntoLibrary(
+  library: Artist[],
+  blobTracks: { pathname: string; url: string }[]
+): Artist[] {
+  const staticKeys = getStaticR2Keys()
+  const newTracks = blobTracks.filter((t) => {
+    const filename = t.pathname.replace(/^.*\//, "")
+    return !staticKeys.has(t.pathname) && !staticKeys.has(filename)
+  })
+  if (!newTracks.length || !library.length) return library
+
+  const newSongs: Song[] = newTracks.map((t) => {
     const base = t.pathname.replace(/\.[^./]+$/, "").replace(/^.*\//, "")
     return {
       id: `blob-${t.pathname}`,
@@ -22,10 +51,11 @@ function blobTracksToArtist(tracks: { pathname: string; url: string }[]): Artist
       audioUrl: t.url,
     }
   })
-  return {
-    name: "Your uploads",
-    albums: [{ name: "Blob", songs }],
-  }
+  const newAlbum: Album = { name: "New from Blob", songs: newSongs }
+
+  return library.map((artist, i) =>
+    i === 0 ? { ...artist, albums: [...artist.albums, newAlbum] } : artist
+  )
 }
 
 /** Flat list of all songs in library for shuffle */
@@ -49,7 +79,7 @@ interface NavigationState {
 }
 
 interface MusicPlaybackContextType {
-  /** Static library + audio blobs from /api/audio/tracks (new uploads show here). */
+  /** Library from music-library.ts; new blob-only tracks are merged as one album on the first artist. */
   library: Artist[]
   navigation: NavigationState
   setNavigation: (state: NavigationState) => void
@@ -109,10 +139,10 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
       .catch(() => {})
   }, [])
 
-  const blobArtist = useMemo(() => blobTracksToArtist(blobTracks), [blobTracks])
+  // Blob tracks already in the library are served via r2Key; new blob files are merged as one album on first artist
   const effectiveLibrary = useMemo(
-    () => musicLibrary.concat(blobArtist ? [blobArtist] : []),
-    [blobArtist]
+    () => mergeBlobTracksIntoLibrary(Array.isArray(musicLibrary) ? [...musicLibrary] : [], blobTracks),
+    [blobTracks]
   )
   const libraryRef = useRef(effectiveLibrary)
   libraryRef.current = effectiveLibrary
