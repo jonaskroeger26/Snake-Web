@@ -1,0 +1,48 @@
+{
+  "expo": {
+    "name": "SolanaPod",
+    "slug": "solanapod",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#050508",
+    "scheme": "solanapod",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#050508"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "plugins": [
+      [
+        "expo-audio",
+        {
+          "enableBackgroundPlayback": true
+        }
+      ],
+      [
+        "./node_modules/expo-foreground-actions/plugins/expo-foreground-actions"
+      ],
+      "./plugins/withForegroundServiceMediaType.js"
+    ],
+    "android": {
+      "package": "com.solanapod.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#050508"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.solanapod.app"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4027b138-4103-4faf-b8b0-660d367e1637"
+      }
+    },
+    "owner": "jonaskroeger"
+  }
+}

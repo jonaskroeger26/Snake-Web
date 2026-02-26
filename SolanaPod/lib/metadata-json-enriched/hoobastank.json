@@ -1,0 +1,781 @@
+{
+  "artist": "Hoobastank",
+  "id": "2fa0d3ac-b64c-401a-b0a1-4915ba6cc157",
+  "albums": [
+    {
+      "album": "They Sure Don't Make Basketball Shorts Like They Used To",
+      "year": "1998",
+      "albumArt": "https://coverartarchive.org/release/30bb806e-dcf8-4b0b-80ca-518d3e6bbc53/front",
+      "songs": [
+        {
+          "title": "Earthsick",
+          "youtube": "https://www.youtube.com/watch?v=uunJZm6swnw"
+        },
+        {
+          "title": "Foot in Your Mouth",
+          "youtube": "https://www.youtube.com/watch?v=aZpiqUePGdM"
+        },
+        {
+          "title": "Karma Patrol",
+          "youtube": "https://www.youtube.com/watch?v=Atc-OeB1t-w"
+        },
+        {
+          "title": "Stuck Without a Voice",
+          "youtube": "https://www.youtube.com/watch?v=ciW8DfvAbD4"
+        },
+        {
+          "title": "Can I Buy You a Drink?",
+          "youtube": "https://www.youtube.com/watch?v=ZFzuhBPUSj0"
+        },
+        {
+          "title": "Naked Jock Man",
+          "youtube": "https://www.youtube.com/watch?v=BaTYDk1DkdA"
+        },
+        {
+          "title": "Our Song",
+          "youtube": "https://www.youtube.com/watch?v=J9RQV-n_8jE"
+        },
+        {
+          "title": "The Mirror",
+          "youtube": "https://www.youtube.com/watch?v=wLyo8HO4jsY"
+        },
+        {
+          "title": "Educated Fool",
+          "youtube": "https://www.youtube.com/watch?v=oaNz0AewyRc"
+        },
+        {
+          "title": "The Dance That Broke My Jaw",
+          "youtube": "https://www.youtube.com/watch?v=HPyIaVHlIl8"
+        }
+      ]
+    },
+    {
+      "album": "Forward",
+      "year": "2000",
+      "albumArt": "https://coverartarchive.org/release/04e0146c-c876-4821-a1bc-c909337ab8fc/front",
+      "songs": [
+        {
+          "title": "\"End of Our Rope\"",
+          "youtube": "https://www.youtube.com/watch?v=KnkzwT5ocas"
+        },
+        {
+          "title": "\"Paper Promises\"",
+          "youtube": "https://www.youtube.com/watch?v=M-fRRIcupWY"
+        },
+        {
+          "title": "\"Divine\"",
+          "youtube": "https://www.youtube.com/watch?v=38v0OzIQXaI"
+        },
+        {
+          "title": "\"Now or Never\"",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "\"Tin Walls\"",
+          "youtube": "https://www.youtube.com/watch?v=UEUN-X2NI_A"
+        },
+        {
+          "title": "\"Let You Know\"",
+          "youtube": "https://www.youtube.com/watch?v=1aMBHv4qDz0"
+        },
+        {
+          "title": "\"The Critic\"",
+          "youtube": "https://www.youtube.com/watch?v=sWkwS-FYAyU"
+        },
+        {
+          "title": "\"Never Saw It Coming\"",
+          "youtube": "https://www.youtube.com/watch?v=gPbtPWv3DAk"
+        },
+        {
+          "title": "\"Open Your Eyes\"",
+          "youtube": "https://www.youtube.com/watch?v=kN1uvcqB0FI"
+        },
+        {
+          "title": "\"Losing My Grip\"",
+          "youtube": "https://www.youtube.com/watch?v=rxlZpzpm_4s"
+        },
+        {
+          "title": "\"Ready for You\"",
+          "youtube": "https://www.youtube.com/watch?v=Jt7nO3LCRs4"
+        },
+        {
+          "title": "\"Up and Gone\"",
+          "youtube": "https://www.youtube.com/watch?v=jtiH1dubyH8"
+        },
+        {
+          "title": "\"Hello Again\"",
+          "youtube": "https://www.youtube.com/watch?v=O0HwVZXCR64"
+        },
+        {
+          "title": "\"Right Before Your Eyes\"",
+          "youtube": "https://www.youtube.com/watch?v=qc95pL338gw"
+        }
+      ]
+    },
+    {
+      "album": "Hoobastank",
+      "year": "2001",
+      "albumArt": "https://coverartarchive.org/release/7172be54-c38e-4142-95d8-c9d719115bf9/front",
+      "songs": [
+        {
+          "title": "Crawling in the Dark",
+          "youtube": "https://www.youtube.com/watch?v=bOHxtOLfvIo"
+        },
+        {
+          "title": "Remember Me",
+          "youtube": "https://www.youtube.com/watch?v=96pLgLuwNOI"
+        },
+        {
+          "title": "Running Away",
+          "youtube": "https://www.youtube.com/watch?v=kxwsu8JfvVU"
+        },
+        {
+          "title": "Pieces",
+          "youtube": "https://www.youtube.com/watch?v=GYWU6DuJ6qw"
+        },
+        {
+          "title": "Let You Know",
+          "youtube": "https://www.youtube.com/watch?v=1aMBHv4qDz0"
+        },
+        {
+          "title": "Better",
+          "youtube": "https://www.youtube.com/watch?v=UMN_nekwIJ8"
+        },
+        {
+          "title": "Ready for You",
+          "youtube": "https://www.youtube.com/watch?v=Jt7nO3LCRs4"
+        },
+        {
+          "title": "Up and Gone",
+          "youtube": "https://www.youtube.com/watch?v=jtiH1dubyH8"
+        },
+        {
+          "title": "Too Little Too Late",
+          "youtube": "https://www.youtube.com/watch?v=xWX6CZdPCcs"
+        },
+        {
+          "title": "Hello Again",
+          "youtube": "https://www.youtube.com/watch?v=O0HwVZXCR64"
+        },
+        {
+          "title": "To Be With You",
+          "youtube": "https://www.youtube.com/watch?v=IX_ugHW0rQQ"
+        },
+        {
+          "title": "Give It Back",
+          "youtube": "https://www.youtube.com/watch?v=rxx5m88ZZU4"
+        }
+      ]
+    },
+    {
+      "album": "The Reason",
+      "year": "2003",
+      "albumArt": "https://coverartarchive.org/release/e4359cf3-9c3b-48cf-a5b0-bfaad94b5699/front",
+      "songs": [
+        {
+          "title": "Same Direction",
+          "youtube": "https://www.youtube.com/watch?v=c_UOL1-weMc"
+        },
+        {
+          "title": "Out of Control",
+          "youtube": "https://www.youtube.com/watch?v=E17HnEMloDc"
+        },
+        {
+          "title": "What Happened to Us?",
+          "youtube": "https://www.youtube.com/watch?v=MA_anm-Cb_s"
+        },
+        {
+          "title": "Escape",
+          "youtube": "https://www.youtube.com/watch?v=NDlFr2qyqqA"
+        },
+        {
+          "title": "Just One",
+          "youtube": "https://www.youtube.com/watch?v=iNgkYL7Plao"
+        },
+        {
+          "title": "Lucky",
+          "youtube": "https://www.youtube.com/watch?v=F0rz4mTLD0I"
+        },
+        {
+          "title": "From the Heart",
+          "youtube": "https://www.youtube.com/watch?v=7_7hfy4tQjI"
+        },
+        {
+          "title": "The Reason",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "Let It Out",
+          "youtube": "https://www.youtube.com/watch?v=L-RZ__t9w68"
+        },
+        {
+          "title": "Unaffected",
+          "youtube": "https://www.youtube.com/watch?v=qCzhrC0tYgQ"
+        },
+        {
+          "title": "Never There",
+          "youtube": "https://www.youtube.com/watch?v=l3tapiBp26A"
+        },
+        {
+          "title": "Disappear",
+          "youtube": "https://www.youtube.com/watch?v=RpssSqhvKJQ"
+        }
+      ]
+    },
+    {
+      "album": "20 Greatest Hits",
+      "year": "2004",
+      "albumArt": "https://coverartarchive.org/release/cf9c8473-7177-4f20-a9b9-75d3a3c45a07/front",
+      "songs": [
+        {
+          "title": "The Reason",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "Crawling In The Dark",
+          "youtube": "https://www.youtube.com/watch?v=bOHxtOLfvIo"
+        },
+        {
+          "title": "Right Before Your Eyes",
+          "youtube": "https://www.youtube.com/watch?v=qc95pL338gw"
+        },
+        {
+          "title": "Out Of Control",
+          "youtube": "https://www.youtube.com/watch?v=E17HnEMloDc"
+        },
+        {
+          "title": "Remember Me",
+          "youtube": "https://www.youtube.com/watch?v=96pLgLuwNOI"
+        },
+        {
+          "title": "Lucky",
+          "youtube": "https://www.youtube.com/watch?v=F0rz4mTLD0I"
+        },
+        {
+          "title": "Let It Out",
+          "youtube": "https://www.youtube.com/watch?v=L-RZ__t9w68"
+        },
+        {
+          "title": "Running Away",
+          "youtube": "https://www.youtube.com/watch?v=kxwsu8JfvVU"
+        },
+        {
+          "title": "Unaffected",
+          "youtube": "https://www.youtube.com/watch?v=qCzhrC0tYgQ"
+        },
+        {
+          "title": "Ready For You",
+          "youtube": "https://www.youtube.com/watch?v=Jt7nO3LCRs4"
+        },
+        {
+          "title": "Disappear",
+          "youtube": "https://www.youtube.com/watch?v=RpssSqhvKJQ"
+        },
+        {
+          "title": "Up And Gone",
+          "youtube": "https://www.youtube.com/watch?v=jtiH1dubyH8"
+        },
+        {
+          "title": "From The Heart",
+          "youtube": "https://www.youtube.com/watch?v=7_7hfy4tQjI"
+        },
+        {
+          "title": "Pieces",
+          "youtube": "https://www.youtube.com/watch?v=GYWU6DuJ6qw"
+        },
+        {
+          "title": "Just One",
+          "youtube": "https://www.youtube.com/watch?v=iNgkYL7Plao"
+        },
+        {
+          "title": "Hello Again",
+          "youtube": "https://www.youtube.com/watch?v=O0HwVZXCR64"
+        },
+        {
+          "title": "What Happened To Us?",
+          "youtube": "https://www.youtube.com/watch?v=MA_anm-Cb_s"
+        },
+        {
+          "title": "Too Little Too Late",
+          "youtube": "https://www.youtube.com/watch?v=xWX6CZdPCcs"
+        },
+        {
+          "title": "Same Direction",
+          "youtube": "https://www.youtube.com/watch?v=c_UOL1-weMc"
+        },
+        {
+          "title": "To Be With You",
+          "youtube": "https://www.youtube.com/watch?v=IX_ugHW0rQQ"
+        }
+      ]
+    },
+    {
+      "album": "Every Man for Himself",
+      "year": "2006",
+      "albumArt": "https://coverartarchive.org/release/6c5eb01d-ab10-4e62-a742-6e3c0ced849c/front",
+      "songs": [
+        {
+          "title": "The Rules",
+          "youtube": "https://www.youtube.com/watch?v=6Q0vphlRcTk"
+        },
+        {
+          "title": "Born to Lead",
+          "youtube": "https://www.youtube.com/watch?v=pHo6TwRM7ys"
+        },
+        {
+          "title": "Moving Forward",
+          "youtube": "https://www.youtube.com/watch?v=3PCFfktGeXU"
+        },
+        {
+          "title": "Inside of You",
+          "youtube": "https://www.youtube.com/watch?v=WcSZ7deAHbw"
+        },
+        {
+          "title": "The First of Me",
+          "youtube": "https://www.youtube.com/watch?v=wVF_zqXK2eQ"
+        },
+        {
+          "title": "Good Enough",
+          "youtube": "https://www.youtube.com/watch?v=KqN0ITEJdFM"
+        },
+        {
+          "title": "If I Were You",
+          "youtube": "https://www.youtube.com/watch?v=H5kTkzK4B-4"
+        },
+        {
+          "title": "Without a Fight",
+          "youtube": "https://www.youtube.com/watch?v=meqcCNFGtAM"
+        },
+        {
+          "title": "Don’t Tell Me",
+          "youtube": "https://www.youtube.com/watch?v=XgAwTckJRJg"
+        },
+        {
+          "title": "Look Where We Are",
+          "youtube": "https://www.youtube.com/watch?v=Iy6fIDU1kzg"
+        },
+        {
+          "title": "Say the Same",
+          "youtube": "https://www.youtube.com/watch?v=npl2sWVbgdw"
+        },
+        {
+          "title": "If Only",
+          "youtube": "https://www.youtube.com/watch?v=qBjMJj7lsK0"
+        },
+        {
+          "title": "More Than a Memory",
+          "youtube": "https://www.youtube.com/watch?v=5wTeYPeYhbw"
+        },
+        {
+          "title": "Finally Awake",
+          "youtube": "https://www.youtube.com/watch?v=K76FgcU5wpc"
+        },
+        {
+          "title": "Waiting",
+          "youtube": "https://www.youtube.com/watch?v=pw78ILgIOm4"
+        }
+      ]
+    },
+    {
+      "album": "The Greatest Hits: Don't Touch My Moustache",
+      "year": "2009",
+      "albumArt": "https://coverartarchive.org/release/a0f73265-3d53-46c3-9845-fdb5b3bfe29a/front",
+      "songs": [
+        {
+          "title": "Crawling in the Dark",
+          "youtube": "https://www.youtube.com/watch?v=bOHxtOLfvIo"
+        },
+        {
+          "title": "My Turn",
+          "youtube": "https://www.youtube.com/watch?v=8igfKFZl-3k"
+        },
+        {
+          "title": "Out of Control",
+          "youtube": "https://www.youtube.com/watch?v=E17HnEMloDc"
+        },
+        {
+          "title": "The Reason",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "Born to Lead",
+          "youtube": "https://www.youtube.com/watch?v=pHo6TwRM7ys"
+        },
+        {
+          "title": "Inside of You",
+          "youtube": "https://www.youtube.com/watch?v=WcSZ7deAHbw"
+        },
+        {
+          "title": "Just One",
+          "youtube": "https://www.youtube.com/watch?v=iNgkYL7Plao"
+        },
+        {
+          "title": "Running Away",
+          "youtube": "https://www.youtube.com/watch?v=kxwsu8JfvVU"
+        },
+        {
+          "title": "Pieces",
+          "youtube": "https://www.youtube.com/watch?v=GYWU6DuJ6qw"
+        },
+        {
+          "title": "Same Direction",
+          "youtube": "https://www.youtube.com/watch?v=c_UOL1-weMc"
+        },
+        {
+          "title": "Remember Me",
+          "youtube": "https://www.youtube.com/watch?v=96pLgLuwNOI"
+        },
+        {
+          "title": "If I Were You",
+          "youtube": "https://www.youtube.com/watch?v=H5kTkzK4B-4"
+        },
+        {
+          "title": "So Close, So Far",
+          "youtube": "https://www.youtube.com/watch?v=mTaMaHmn3cA"
+        },
+        {
+          "title": "All About You",
+          "youtube": "https://www.youtube.com/watch?v=MzvFfxZzQgw"
+        },
+        {
+          "title": "Disappear",
+          "youtube": "https://www.youtube.com/watch?v=RpssSqhvKJQ"
+        },
+        {
+          "title": "The Letter (feat. Anna Tsuchiya)",
+          "youtube": "https://www.youtube.com/watch?v=mzL75qzAZxQ"
+        },
+        {
+          "title": "Did You",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "Connected",
+          "youtube": "https://www.youtube.com/watch?v=shI5WJ6YKIE"
+        },
+        {
+          "title": "The Reason (acoustic version)",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "All About You (live 9-29-08 The Wiltern, Los Angeles)",
+          "youtube": "https://www.youtube.com/watch?v=MzvFfxZzQgw"
+        }
+      ]
+    },
+    {
+      "album": "Live From The Wiltern",
+      "year": "2009",
+      "albumArt": "https://coverartarchive.org/release/a144d92d-dab9-4adc-bc7f-403f55353f40/front",
+      "songs": [
+        {
+          "title": "Crawling In the Dark (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "Running Away (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "All About You (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "My Turn (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "So Close So Far (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "The Letter (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "The First of Me (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "The Reason (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "You're the One (Live from The Wiltern)",
+          "youtube": null
+        },
+        {
+          "title": "Out of Control (Live from The Wiltern)",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "For(n)ever",
+      "year": "2009",
+      "albumArt": "https://coverartarchive.org/release/7d762834-1786-44a0-85d1-0f3bde56eaf8/front",
+      "songs": [
+        {
+          "title": "My Turn",
+          "youtube": "https://www.youtube.com/watch?v=8igfKFZl-3k"
+        },
+        {
+          "title": "I Don’t Think I Love You",
+          "youtube": "https://www.youtube.com/watch?v=phi10ryplLw"
+        },
+        {
+          "title": "So Close, So Far",
+          "youtube": "https://www.youtube.com/watch?v=mTaMaHmn3cA"
+        },
+        {
+          "title": "All About You",
+          "youtube": "https://www.youtube.com/watch?v=MzvFfxZzQgw"
+        },
+        {
+          "title": "The Letter",
+          "youtube": "https://www.youtube.com/watch?v=mzL75qzAZxQ"
+        },
+        {
+          "title": "Tears of Yesterday",
+          "youtube": "https://www.youtube.com/watch?v=4Zw7uHHC8ik"
+        },
+        {
+          "title": "Sick of Hanging On",
+          "youtube": "https://www.youtube.com/watch?v=in_cm5PqnXg"
+        },
+        {
+          "title": "You’re the One",
+          "youtube": "https://www.youtube.com/watch?v=SOHqHw5Jvsw"
+        },
+        {
+          "title": "Who the Hell Am I?",
+          "youtube": "https://www.youtube.com/watch?v=VEPuT3iBuUA"
+        },
+        {
+          "title": "You Need to Be Here",
+          "youtube": "https://www.youtube.com/watch?v=61NwQ2L5LsI"
+        },
+        {
+          "title": "Gone Gone Gone",
+          "youtube": "https://www.youtube.com/watch?v=f4TNFgvPcQQ"
+        }
+      ]
+    },
+    {
+      "album": "Is This the Day?",
+      "year": "2010",
+      "albumArt": "https://coverartarchive.org/release/1aa0eb56-8f53-48f3-8694-d9807203da68/front",
+      "songs": [
+        {
+          "title": "Just One",
+          "youtube": "https://www.youtube.com/watch?v=iNgkYL7Plao"
+        },
+        {
+          "title": "Crawling in the Dark",
+          "youtube": "https://www.youtube.com/watch?v=bOHxtOLfvIo"
+        },
+        {
+          "title": "I Don’t Think I Love You",
+          "youtube": "https://www.youtube.com/watch?v=phi10ryplLw"
+        },
+        {
+          "title": "Inside of You",
+          "youtube": "https://www.youtube.com/watch?v=WcSZ7deAHbw"
+        },
+        {
+          "title": "Running Away",
+          "youtube": "https://www.youtube.com/watch?v=kxwsu8JfvVU"
+        },
+        {
+          "title": "The Reason",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "My Turn",
+          "youtube": "https://www.youtube.com/watch?v=8igfKFZl-3k"
+        },
+        {
+          "title": "What I Meant to Say",
+          "youtube": "https://www.youtube.com/watch?v=hUc-1hGlPUw"
+        },
+        {
+          "title": "If I Were You",
+          "youtube": "https://www.youtube.com/watch?v=H5kTkzK4B-4"
+        },
+        {
+          "title": "Tears of Yesterday",
+          "youtube": "https://www.youtube.com/watch?v=4Zw7uHHC8ik"
+        },
+        {
+          "title": "Pieces",
+          "youtube": "https://www.youtube.com/watch?v=GYWU6DuJ6qw"
+        },
+        {
+          "title": "Same Direction",
+          "youtube": "https://www.youtube.com/watch?v=c_UOL1-weMc"
+        },
+        {
+          "title": "Is This the Day?",
+          "youtube": "https://www.youtube.com/watch?v=wTMH3nu7TMU"
+        }
+      ]
+    },
+    {
+      "album": "Icon",
+      "year": "2010",
+      "albumArt": "https://coverartarchive.org/release/a89ae9ea-b161-41c6-ae67-c5de32bccd58/front",
+      "songs": [
+        {
+          "title": "Running Away",
+          "youtube": "https://www.youtube.com/watch?v=kxwsu8JfvVU"
+        },
+        {
+          "title": "Crawling in the Dark",
+          "youtube": "https://www.youtube.com/watch?v=bOHxtOLfvIo"
+        },
+        {
+          "title": "Out of Control",
+          "youtube": "https://www.youtube.com/watch?v=E17HnEMloDc"
+        },
+        {
+          "title": "The Reason",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "Did You",
+          "youtube": "https://www.youtube.com/watch?v=fV4DiAyExN0"
+        },
+        {
+          "title": "Connected",
+          "youtube": "https://www.youtube.com/watch?v=shI5WJ6YKIE"
+        },
+        {
+          "title": "Inside of You",
+          "youtube": "https://www.youtube.com/watch?v=WcSZ7deAHbw"
+        },
+        {
+          "title": "If I Were You (radio edit)",
+          "youtube": "https://www.youtube.com/watch?v=H5kTkzK4B-4"
+        },
+        {
+          "title": "The Letter",
+          "youtube": "https://www.youtube.com/watch?v=mzL75qzAZxQ"
+        },
+        {
+          "title": "My Turn",
+          "youtube": "https://www.youtube.com/watch?v=8igfKFZl-3k"
+        },
+        {
+          "title": "We Are One",
+          "youtube": "https://www.youtube.com/watch?v=efzssurrV6U"
+        },
+        {
+          "title": "Never Be Here Again",
+          "youtube": "https://www.youtube.com/watch?v=ibGeex1DjbM"
+        }
+      ]
+    },
+    {
+      "album": "Fight or Flight",
+      "year": "2012",
+      "albumArt": "https://coverartarchive.org/release/43c54dac-6e48-4e93-9aaa-4eeae8fc9884/front",
+      "songs": [
+        {
+          "title": "This Is Gonna Hurt",
+          "youtube": "https://www.youtube.com/watch?v=egA-YmTpIa8"
+        },
+        {
+          "title": "You Before Me",
+          "youtube": "https://www.youtube.com/watch?v=o_l5T65OQLs"
+        },
+        {
+          "title": "The Fallen",
+          "youtube": "https://www.youtube.com/watch?v=YsjHZXRGM1M"
+        },
+        {
+          "title": "Can You Save Me?",
+          "youtube": "https://www.youtube.com/watch?v=7_gDR66Svjs"
+        },
+        {
+          "title": "No Destination",
+          "youtube": "https://www.youtube.com/watch?v=Zs0UQjDi3-Y"
+        },
+        {
+          "title": "Slow Down",
+          "youtube": "https://www.youtube.com/watch?v=LgV_v9EajVY"
+        },
+        {
+          "title": "No Win Situation",
+          "youtube": "https://www.youtube.com/watch?v=kWo6Dk3BYd0"
+        },
+        {
+          "title": "Sing What You Can't Say",
+          "youtube": "https://www.youtube.com/watch?v=ZkM68sggCrQ"
+        },
+        {
+          "title": "Magnolia",
+          "youtube": "https://www.youtube.com/watch?v=cSKyhWN15fI"
+        },
+        {
+          "title": "Incomplete",
+          "youtube": "https://www.youtube.com/watch?v=KQ4BqOcQIZc"
+        },
+        {
+          "title": "A Thousand Words",
+          "youtube": "https://www.youtube.com/watch?v=wqaHNAOAvDk"
+        }
+      ]
+    },
+    {
+      "album": "Push Pull",
+      "year": "2018",
+      "albumArt": "https://coverartarchive.org/release/f42c3eda-2a25-4900-9a5b-4432bed6c3f5/front",
+      "songs": [
+        {
+          "title": "Don’t Look Away",
+          "youtube": "https://www.youtube.com/watch?v=ROWDV63Z_Xc"
+        },
+        {
+          "title": "Push Pull",
+          "youtube": "https://www.youtube.com/watch?v=6stud6ZYO6c"
+        },
+        {
+          "title": "More Beautiful",
+          "youtube": "https://www.youtube.com/watch?v=qBgDodcnvls"
+        },
+        {
+          "title": "Head Over Heels",
+          "youtube": "https://www.youtube.com/watch?v=M6aOqmGJ77s"
+        },
+        {
+          "title": "True Believer",
+          "youtube": "https://www.youtube.com/watch?v=xE3W1BWeAT0"
+        },
+        {
+          "title": "Just Let Go (Who Cares If We Fall)",
+          "youtube": "https://www.youtube.com/watch?v=8m20LW2nvVE"
+        },
+        {
+          "title": "Better Left Unsaid",
+          "youtube": "https://www.youtube.com/watch?v=SK-2I1KxOQQ"
+        },
+        {
+          "title": "We Don’t Need the World",
+          "youtube": "https://www.youtube.com/watch?v=JpjgyGlVIaI"
+        },
+        {
+          "title": "Buzzkill (Before You Say Goodbye)",
+          "youtube": "https://www.youtube.com/watch?v=6c6WLXUea-s"
+        },
+        {
+          "title": "Fallen Star",
+          "youtube": "https://www.youtube.com/watch?v=96Fb4ZfE_Ro"
+        },
+        {
+          "title": "There Will Never Be Another",
+          "youtube": "https://www.youtube.com/watch?v=lLM-9W13y4E"
+        }
+      ]
+    }
+  ]
+}

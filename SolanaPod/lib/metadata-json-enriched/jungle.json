@@ -1,0 +1,626 @@
+{
+  "artist": "Jungle",
+  "id": "6bbb3983-ce8a-4971-96e0-7cae73268fc4",
+  "albums": [
+    {
+      "album": "Jungle",
+      "year": "2014",
+      "albumArt": "https://coverartarchive.org/release/45850ffc-62e6-43a7-800f-c54d69f8dc1f/front",
+      "songs": [
+        {
+          "title": "The Heat",
+          "youtube": "https://www.youtube.com/watch?v=Y4UckOGdZtI"
+        },
+        {
+          "title": "Accelerate",
+          "youtube": "https://www.youtube.com/watch?v=_6hcsouP1cU"
+        },
+        {
+          "title": "Busy Earnin’",
+          "youtube": "https://www.youtube.com/watch?v=BcsfftwLUf0"
+        },
+        {
+          "title": "Platoon",
+          "youtube": "https://www.youtube.com/watch?v=9JkDzNOgO3U"
+        },
+        {
+          "title": "Drops",
+          "youtube": "https://www.youtube.com/watch?v=JgZxO44PjwI"
+        },
+        {
+          "title": "Time",
+          "youtube": "https://www.youtube.com/watch?v=Kt4lkUry2RY"
+        },
+        {
+          "title": "Smoking Pixels",
+          "youtube": "https://www.youtube.com/watch?v=32bulWbXwMA"
+        },
+        {
+          "title": "Julia",
+          "youtube": "https://www.youtube.com/watch?v=A0HFtcCRVNc"
+        },
+        {
+          "title": "Crumbler",
+          "youtube": "https://www.youtube.com/watch?v=3FBFcxEL6NY"
+        },
+        {
+          "title": "Son of a Gun",
+          "youtube": "https://www.youtube.com/watch?v=ufC9LGuQYMA"
+        },
+        {
+          "title": "Lucky I Got What I Want",
+          "youtube": "https://www.youtube.com/watch?v=BSy9KsGRj6Q"
+        },
+        {
+          "title": "Lemonade Lake",
+          "youtube": "https://www.youtube.com/watch?v=T3_TqsV4REE"
+        }
+      ]
+    },
+    {
+      "album": "For Ever",
+      "year": "2018",
+      "albumArt": "https://coverartarchive.org/release/de3f9a1a-fedd-4e98-a0bf-4f37a3a0aaf9/front",
+      "songs": [
+        {
+          "title": "Smile",
+          "youtube": "https://www.youtube.com/watch?v=H9hELOF0a6g"
+        },
+        {
+          "title": "Heavy, California",
+          "youtube": "https://www.youtube.com/watch?v=w4LkSRXrK34"
+        },
+        {
+          "title": "Beat 54 (All Good Now)",
+          "youtube": "https://www.youtube.com/watch?v=SetClFl10cQ"
+        },
+        {
+          "title": "Cherry",
+          "youtube": "https://www.youtube.com/watch?v=Mva_EluErSA"
+        },
+        {
+          "title": "Happy Man",
+          "youtube": "https://www.youtube.com/watch?v=lv5uiDbbWv0"
+        },
+        {
+          "title": "Casio",
+          "youtube": "https://www.youtube.com/watch?v=7nJRGARveVc"
+        },
+        {
+          "title": "Mama Oh No",
+          "youtube": "https://www.youtube.com/watch?v=_8CcM2SZXr8"
+        },
+        {
+          "title": "House in LA",
+          "youtube": "https://www.youtube.com/watch?v=J6dtXL_P2b8"
+        },
+        {
+          "title": "Give Over",
+          "youtube": "https://www.youtube.com/watch?v=iDYLRXCALb0"
+        },
+        {
+          "title": "Cosurmyne",
+          "youtube": "https://www.youtube.com/watch?v=n34Y45qBSwE"
+        },
+        {
+          "title": "Home",
+          "youtube": "https://www.youtube.com/watch?v=I1LgcPA19Vg"
+        },
+        {
+          "title": "(More and More) It Ain’t Easy",
+          "youtube": "https://www.youtube.com/watch?v=y_5JL2s64ao"
+        },
+        {
+          "title": "Pray",
+          "youtube": "https://www.youtube.com/watch?v=QLPWLqz1Wak"
+        }
+      ]
+    },
+    {
+      "album": "Back to Mine: Jungle",
+      "year": "2019",
+      "albumArt": "https://coverartarchive.org/release/3e90c88c-bfce-410d-9c2f-babd140a58c9/front",
+      "songs": [
+        {
+          "title": "Steam Heat",
+          "youtube": "https://www.youtube.com/watch?v=p1m2s1En6DQ"
+        },
+        {
+          "title": "No Fear",
+          "youtube": "https://www.youtube.com/watch?v=-Rb5buoHfA8"
+        },
+        {
+          "title": "Fannie Likes 2 Dance",
+          "youtube": "https://www.youtube.com/watch?v=TWpsgrc-Fps"
+        },
+        {
+          "title": "Birds of Paradiso",
+          "youtube": "https://www.youtube.com/watch?v=H_4u5CGHg0k"
+        },
+        {
+          "title": "Red Haze",
+          "youtube": "https://www.youtube.com/watch?v=DaH1X87rE_0"
+        },
+        {
+          "title": "Space Cadet",
+          "youtube": "https://www.youtube.com/watch?v=rcU-IfF-CWY"
+        },
+        {
+          "title": "How It Goes",
+          "youtube": "https://www.youtube.com/watch?v=EBsIag0TJKk"
+        },
+        {
+          "title": "Cariño",
+          "youtube": "https://www.youtube.com/watch?v=j9KY3R81STU"
+        },
+        {
+          "title": "Super Rich Kids",
+          "youtube": "https://www.youtube.com/watch?v=0XCQNpjWmRE"
+        },
+        {
+          "title": "High Roller",
+          "youtube": "https://www.youtube.com/watch?v=Y4UckOGdZtI"
+        },
+        {
+          "title": "Next to You",
+          "youtube": "https://www.youtube.com/watch?v=J-fKUhF7WXs"
+        },
+        {
+          "title": "Lavender",
+          "youtube": "https://www.youtube.com/watch?v=NhFdOI-s_rw"
+        },
+        {
+          "title": "Come Back a Different Day",
+          "youtube": "https://www.youtube.com/watch?v=yBX5MiivNmc"
+        },
+        {
+          "title": "Shiroi",
+          "youtube": "https://www.youtube.com/watch?v=xswNbTBuQsc"
+        },
+        {
+          "title": "Live On",
+          "youtube": "https://www.youtube.com/watch?v=oXL8NpDSlK8"
+        },
+        {
+          "title": "Masterpiece",
+          "youtube": "https://www.youtube.com/watch?v=rbFaVDfkI00"
+        },
+        {
+          "title": "Like Yesterday",
+          "youtube": "https://www.youtube.com/watch?v=TQemQRL_YVQ"
+        },
+        {
+          "title": "Sunday",
+          "youtube": "https://www.youtube.com/watch?v=IIG8zfpZh28"
+        }
+      ]
+    },
+    {
+      "album": "Loving in Stereo",
+      "year": "2021",
+      "albumArt": "https://coverartarchive.org/release/c5c1b5e3-b6ec-40ea-806a-c73e81da279b/front",
+      "songs": [
+        {
+          "title": "Dry Your Tears",
+          "youtube": "https://www.youtube.com/watch?v=Mzu3ZTtvUi4"
+        },
+        {
+          "title": "Keep Moving",
+          "youtube": "https://www.youtube.com/watch?v=7-lWzQd_xeQ"
+        },
+        {
+          "title": "All of the Time",
+          "youtube": "https://www.youtube.com/watch?v=KXnByouEYCk"
+        },
+        {
+          "title": "Romeo",
+          "youtube": "https://www.youtube.com/watch?v=0P3PA96bbHU"
+        },
+        {
+          "title": "Lifting You",
+          "youtube": "https://www.youtube.com/watch?v=83Te_6OKRlc"
+        },
+        {
+          "title": "Bonnie Hill",
+          "youtube": "https://www.youtube.com/watch?v=83Te_6OKRlc"
+        },
+        {
+          "title": "Fire",
+          "youtube": "https://www.youtube.com/watch?v=LZq1vWeXdlI"
+        },
+        {
+          "title": "Talk About It",
+          "youtube": "https://www.youtube.com/watch?v=gC4t39f0URI"
+        },
+        {
+          "title": "No Rules",
+          "youtube": "https://www.youtube.com/watch?v=9wVGCCmU778"
+        },
+        {
+          "title": "Truth",
+          "youtube": "https://www.youtube.com/watch?v=TcP8zQPQOEM"
+        },
+        {
+          "title": "What D’You Know About Me",
+          "youtube": "https://www.youtube.com/watch?v=7n_jcWZBDzo"
+        },
+        {
+          "title": "Just Fly, Don’t Worry",
+          "youtube": "https://www.youtube.com/watch?v=XMP0BvKJvFQ"
+        },
+        {
+          "title": "Goodbye My Love",
+          "youtube": "https://www.youtube.com/watch?v=dGXtb3zPy68"
+        },
+        {
+          "title": "Can’t Stop the Stars",
+          "youtube": "https://www.youtube.com/watch?v=bqo7yapZvxI"
+        }
+      ]
+    },
+    {
+      "album": "Sunshine Stereo",
+      "year": "2021",
+      "albumArt": "https://coverartarchive.org/release/83806595-f04f-4af6-bf6f-a4574a5507d8/front",
+      "songs": [
+        {
+          "title": "Sunshower",
+          "youtube": "https://www.youtube.com/watch?v=J1IFV1ncIOQ"
+        },
+        {
+          "title": "Bora!",
+          "youtube": "https://www.youtube.com/watch?v=2SYKxqR3chk"
+        },
+        {
+          "title": "Third Eye Jungle Run",
+          "youtube": "https://www.youtube.com/watch?v=ZMPxiTYX1do"
+        },
+        {
+          "title": "Wait a Minute",
+          "youtube": "https://www.youtube.com/watch?v=K6VcUCs-EDw"
+        },
+        {
+          "title": "Music Sounds Better With You",
+          "youtube": "https://www.youtube.com/watch?v=Hf244LCkkLc"
+        },
+        {
+          "title": "Deep Shadows (Lavan edit)",
+          "youtube": "https://www.youtube.com/watch?v=tts6RUSsoc4"
+        },
+        {
+          "title": "Full Metal Jacket",
+          "youtube": "https://www.youtube.com/watch?v=E3-GT_0eWP0"
+        },
+        {
+          "title": "Western",
+          "youtube": "https://www.youtube.com/watch?v=j3uc46xz9WU"
+        },
+        {
+          "title": "Oidar",
+          "youtube": "https://www.youtube.com/watch?v=Kr-EN-wD2hU"
+        },
+        {
+          "title": "Max Lush Carlos",
+          "youtube": "https://www.youtube.com/watch?v=801tVa3JqTo"
+        },
+        {
+          "title": "Cry and Party",
+          "youtube": "https://www.youtube.com/watch?v=jNxJG6SQ1us"
+        },
+        {
+          "title": "Honey Thighs",
+          "youtube": "https://www.youtube.com/watch?v=I0yteeXjjmc"
+        },
+        {
+          "title": "Grow Forever",
+          "youtube": "https://www.youtube.com/watch?v=PMXDagruedI"
+        },
+        {
+          "title": "Summer Madness",
+          "youtube": "https://www.youtube.com/watch?v=vQSI-rUUYqA"
+        },
+        {
+          "title": "Uncomfortable",
+          "youtube": "https://www.youtube.com/watch?v=_VZiI35BWpc"
+        },
+        {
+          "title": "Love Sounds",
+          "youtube": "https://www.youtube.com/watch?v=P18_Y-Gg-BE"
+        },
+        {
+          "title": "SLIDE",
+          "youtube": "https://www.youtube.com/watch?v=Rl_ceUhchbA"
+        },
+        {
+          "title": "[unknown]",
+          "youtube": null
+        },
+        {
+          "title": "Approach With Caution",
+          "youtube": "https://www.youtube.com/watch?v=m7AkxGJ1AA0"
+        },
+        {
+          "title": "Drown",
+          "youtube": "https://www.youtube.com/watch?v=rvaJ7QlhH0g"
+        },
+        {
+          "title": "Sunny Afternoon",
+          "youtube": "https://www.youtube.com/watch?v=VVnNrwPwhuk"
+        },
+        {
+          "title": "Stampede",
+          "youtube": "https://www.youtube.com/watch?v=4SoxSAG9gZk"
+        },
+        {
+          "title": "Lament for the Sky",
+          "youtube": "https://www.youtube.com/watch?v=xik-y0xlpZ0"
+        },
+        {
+          "title": "Lifting You",
+          "youtube": "https://www.youtube.com/watch?v=83Te_6OKRlc"
+        },
+        {
+          "title": "Son Shine",
+          "youtube": "https://www.youtube.com/watch?v=CevxZvSJLk8"
+        },
+        {
+          "title": "Wherever You Go",
+          "youtube": "https://www.youtube.com/watch?v=O4J1HDYIlqE"
+        }
+      ]
+    },
+    {
+      "album": "Volcano",
+      "year": "2023",
+      "albumArt": "https://coverartarchive.org/release/a041661f-d1c4-4398-b23d-6bd156bf1aed/front",
+      "songs": [
+        {
+          "title": "Us Against the World",
+          "youtube": "https://www.youtube.com/watch?v=iEyOhEiA5kQ"
+        },
+        {
+          "title": "Holding On",
+          "youtube": "https://www.youtube.com/watch?v=khCr3rlbfvs"
+        },
+        {
+          "title": "Candle Flame",
+          "youtube": "https://www.youtube.com/watch?v=esqRBsVumrw"
+        },
+        {
+          "title": "Dominoes",
+          "youtube": "https://www.youtube.com/watch?v=BZqMYcgR8tg"
+        },
+        {
+          "title": "I’ve Been in Love",
+          "youtube": "https://www.youtube.com/watch?v=xA8MCbepGRE"
+        },
+        {
+          "title": "Back on 74",
+          "youtube": "https://www.youtube.com/watch?v=q3lX2p_Uy9I"
+        },
+        {
+          "title": "You Ain’t No Celebrity",
+          "youtube": "https://www.youtube.com/watch?v=J-fKUhF7WXs"
+        },
+        {
+          "title": "Coming Back",
+          "youtube": "https://www.youtube.com/watch?v=cN_ug0yDSlA"
+        },
+        {
+          "title": "Don’t Play",
+          "youtube": "https://www.youtube.com/watch?v=dDuKs6NTFDs"
+        },
+        {
+          "title": "Every Night",
+          "youtube": "https://www.youtube.com/watch?v=B8d9Qhp6qYQ"
+        },
+        {
+          "title": "Problemz",
+          "youtube": "https://www.youtube.com/watch?v=TtgpY9pymHw"
+        },
+        {
+          "title": "Good at Breaking Hearts",
+          "youtube": "https://www.youtube.com/watch?v=r1c-8nzR5GI"
+        },
+        {
+          "title": "Palm Trees",
+          "youtube": "https://www.youtube.com/watch?v=3zupSKbZwTs"
+        },
+        {
+          "title": "Pretty Little Thing",
+          "youtube": "https://www.youtube.com/watch?v=oYssb0d4AKQ"
+        }
+      ]
+    },
+    {
+      "album": "Sunshine Stereo 2.0",
+      "year": "2023",
+      "albumArt": "https://coverartarchive.org/release/30fcbf15-e218-4ed2-abae-6f722a373196/front",
+      "songs": [
+        {
+          "title": "By the Lake",
+          "youtube": "https://www.youtube.com/watch?v=HY7eSBWjqgg"
+        },
+        {
+          "title": "The Fool",
+          "youtube": "https://www.youtube.com/watch?v=yDh_1iuBKQw"
+        },
+        {
+          "title": "Don’t You Dare Stop",
+          "youtube": "https://www.youtube.com/watch?v=APnwtctwUTg"
+        },
+        {
+          "title": "Les Fleurs",
+          "youtube": "https://www.youtube.com/watch?v=6oY81PsU8EQ"
+        },
+        {
+          "title": "Carolina, Carol Bela",
+          "youtube": "https://www.youtube.com/watch?v=Xu9TuPhQWy4"
+        },
+        {
+          "title": "Um samba gostoso",
+          "youtube": "https://www.youtube.com/watch?v=SnWQUlh0zdk"
+        },
+        {
+          "title": "Broto Maroto",
+          "youtube": "https://www.youtube.com/watch?v=9YlDRBAKGEo"
+        },
+        {
+          "title": "Praise",
+          "youtube": "https://www.youtube.com/watch?v=FG9QEQmUQco"
+        },
+        {
+          "title": "Dominoes",
+          "youtube": "https://www.youtube.com/watch?v=BZqMYcgR8tg"
+        },
+        {
+          "title": "Late Now",
+          "youtube": "https://www.youtube.com/watch?v=AfRdRXCo3IU"
+        },
+        {
+          "title": "Your Love",
+          "youtube": "https://www.youtube.com/watch?v=AfRdRXCo3IU"
+        },
+        {
+          "title": "Lover Boy",
+          "youtube": "https://www.youtube.com/watch?v=EBsIag0TJKk"
+        },
+        {
+          "title": "Just Cool",
+          "youtube": "https://www.youtube.com/watch?v=_Ibaf56aeew"
+        },
+        {
+          "title": "Push the Rock (Nicky D remix)",
+          "youtube": "https://www.youtube.com/watch?v=HyuipGxeZ7k"
+        },
+        {
+          "title": "15 to 20",
+          "youtube": "https://www.youtube.com/watch?v=HyiP0QNI8qY"
+        },
+        {
+          "title": "CooCool",
+          "youtube": "https://www.youtube.com/watch?v=QGKiC2suCHQ"
+        },
+        {
+          "title": "Awara",
+          "youtube": "https://www.youtube.com/watch?v=bEBRJrMp1VI"
+        },
+        {
+          "title": "On Your Side",
+          "youtube": null
+        },
+        {
+          "title": "Propaganda",
+          "youtube": "https://www.youtube.com/watch?v=aA0LT0kJOZ4"
+        },
+        {
+          "title": "Like the Old Days",
+          "youtube": null
+        },
+        {
+          "title": "Heatwave",
+          "youtube": null
+        },
+        {
+          "title": "Kohan",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "Sunshine Stereo 3.0",
+      "year": "2024",
+      "albumArt": "https://coverartarchive.org/release/d1012467-efc8-4980-932d-eb376876b1e9/front",
+      "songs": [
+        {
+          "title": "Frond Farewell",
+          "youtube": "https://www.youtube.com/watch?v=nzgqkSt7JZs"
+        },
+        {
+          "title": "Sold Me a Dream (Terry Tracksuit edit)",
+          "youtube": "https://www.youtube.com/watch?v=ZP-CLLrb558"
+        },
+        {
+          "title": "Back on 74 (Full Crate remix)",
+          "youtube": "https://www.youtube.com/watch?v=q3lX2p_Uy9I"
+        },
+        {
+          "title": "Andromeda",
+          "youtube": "https://www.youtube.com/watch?v=hQgsdy4clnQ"
+        },
+        {
+          "title": "Soundgood",
+          "youtube": "https://www.youtube.com/watch?v=ubNfkpbxXUs"
+        },
+        {
+          "title": "Fancy Clown",
+          "youtube": "https://www.youtube.com/watch?v=yEYCCiXLPTw"
+        },
+        {
+          "title": "Only for You",
+          "youtube": "https://www.youtube.com/watch?v=AfRdRXCo3IU"
+        },
+        {
+          "title": "Wild Animals",
+          "youtube": "https://www.youtube.com/watch?v=u-dEnJpCGAQ"
+        },
+        {
+          "title": "Sexy to Someone",
+          "youtube": "https://www.youtube.com/watch?v=AfRdRXCo3IU"
+        },
+        {
+          "title": "Be There for You",
+          "youtube": null
+        },
+        {
+          "title": "Obinrin (IZCO remix)",
+          "youtube": null
+        },
+        {
+          "title": "Sweet Slumber",
+          "youtube": null
+        },
+        {
+          "title": "Afternoon Love In",
+          "youtube": null
+        },
+        {
+          "title": "Washed in You (Wu-Lu remix)",
+          "youtube": "https://www.youtube.com/watch?v=ZbWIs6z3Thw"
+        },
+        {
+          "title": "Todavía Viva",
+          "youtube": null
+        },
+        {
+          "title": "Got to Be Good",
+          "youtube": "https://www.youtube.com/watch?v=AfRdRXCo3IU"
+        },
+        {
+          "title": "Bakom Glaset",
+          "youtube": null
+        },
+        {
+          "title": "Serena",
+          "youtube": "https://www.youtube.com/watch?v=lpeuIu-ZYJY"
+        },
+        {
+          "title": "Hey Papi",
+          "youtube": "https://www.youtube.com/watch?v=kVsYckNXYqM"
+        },
+        {
+          "title": "Heller Tag",
+          "youtube": "https://www.youtube.com/watch?v=Ee6-HXYPzXU"
+        },
+        {
+          "title": "Soil",
+          "youtube": "https://www.youtube.com/watch?v=uBqysB4N6nM"
+        },
+        {
+          "title": "Here There and Everywhere",
+          "youtube": null
+        }
+      ]
+    }
+  ]
+}

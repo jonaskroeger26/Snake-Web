@@ -1,0 +1,3099 @@
+{
+  "artist": "John Mayer",
+  "id": "144ef525-85e9-40c3-8335-02c32d0861f3",
+  "albums": [
+    {
+      "album": "Room for Squares",
+      "year": "2001",
+      "albumArt": "https://coverartarchive.org/release/859ff806-de2c-44dc-8734-71d94041b724/front",
+      "songs": [
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        },
+        {
+          "title": "City Love",
+          "youtube": "https://www.youtube.com/watch?v=8akf1hGPJjI"
+        },
+        {
+          "title": "83",
+          "youtube": "https://www.youtube.com/watch?v=6kETRTVjiR8"
+        },
+        {
+          "title": "Love Song for No One",
+          "youtube": "https://www.youtube.com/watch?v=UL2bseqhk2o"
+        },
+        {
+          "title": "Back to You",
+          "youtube": "https://www.youtube.com/watch?v=tCxAmfUeWpk"
+        },
+        {
+          "title": "Great Indoors",
+          "youtube": "https://www.youtube.com/watch?v=4nwc-8lsiK4"
+        },
+        {
+          "title": "Not Myself",
+          "youtube": "https://www.youtube.com/watch?v=e7kVng_3xHk"
+        },
+        {
+          "title": "St. Patrick’s Day",
+          "youtube": "https://www.youtube.com/watch?v=3LPEEb8iH9c"
+        }
+      ]
+    },
+    {
+      "album": "Any Given Thursday",
+      "year": "2003",
+      "albumArt": "https://coverartarchive.org/release/5dc49b03-0c45-4888-ac5f-0ba4d4cd6d28/front",
+      "songs": [
+        {
+          "title": "3x5 – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=Bs0D7F1ojCg"
+        },
+        {
+          "title": "No Such Thing – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=GiBDRrHugvY"
+        },
+        {
+          "title": "Back to You – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=97nGmxVUIso"
+        },
+        {
+          "title": "City Love – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=ttDksnanrHg"
+        },
+        {
+          "title": "Something’s Missing – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=Stl_301rBFg"
+        },
+        {
+          "title": "Lenny / Man on the Side – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=74sMY_Zeir4"
+        },
+        {
+          "title": "Message in a Bottle – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=9CLtXQFmk28"
+        },
+        {
+          "title": "Love Song for No One – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=1jcHSu9dJKA"
+        },
+        {
+          "title": "Why Georgia – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=9vGAtloNEVw"
+        },
+        {
+          "title": "Your Body Is a Wonderland – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=DOi3XszZs-I"
+        },
+        {
+          "title": "My Stupid Mouth – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=QoePj_zntIk"
+        },
+        {
+          "title": "Covered in Rain – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=74sMY_Zeir4"
+        },
+        {
+          "title": "83 Medley – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=FlsIK1SO80M"
+        },
+        {
+          "title": "Comfortable – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        },
+        {
+          "title": "Neon – Live at the Oak Mountain Amphitheater, Birmingham, AL – September 2002",
+          "youtube": "https://www.youtube.com/watch?v=CXuvQeLu664"
+        }
+      ]
+    },
+    {
+      "album": "As Is: Volume One",
+      "year": "2003",
+      "albumArt": "https://coverartarchive.org/release/13d0cd9a-b815-4bb5-a6d0-b6b040fedb30/front",
+      "songs": [
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        },
+        {
+          "title": "St. Patrick's Day",
+          "youtube": "https://www.youtube.com/watch?v=3LPEEb8iH9c"
+        },
+        {
+          "title": "83",
+          "youtube": "https://www.youtube.com/watch?v=6kETRTVjiR8"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        }
+      ]
+    },
+    {
+      "album": "Heavier Things",
+      "year": "2003",
+      "albumArt": "https://coverartarchive.org/release/0b6ac164-930a-4405-9018-e09015d02b2e/front",
+      "songs": [
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "Something’s Missing",
+          "youtube": "https://www.youtube.com/watch?v=IKJ9RFXGIu0"
+        },
+        {
+          "title": "New Deep",
+          "youtube": "https://www.youtube.com/watch?v=P80HHSUqNYo"
+        },
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "Home Life",
+          "youtube": "https://www.youtube.com/watch?v=6wE_Yrpql2Y"
+        },
+        {
+          "title": "Split Screen Sadness",
+          "youtube": "https://www.youtube.com/watch?v=bkGXyRvLVQ8"
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "Only Heart",
+          "youtube": "https://www.youtube.com/watch?v=z3Qx1ZlZ9jU"
+        },
+        {
+          "title": "Wheel",
+          "youtube": "https://www.youtube.com/watch?v=x3q1qijQSX4"
+        }
+      ]
+    },
+    {
+      "album": "As/Is Volume Three: Houston, TX 7/24/04",
+      "year": "2004",
+      "albumArt": "https://coverartarchive.org/release/6599290e-d260-4819-b423-3ad5ae17d8ab/front",
+      "songs": [
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Back to You",
+          "youtube": "https://www.youtube.com/watch?v=tCxAmfUeWpk"
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "Blues (intro)",
+          "youtube": "https://www.youtube.com/watch?v=90cIYAy6CQg"
+        },
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "Comfortable",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        }
+      ]
+    },
+    {
+      "album": "As/Is",
+      "year": "2004",
+      "albumArt": "https://coverartarchive.org/release/86bbf74d-1797-4a47-82ff-0c9995b1ca0b/front",
+      "songs": [
+        {
+          "title": "Only Heart",
+          "youtube": "https://www.youtube.com/watch?v=z3Qx1ZlZ9jU"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Covered in Rain",
+          "youtube": "https://www.youtube.com/watch?v=O3MICvgXvHM"
+        },
+        {
+          "title": "Split Screen Sadness",
+          "youtube": "https://www.youtube.com/watch?v=bkGXyRvLVQ8"
+        },
+        {
+          "title": "Blues Intro",
+          "youtube": "https://www.youtube.com/watch?v=90cIYAy6CQg"
+        },
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Something's Missing",
+          "youtube": "https://www.youtube.com/watch?v=IKJ9RFXGIu0"
+        },
+        {
+          "title": "Inner City Blues (Make Me Wanna Holler)",
+          "youtube": "https://www.youtube.com/watch?v=58KeHpi9WW0"
+        },
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "3x5",
+          "youtube": "https://www.youtube.com/watch?v=ucbHPYCUtek"
+        },
+        {
+          "title": "Home Life",
+          "youtube": "https://www.youtube.com/watch?v=6wE_Yrpql2Y"
+        },
+        {
+          "title": "Comfortable",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        }
+      ]
+    },
+    {
+      "album": "As/Is Volume Five: Philadelphia, PA/Hartford, CT 8/14/04 - 8/15/04",
+      "year": "2004",
+      "albumArt": "https://coverartarchive.org/release/35a17fc3-4691-4ae5-ac45-ee7595f8e83f/front",
+      "songs": [
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Only Heart",
+          "youtube": "https://www.youtube.com/watch?v=z3Qx1ZlZ9jU"
+        },
+        {
+          "title": "Something's Missing",
+          "youtube": "https://www.youtube.com/watch?v=IKJ9RFXGIu0"
+        },
+        {
+          "title": "New Deep",
+          "youtube": "https://www.youtube.com/watch?v=P80HHSUqNYo"
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "Covered in Rain",
+          "youtube": "https://www.youtube.com/watch?v=O3MICvgXvHM"
+        },
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "83",
+          "youtube": "https://www.youtube.com/watch?v=6kETRTVjiR8"
+        },
+        {
+          "title": "Hummingbird",
+          "youtube": "https://www.youtube.com/watch?v=W8y6WRnzWbc"
+        }
+      ]
+    },
+    {
+      "album": "As/Is Volume Four: Cleveland/Cincinnati OH 8/03 - 8/04/04",
+      "year": "2004",
+      "albumArt": "https://coverartarchive.org/release/977e3a85-e87b-43f7-80fa-31d01ae7eac7/front",
+      "songs": [
+        {
+          "title": "Only Heart",
+          "youtube": "https://www.youtube.com/watch?v=z3Qx1ZlZ9jU"
+        },
+        {
+          "title": "New Deep",
+          "youtube": "https://www.youtube.com/watch?v=P80HHSUqNYo"
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Something's Missing",
+          "youtube": "https://www.youtube.com/watch?v=IKJ9RFXGIu0"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "Quiet",
+          "youtube": "https://www.youtube.com/watch?v=Lc81T4hqcTk"
+        },
+        {
+          "title": "3x5",
+          "youtube": "https://www.youtube.com/watch?v=ucbHPYCUtek"
+        },
+        {
+          "title": "Wheel",
+          "youtube": "https://www.youtube.com/watch?v=x3q1qijQSX4"
+        }
+      ]
+    },
+    {
+      "album": "As/Is Volume 2: Mountain View, CA 7/16/04",
+      "year": "2004",
+      "albumArt": "https://coverartarchive.org/release/d28cf3d1-0dec-4b50-b2ee-cb9e8c14f7f5/front",
+      "songs": [
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "Something's Missing",
+          "youtube": "https://www.youtube.com/watch?v=IKJ9RFXGIu0"
+        },
+        {
+          "title": "Split Screen Sadness",
+          "youtube": "https://www.youtube.com/watch?v=bkGXyRvLVQ8"
+        },
+        {
+          "title": "New Deep",
+          "youtube": "https://www.youtube.com/watch?v=P80HHSUqNYo"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "Home Life",
+          "youtube": "https://www.youtube.com/watch?v=6wE_Yrpql2Y"
+        },
+        {
+          "title": "Tracing",
+          "youtube": "https://www.youtube.com/watch?v=vG1a9kErEHk"
+        },
+        {
+          "title": "Comfortable",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        }
+      ]
+    },
+    {
+      "album": "2004-12-29: Webster Hall - John Mayer Plays the Blues",
+      "year": "2004",
+      "albumArt": "https://coverartarchive.org/release/2975738f-71a5-483f-b7d9-b699781089e2/front",
+      "songs": [
+        {
+          "title": "Rainy Day, Dream Away",
+          "youtube": "https://www.youtube.com/watch?v=UguyZtTAclQ"
+        },
+        {
+          "title": "I'll Play the Blues for You",
+          "youtube": "https://www.youtube.com/watch?v=f6dnI1WsFrA"
+        },
+        {
+          "title": "I'm Torn Down",
+          "youtube": "https://www.youtube.com/watch?v=YB52eLfirFA"
+        },
+        {
+          "title": "Killing Floor",
+          "youtube": "https://www.youtube.com/watch?v=4mvxKxnVyc4"
+        },
+        {
+          "title": "Stormy Monday Blues",
+          "youtube": "https://www.youtube.com/watch?v=ZMRsKKtrmw8"
+        },
+        {
+          "title": "Empty Arms",
+          "youtube": "https://www.youtube.com/watch?v=pZyd-BexftY"
+        },
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "Ain't Gonna Give Up on Love",
+          "youtube": "https://www.youtube.com/watch?v=t-8R9XcWKRY"
+        },
+        {
+          "title": "Shake Rattle and Roll",
+          "youtube": "https://www.youtube.com/watch?v=kkVFwlRa-bY"
+        },
+        {
+          "title": "Voodoo Chile",
+          "youtube": "https://www.youtube.com/watch?v=Pphe3SPtyUQ"
+        }
+      ]
+    },
+    {
+      "album": "Continuum",
+      "year": "2006",
+      "albumArt": "https://coverartarchive.org/release/587a4f2d-73a5-3b4e-b68b-95787bf91c9d/front",
+      "songs": [
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You)",
+          "youtube": "https://www.youtube.com/watch?v=4s1sKigA17c"
+        },
+        {
+          "title": "Belief",
+          "youtube": "https://www.youtube.com/watch?v=rhL534Q7ZCs"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "The Heart of Life",
+          "youtube": "https://www.youtube.com/watch?v=eIDXbyobJTs"
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "Stop This Train",
+          "youtube": "https://www.youtube.com/watch?v=0hAmFAL1UR0"
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": "https://www.youtube.com/watch?v=aEi646akxko"
+        },
+        {
+          "title": "Bold as Love",
+          "youtube": "https://www.youtube.com/watch?v=sY1wQ6z6ZKQ"
+        },
+        {
+          "title": "Dreaming With a Broken Heart",
+          "youtube": "https://www.youtube.com/watch?v=2P3L1HQc7n4"
+        },
+        {
+          "title": "In Repair",
+          "youtube": "https://www.youtube.com/watch?v=r-b6VKXQKVA"
+        },
+        {
+          "title": "I'm Gonna Find Another You",
+          "youtube": "https://www.youtube.com/watch?v=uGScLpU2I8k"
+        }
+      ]
+    },
+    {
+      "album": "2007-07-04: Petrillo Music Shell, Chicago, IL, USA",
+      "year": "2007",
+      "albumArt": "https://coverartarchive.org/release/8d493366-8e6f-4ce9-91b3-1556c03742ed/front",
+      "songs": [
+        {
+          "title": "Introduction",
+          "youtube": "https://www.youtube.com/watch?v=20Ov0cDPZy8"
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Belief",
+          "youtube": "https://www.youtube.com/watch?v=rhL534Q7ZCs"
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": "https://www.youtube.com/watch?v=JwbYY0eHYWY"
+        },
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You)",
+          "youtube": "https://www.youtube.com/watch?v=4s1sKigA17c"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "Dreaming With a Broken Heart",
+          "youtube": "https://www.youtube.com/watch?v=2P3L1HQc7n4"
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "I Don't Need No Doctor",
+          "youtube": "https://www.youtube.com/watch?v=Js6JHwHYFk4"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "Band Intros",
+          "youtube": "https://www.youtube.com/watch?v=20Ov0cDPZy8"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Announcer",
+          "youtube": "https://www.youtube.com/watch?v=HdHH3R2cQJU"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "Sweet Home Chicago",
+          "youtube": "https://www.youtube.com/watch?v=zOyBNFMnjvY"
+        }
+      ]
+    },
+    {
+      "album": "On His Own Live In Los Angeles",
+      "year": "2008",
+      "albumArt": "https://coverartarchive.org/release/c6e6acad-ed56-4d07-b4f5-b16fe71962df/front",
+      "songs": [
+        {
+          "title": "Little Red Corvette",
+          "youtube": null
+        },
+        {
+          "title": "Stop This Train",
+          "youtube": null
+        },
+        {
+          "title": "'I Am Nervous But Actually That is A Beautiful Thing'",
+          "youtube": null
+        },
+        {
+          "title": "Belief",
+          "youtube": null
+        },
+        {
+          "title": "'Happy Holidays'",
+          "youtube": null
+        },
+        {
+          "title": "Hummingbird",
+          "youtube": null
+        },
+        {
+          "title": "'Fine Line Between Clever and Stupid'",
+          "youtube": null
+        },
+        {
+          "title": "'Even I Am A Fan Of My Earlier Work'",
+          "youtube": null
+        },
+        {
+          "title": "Comfortable",
+          "youtube": null
+        },
+        {
+          "title": "Free Fallin'",
+          "youtube": null
+        },
+        {
+          "title": "'Even My Hand is Shaking'",
+          "youtube": null
+        },
+        {
+          "title": "Vultures (Heard It Through The Grapevine)",
+          "youtube": null
+        },
+        {
+          "title": "'5 Grammy Nominations'",
+          "youtube": null
+        },
+        {
+          "title": "'I Have Had A Lot Of Sex To Your Music'",
+          "youtube": null
+        },
+        {
+          "title": "Your Body Is A Wonderland",
+          "youtube": null
+        },
+        {
+          "title": "Neon",
+          "youtube": null
+        },
+        {
+          "title": "Missing You",
+          "youtube": null
+        },
+        {
+          "title": "'Waking Up In The Morning With A Fresh Blackberry Check'",
+          "youtube": null
+        },
+        {
+          "title": "'The World Around The Song Changed'",
+          "youtube": null
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": null
+        },
+        {
+          "title": "'I Am Gonna Add Some More Songs'",
+          "youtube": null
+        },
+        {
+          "title": "'When I Am Walking To A Car...'",
+          "youtube": null
+        },
+        {
+          "title": "Wheel",
+          "youtube": null
+        },
+        {
+          "title": "Sucker",
+          "youtube": null
+        },
+        {
+          "title": "Not Myself",
+          "youtube": null
+        },
+        {
+          "title": "Victoria (Karma Police)",
+          "youtube": null
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia Intro",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": null
+        },
+        {
+          "title": "'Humbled On The Bullet Train...Thank You'",
+          "youtube": null
+        },
+        {
+          "title": "St. Patrick's Day",
+          "youtube": null
+        },
+        {
+          "title": "Crossroads",
+          "youtube": null
+        },
+        {
+          "title": "Who Did You Think I Was",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        },
+        {
+          "title": "Clarity (Lost)",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "Where the Light Is: John Mayer Live in Los Angeles",
+      "year": "2008",
+      "albumArt": "https://coverartarchive.org/release/72f14d5a-d2d6-4d01-a8bf-db0a3ba4770d/front",
+      "songs": [
+        {
+          "title": "Neon",
+          "youtube": null
+        },
+        {
+          "title": "Stop This Train",
+          "youtube": null
+        },
+        {
+          "title": "In Your Atmosphere",
+          "youtube": null
+        },
+        {
+          "title": "Daughters",
+          "youtube": null
+        },
+        {
+          "title": "Free Fallin'",
+          "youtube": null
+        },
+        {
+          "title": "Everyday I Have the Blues",
+          "youtube": null
+        },
+        {
+          "title": "Wait Until Tomorrow",
+          "youtube": null
+        },
+        {
+          "title": "Who Did You Think I Was",
+          "youtube": null
+        },
+        {
+          "title": "Come When I Call",
+          "youtube": null
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": null
+        },
+        {
+          "title": "Out of My Mind",
+          "youtube": null
+        },
+        {
+          "title": "Vultures",
+          "youtube": null
+        },
+        {
+          "title": "Bold as Love",
+          "youtube": null
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": null
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": null
+        },
+        {
+          "title": "The Heart of Life",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Need No Doctor",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You)",
+          "youtube": null
+        },
+        {
+          "title": "Belief",
+          "youtube": null
+        },
+        {
+          "title": "I'm Gonna Find Another You",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "2008-08-02: The Cynthia Woods-Mitchell Pavilion, The Woodlands, TX, USA",
+      "year": "2008",
+      "albumArt": "https://coverartarchive.org/release/ab4aa20e-de87-4d34-9782-65881e5737b3/front",
+      "songs": [
+        {
+          "title": "(Opening)",
+          "youtube": null
+        },
+        {
+          "title": "Waiting on the Word to Change",
+          "youtube": "https://www.youtube.com/watch?v=bhS3czXRlZU"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "Cross Road Blues",
+          "youtube": "https://www.youtube.com/watch?v=5zqRVADxYpM"
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You)",
+          "youtube": "https://www.youtube.com/watch?v=4s1sKigA17c"
+        },
+        {
+          "title": "Blues Run the Game/Wheel/I Still Haven't Found What I'm Looking For (Medley)",
+          "youtube": "https://www.youtube.com/watch?v=5uoGdDQYIjA"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "Mercy",
+          "youtube": "https://www.youtube.com/watch?v=oJBegAYVYoA"
+        },
+        {
+          "title": "Free Fallin'",
+          "youtube": "https://www.youtube.com/watch?v=20Ov0cDPZy8"
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": "https://www.youtube.com/watch?v=JwbYY0eHYWY"
+        },
+        {
+          "title": "I'm Gonna Find Another You",
+          "youtube": "https://www.youtube.com/watch?v=uGScLpU2I8k"
+        },
+        {
+          "title": "Stitched Up",
+          "youtube": "https://www.youtube.com/watch?v=eJ7yxQqn4i4"
+        },
+        {
+          "title": "Belief",
+          "youtube": "https://www.youtube.com/watch?v=rhL534Q7ZCs"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "(Encore)",
+          "youtube": null
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "Say",
+          "youtube": "https://www.youtube.com/watch?v=uphQ6FBeqM4"
+        }
+      ]
+    },
+    {
+      "album": "Battle Studies",
+      "year": "2009",
+      "albumArt": "https://coverartarchive.org/release/35cb7935-5c9f-4d2d-b9e9-cd63c32453c4/front",
+      "songs": [
+        {
+          "title": "Heartbreak Warfare",
+          "youtube": "https://www.youtube.com/watch?v=GeCClzNCfcA"
+        },
+        {
+          "title": "All We Ever Do Is Say Goodbye",
+          "youtube": "https://www.youtube.com/watch?v=FgK7vTaJCEM"
+        },
+        {
+          "title": "Half of My Heart",
+          "youtube": "https://www.youtube.com/watch?v=zr6lp-45bOQ"
+        },
+        {
+          "title": "Who Says",
+          "youtube": "https://www.youtube.com/watch?v=akvu1AOnUIw"
+        },
+        {
+          "title": "Perfectly Lonely",
+          "youtube": "https://www.youtube.com/watch?v=KoLc_6BmyTc"
+        },
+        {
+          "title": "Assassin",
+          "youtube": "https://www.youtube.com/watch?v=VDrZww-uHZU"
+        },
+        {
+          "title": "Crossroads",
+          "youtube": "https://www.youtube.com/watch?v=29l0n2RBjLE"
+        },
+        {
+          "title": "War of My Life",
+          "youtube": "https://www.youtube.com/watch?v=E3ZAc6WlPYg"
+        },
+        {
+          "title": "Edge of Desire",
+          "youtube": "https://www.youtube.com/watch?v=Nt-jb5JHWB8"
+        },
+        {
+          "title": "Do You Know Me",
+          "youtube": "https://www.youtube.com/watch?v=cZVT8Zg0YwE"
+        },
+        {
+          "title": "Friends, Lovers or Nothing",
+          "youtube": "https://www.youtube.com/watch?v=LaG0keIFX6o"
+        }
+      ]
+    },
+    {
+      "album": "Pinkpop 2010, Landgraaf, Netherlands",
+      "year": "2012",
+      "albumArt": "https://coverartarchive.org/release/3828732c-8798-4f9a-b677-a885299449a0/front",
+      "songs": [
+        {
+          "title": "Heartbreak Warfare",
+          "youtube": "https://www.youtube.com/watch?v=GeCClzNCfcA"
+        },
+        {
+          "title": "Crossroads",
+          "youtube": "https://www.youtube.com/watch?v=29l0n2RBjLE"
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "Who Says",
+          "youtube": "https://www.youtube.com/watch?v=akvu1AOnUIw"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "Half of My Heart",
+          "youtube": "https://www.youtube.com/watch?v=zr6lp-45bOQ"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        }
+      ]
+    },
+    {
+      "album": "Born and Raised",
+      "year": "2012",
+      "albumArt": "https://coverartarchive.org/release/79c577e4-1e93-4edd-8a89-82144f20a833/front",
+      "songs": [
+        {
+          "title": "Queen of California",
+          "youtube": "https://www.youtube.com/watch?v=hJXcBN0vnk8"
+        },
+        {
+          "title": "The Age of Worry",
+          "youtube": "https://www.youtube.com/watch?v=7oROeSNOe_o"
+        },
+        {
+          "title": "Shadow Days",
+          "youtube": "https://www.youtube.com/watch?v=X7y8iWNzajI"
+        },
+        {
+          "title": "Speak for Me",
+          "youtube": "https://www.youtube.com/watch?v=omeNvD8IddM"
+        },
+        {
+          "title": "Something Like Olivia",
+          "youtube": "https://www.youtube.com/watch?v=izkqPdVAdL4"
+        },
+        {
+          "title": "Born and Raised",
+          "youtube": "https://www.youtube.com/watch?v=wwTK3vmNMos"
+        },
+        {
+          "title": "If I Ever Get Around to Living",
+          "youtube": "https://www.youtube.com/watch?v=9MmwJRVOGf0"
+        },
+        {
+          "title": "Love Is a Verb",
+          "youtube": "https://www.youtube.com/watch?v=lBe3bgmdsAI"
+        },
+        {
+          "title": "Walt Grace's Submarine Test, January 1967",
+          "youtube": "https://www.youtube.com/watch?v=SrcMMyNeJJs"
+        },
+        {
+          "title": "Whiskey, Whiskey, Whiskey",
+          "youtube": "https://www.youtube.com/watch?v=I32eptwZLPw"
+        },
+        {
+          "title": "A Face to Call Home",
+          "youtube": "https://www.youtube.com/watch?v=97JMs8hE-a8"
+        },
+        {
+          "title": "Born and Raised (reprise)",
+          "youtube": "https://www.youtube.com/watch?v=wwTK3vmNMos"
+        }
+      ]
+    },
+    {
+      "album": "Paradise Valley",
+      "year": "2013",
+      "albumArt": "https://coverartarchive.org/release/c22fb5bb-0632-4377-87bd-1345cb362cce/front",
+      "songs": [
+        {
+          "title": "Wildfire",
+          "youtube": "https://www.youtube.com/watch?v=lK2kKg4ao2I"
+        },
+        {
+          "title": "Dear Marie",
+          "youtube": "https://www.youtube.com/watch?v=kDwgqcWBS5s"
+        },
+        {
+          "title": "Waitin’ on the Day",
+          "youtube": "https://www.youtube.com/watch?v=yVrMqvu2_fE"
+        },
+        {
+          "title": "Paper Doll",
+          "youtube": "https://www.youtube.com/watch?v=565tXd1UyYI"
+        },
+        {
+          "title": "Call Me the Breeze",
+          "youtube": "https://www.youtube.com/watch?v=pWRb-K5oQ2I"
+        },
+        {
+          "title": "Who You Love",
+          "youtube": "https://www.youtube.com/watch?v=nSRCpertZn8"
+        },
+        {
+          "title": "I Will Be Found (Lost at Sea)",
+          "youtube": "https://www.youtube.com/watch?v=C2HFJJr6FzQ"
+        },
+        {
+          "title": "Wildfire",
+          "youtube": "https://www.youtube.com/watch?v=lK2kKg4ao2I"
+        },
+        {
+          "title": "You’re No One ’Til Someone Lets You Down",
+          "youtube": "https://www.youtube.com/watch?v=WbDInGORe3E"
+        },
+        {
+          "title": "Badge and Gun",
+          "youtube": "https://www.youtube.com/watch?v=-cStWhmIh1I"
+        },
+        {
+          "title": "On the Way Home",
+          "youtube": "https://www.youtube.com/watch?v=IMTCxZUwsyc"
+        }
+      ]
+    },
+    {
+      "album": "John Mayer",
+      "year": "2013",
+      "albumArt": "https://coverartarchive.org/release/0ac28fb1-f404-4658-b41a-2347b1b63848/front",
+      "songs": [
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        },
+        {
+          "title": "City Love",
+          "youtube": "https://www.youtube.com/watch?v=8akf1hGPJjI"
+        },
+        {
+          "title": "83",
+          "youtube": "https://www.youtube.com/watch?v=6kETRTVjiR8"
+        },
+        {
+          "title": "3x5",
+          "youtube": "https://www.youtube.com/watch?v=ucbHPYCUtek"
+        },
+        {
+          "title": "Love Song for No One",
+          "youtube": "https://www.youtube.com/watch?v=UL2bseqhk2o"
+        },
+        {
+          "title": "Back to You",
+          "youtube": "https://www.youtube.com/watch?v=tCxAmfUeWpk"
+        },
+        {
+          "title": "Great Indoors",
+          "youtube": "https://www.youtube.com/watch?v=4nwc-8lsiK4"
+        },
+        {
+          "title": "Not Myself",
+          "youtube": "https://www.youtube.com/watch?v=e7kVng_3xHk"
+        },
+        {
+          "title": "St. Patrick’s Day",
+          "youtube": "https://www.youtube.com/watch?v=3LPEEb8iH9c"
+        },
+        {
+          "title": "Lenny (live at the X-Lounge)",
+          "youtube": "https://www.youtube.com/watch?v=mKWyHe5wY5Q"
+        },
+        {
+          "title": "The Wind Cries Mary (live at the X-Lounge)",
+          "youtube": "https://www.youtube.com/watch?v=GIb9Yd5AP1Q"
+        },
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "Something's Missing",
+          "youtube": "https://www.youtube.com/watch?v=IKJ9RFXGIu0"
+        },
+        {
+          "title": "New Deep",
+          "youtube": "https://www.youtube.com/watch?v=P80HHSUqNYo"
+        },
+        {
+          "title": "Come Back to Bed",
+          "youtube": "https://www.youtube.com/watch?v=8UtKr4F22rY"
+        },
+        {
+          "title": "Home Life",
+          "youtube": "https://www.youtube.com/watch?v=6wE_Yrpql2Y"
+        },
+        {
+          "title": "Split Screen Sadness",
+          "youtube": "https://www.youtube.com/watch?v=bkGXyRvLVQ8"
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "Only Heart",
+          "youtube": "https://www.youtube.com/watch?v=z3Qx1ZlZ9jU"
+        },
+        {
+          "title": "Wheel",
+          "youtube": "https://www.youtube.com/watch?v=x3q1qijQSX4"
+        },
+        {
+          "title": "Kid-A (acoustic version)",
+          "youtube": "https://www.youtube.com/watch?v=kmfZXZronW8"
+        },
+        {
+          "title": "Who Did You Think I Was",
+          "youtube": "https://www.youtube.com/watch?v=U1dRKPhYbZ0"
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": "https://www.youtube.com/watch?v=JwbYY0eHYWY"
+        },
+        {
+          "title": "Wait Until Tomorrow",
+          "youtube": "https://www.youtube.com/watch?v=G76kz93XtfQ"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "Out of My Mind",
+          "youtube": "https://www.youtube.com/watch?v=lorG7G6-LIs"
+        },
+        {
+          "title": "Another Kind of Green",
+          "youtube": "https://www.youtube.com/watch?v=XDSEGajnDdw"
+        },
+        {
+          "title": "I Got a Woman",
+          "youtube": "https://www.youtube.com/watch?v=5ri0Smf2Ic0"
+        },
+        {
+          "title": "Something's Missing",
+          "youtube": "https://www.youtube.com/watch?v=IKJ9RFXGIu0"
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "Try",
+          "youtube": "https://www.youtube.com/watch?v=IibIEMJOIYg"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "I Don't Trust Myself (with Loving You)",
+          "youtube": "https://www.youtube.com/watch?v=4s1sKigA17c"
+        },
+        {
+          "title": "Belief",
+          "youtube": "https://www.youtube.com/watch?v=rhL534Q7ZCs"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "The Heart of Life",
+          "youtube": "https://www.youtube.com/watch?v=eIDXbyobJTs"
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "Stop This Train",
+          "youtube": "https://www.youtube.com/watch?v=0hAmFAL1UR0"
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": "https://www.youtube.com/watch?v=aEi646akxko"
+        },
+        {
+          "title": "Bold as Love",
+          "youtube": "https://www.youtube.com/watch?v=sY1wQ6z6ZKQ"
+        },
+        {
+          "title": "Dreaming With a Broken Heart",
+          "youtube": "https://www.youtube.com/watch?v=2P3L1HQc7n4"
+        },
+        {
+          "title": "In Repair",
+          "youtube": "https://www.youtube.com/watch?v=r-b6VKXQKVA"
+        },
+        {
+          "title": "I'm Gonna Find Another You",
+          "youtube": "https://www.youtube.com/watch?v=uGScLpU2I8k"
+        },
+        {
+          "title": "Who Did You Think I Was (live)",
+          "youtube": "https://www.youtube.com/watch?v=U1dRKPhYbZ0"
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": "https://www.youtube.com/watch?v=JwbYY0eHYWY"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Heartbreak Warfare",
+          "youtube": "https://www.youtube.com/watch?v=GeCClzNCfcA"
+        },
+        {
+          "title": "All We Ever Do Is Say Goodbye",
+          "youtube": "https://www.youtube.com/watch?v=FgK7vTaJCEM"
+        },
+        {
+          "title": "Half of My Heart",
+          "youtube": "https://www.youtube.com/watch?v=zr6lp-45bOQ"
+        },
+        {
+          "title": "Who Says",
+          "youtube": "https://www.youtube.com/watch?v=akvu1AOnUIw"
+        },
+        {
+          "title": "Perfectly Lonely",
+          "youtube": "https://www.youtube.com/watch?v=KoLc_6BmyTc"
+        },
+        {
+          "title": "Assassin",
+          "youtube": "https://www.youtube.com/watch?v=VDrZww-uHZU"
+        },
+        {
+          "title": "Crossroads",
+          "youtube": "https://www.youtube.com/watch?v=29l0n2RBjLE"
+        },
+        {
+          "title": "War of My Life",
+          "youtube": "https://www.youtube.com/watch?v=E3ZAc6WlPYg"
+        },
+        {
+          "title": "Edge of Desire",
+          "youtube": "https://www.youtube.com/watch?v=Nt-jb5JHWB8"
+        },
+        {
+          "title": "Do You Know Me",
+          "youtube": "https://www.youtube.com/watch?v=cZVT8Zg0YwE"
+        },
+        {
+          "title": "Friends, Lovers or Nothing",
+          "youtube": "https://www.youtube.com/watch?v=LaG0keIFX6o"
+        },
+        {
+          "title": "I'm on Fire",
+          "youtube": "https://www.youtube.com/watch?v=FkQCdjsO7fY"
+        },
+        {
+          "title": "Say",
+          "youtube": "https://www.youtube.com/watch?v=uphQ6FBeqM4"
+        }
+      ]
+    },
+    {
+      "album": "Unreleased",
+      "year": "2015",
+      "albumArt": "https://coverartarchive.org/release/de0da33c-556e-4cd0-a4aa-9ce3ee984d50/front",
+      "songs": [
+        {
+          "title": "A Break In The Clouds",
+          "youtube": "https://www.youtube.com/watch?v=eybuyd8KzlI"
+        },
+        {
+          "title": "Taking On Water",
+          "youtube": "https://www.youtube.com/watch?v=fkvkST67kFM"
+        },
+        {
+          "title": "Level",
+          "youtube": "https://www.youtube.com/watch?v=ajO2z8NOx4c"
+        },
+        {
+          "title": "The Hurt",
+          "youtube": "https://www.youtube.com/watch?v=Ckaf2bqHaY0"
+        },
+        {
+          "title": "HummingBird",
+          "youtube": "https://www.youtube.com/watch?v=W8y6WRnzWbc"
+        },
+        {
+          "title": "Hotel Bathroom Song",
+          "youtube": "https://www.youtube.com/watch?v=mNhJycRTqVo"
+        },
+        {
+          "title": "Why Did You Mess With Forever?",
+          "youtube": "https://www.youtube.com/watch?v=a-S9YXMYGLc"
+        },
+        {
+          "title": "Five Long Years",
+          "youtube": "https://www.youtube.com/watch?v=z0oHle0lSGs"
+        },
+        {
+          "title": "Buckets Of Rain",
+          "youtube": "https://www.youtube.com/watch?v=4JaPS0OLPVA"
+        },
+        {
+          "title": "Can't Take That Plane",
+          "youtube": "https://www.youtube.com/watch?v=vnQ1S_XZFbA"
+        },
+        {
+          "title": "Sucker",
+          "youtube": "https://www.youtube.com/watch?v=1XdugsvRJV4"
+        },
+        {
+          "title": "Lifelines",
+          "youtube": "https://www.youtube.com/watch?v=qKgPplAg5SE"
+        },
+        {
+          "title": "This Will All Make Perfect Sense Someday",
+          "youtube": "https://www.youtube.com/watch?v=r4deBeG7ZGM"
+        },
+        {
+          "title": "Tracing",
+          "youtube": "https://www.youtube.com/watch?v=vG1a9kErEHk"
+        },
+        {
+          "title": "Over And Over",
+          "youtube": "https://www.youtube.com/watch?v=UbVDKf55bp0"
+        },
+        {
+          "title": "Simple Song",
+          "youtube": "https://www.youtube.com/watch?v=tISzVQhG2oo"
+        },
+        {
+          "title": "Let The Boy",
+          "youtube": "https://www.youtube.com/watch?v=mQ055hHdxbE"
+        },
+        {
+          "title": "Untitled",
+          "youtube": "https://www.youtube.com/watch?v=z0oHle0lSGs"
+        },
+        {
+          "title": "I Just Remembered That I Didn’t Care",
+          "youtube": "https://www.youtube.com/watch?v=Z-Xr8bPBnns"
+        },
+        {
+          "title": "Outside In The Underground",
+          "youtube": "https://www.youtube.com/watch?v=_PP1vs3FfWc"
+        },
+        {
+          "title": "California Dreamin'",
+          "youtube": "https://www.youtube.com/watch?v=18JZKQkZw-M"
+        },
+        {
+          "title": "Broken Time",
+          "youtube": "https://www.youtube.com/watch?v=xSNE3tw0Nao"
+        },
+        {
+          "title": "Ain’t No Sunshine",
+          "youtube": "https://www.youtube.com/watch?v=eFD4BjSHHl4"
+        },
+        {
+          "title": "George’s Blues",
+          "youtube": "https://www.youtube.com/watch?v=5MkfBNl_3pw"
+        }
+      ]
+    },
+    {
+      "album": "John Mayer Live at TD Garden on 2017-04-09",
+      "year": "2017",
+      "albumArt": "https://coverartarchive.org/release/047c520c-1974-4fba-b830-aedbcdf9fca5/front",
+      "songs": [
+        {
+          "title": "Queen of California",
+          "youtube": null
+        },
+        {
+          "title": "Moving on and Getting Over",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Trust Myself With Loving You",
+          "youtube": null
+        },
+        {
+          "title": "Love on the Weekend",
+          "youtube": null
+        },
+        {
+          "title": "Who Says",
+          "youtube": null
+        },
+        {
+          "title": "Emoji of a Wave",
+          "youtube": null
+        },
+        {
+          "title": "Neon",
+          "youtube": null
+        },
+        {
+          "title": "Free Fallin'",
+          "youtube": null
+        },
+        {
+          "title": "Vultures",
+          "youtube": null
+        },
+        {
+          "title": "Johnny B. Good",
+          "youtube": null
+        },
+        {
+          "title": "Bold as Love",
+          "youtube": null
+        },
+        {
+          "title": "Changing",
+          "youtube": null
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": null
+        },
+        {
+          "title": "Still Feel Like Your Man",
+          "youtube": null
+        },
+        {
+          "title": "Belief",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": null
+        },
+        {
+          "title": "Dear Marie",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        },
+        {
+          "title": "You're Gonna Live Forever in Me",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "The Search for Everything",
+      "year": "2017",
+      "albumArt": "https://coverartarchive.org/release/d6fa13b6-60e7-4357-8bd6-cee5986e8157/front",
+      "songs": [
+        {
+          "title": "Still Feel Like Your Man",
+          "youtube": "https://www.youtube.com/watch?v=NyCst7We6Uw"
+        },
+        {
+          "title": "Emoji of a Wave",
+          "youtube": "https://www.youtube.com/watch?v=9BdCmigxxAM"
+        },
+        {
+          "title": "Helpless",
+          "youtube": "https://www.youtube.com/watch?v=bgCRjE7QCHY"
+        },
+        {
+          "title": "Love on the Weekend",
+          "youtube": "https://www.youtube.com/watch?v=ZzqLtnBc1dg"
+        },
+        {
+          "title": "In the Blood",
+          "youtube": "https://www.youtube.com/watch?v=ob-jS7bqYgI"
+        },
+        {
+          "title": "Changing",
+          "youtube": "https://www.youtube.com/watch?v=AQQ_J0T1qpk"
+        },
+        {
+          "title": "Theme From “The Search for Everything”",
+          "youtube": "https://www.youtube.com/watch?v=h0xrKQg22VU"
+        },
+        {
+          "title": "Moving On and Getting Over",
+          "youtube": "https://www.youtube.com/watch?v=Z0wBrJHd9-A"
+        },
+        {
+          "title": "Never on the Day You Leave",
+          "youtube": "https://www.youtube.com/watch?v=v1d5c1fVxSA"
+        },
+        {
+          "title": "Rosie",
+          "youtube": "https://www.youtube.com/watch?v=Np7A1bT3lrg"
+        },
+        {
+          "title": "Roll It On Home",
+          "youtube": "https://www.youtube.com/watch?v=e_0FZP-QRh4"
+        },
+        {
+          "title": "You’re Gonna Live Forever in Me",
+          "youtube": "https://www.youtube.com/watch?v=lwLC-2sYOBc"
+        }
+      ]
+    },
+    {
+      "album": "Summer Tour: Cynthia Woods-Mitchell Pavilion, The Woodlands, TX, USA",
+      "year": "2018",
+      "albumArt": "https://coverartarchive.org/release/328ff66b-12cf-4f8a-8a7f-cf55599135a3/front",
+      "songs": [
+        {
+          "title": "(Opening)",
+          "youtube": null
+        },
+        {
+          "title": "Waiting on the Word to Change",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": null
+        },
+        {
+          "title": "Cross Road Blues",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You)",
+          "youtube": null
+        },
+        {
+          "title": "Blues Run the Game/Wheel/I Still Haven't Found What I'm Looking For (Medley)",
+          "youtube": null
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": null
+        },
+        {
+          "title": "Mercy",
+          "youtube": null
+        },
+        {
+          "title": "Free Fallin'",
+          "youtube": null
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": null
+        },
+        {
+          "title": "I'm Gonna Find Another You",
+          "youtube": null
+        },
+        {
+          "title": "Stitched Up",
+          "youtube": null
+        },
+        {
+          "title": "Belief",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        },
+        {
+          "title": "(Encore)",
+          "youtube": null
+        },
+        {
+          "title": "Vultures",
+          "youtube": null
+        },
+        {
+          "title": "Say",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "Summer Tour 2019: John Mayer Live in San Francisco",
+      "year": "2019",
+      "albumArt": "https://coverartarchive.org/release/93d772f6-6232-444b-8aa6-ff47aa92792d/front",
+      "songs": [
+        {
+          "title": "Helpless - Live",
+          "youtube": null
+        },
+        {
+          "title": "Who Says - Live",
+          "youtube": null
+        },
+        {
+          "title": "Love On The Weekend - Live",
+          "youtube": null
+        },
+        {
+          "title": "Carry Me Away - Live",
+          "youtube": null
+        },
+        {
+          "title": "Moving On And Getting Over - Live",
+          "youtube": null
+        },
+        {
+          "title": "Something Like Olivia - Live",
+          "youtube": null
+        },
+        {
+          "title": "Changing - Live",
+          "youtube": null
+        },
+        {
+          "title": "Waiting On the World to Change - Live",
+          "youtube": null
+        },
+        {
+          "title": "Watin' On The Day - Live",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You) - Live",
+          "youtube": null
+        },
+        {
+          "title": "Emoji of a Wave - Live",
+          "youtube": null
+        },
+        {
+          "title": "Daughters - Live",
+          "youtube": null
+        },
+        {
+          "title": "Free Falin' - Live",
+          "youtube": null
+        },
+        {
+          "title": "Belief - Live",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia - Live",
+          "youtube": null
+        },
+        {
+          "title": "Stop This Train - Live",
+          "youtube": null
+        },
+        {
+          "title": "Rosie - Live",
+          "youtube": null
+        },
+        {
+          "title": "Queen of Califonia (with Bob weir) - Live",
+          "youtube": null
+        },
+        {
+          "title": "Fire On The Mountain (with Sammy Hagar) - Live",
+          "youtube": null
+        },
+        {
+          "title": "The Beautiful Ones - Live",
+          "youtube": null
+        },
+        {
+          "title": "Slow Dancing in a Burning Room - Live",
+          "youtube": null
+        },
+        {
+          "title": "In The Blood - Live",
+          "youtube": null
+        },
+        {
+          "title": "Gravity - Live",
+          "youtube": null
+        },
+        {
+          "title": "Born and Raised - Live",
+          "youtube": null
+        },
+        {
+          "title": "New Light - Live",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "John Mayer Live at Scotiabank Arena on 2019-07-30",
+      "year": "2019",
+      "albumArt": "https://coverartarchive.org/release/08bb5c41-9200-4eca-aeb2-607f405265f7/front",
+      "songs": [
+        {
+          "title": "Belief",
+          "youtube": null
+        },
+        {
+          "title": "Wildfire",
+          "youtube": null
+        },
+        {
+          "title": "Clarity",
+          "youtube": null
+        },
+        {
+          "title": "Who Says",
+          "youtube": null
+        },
+        {
+          "title": "Moving on and Getting Over",
+          "youtube": null
+        },
+        {
+          "title": "Something Like Olivia",
+          "youtube": null
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": null
+        },
+        {
+          "title": "Changing",
+          "youtube": null
+        },
+        {
+          "title": "Love on the Weekend",
+          "youtube": null
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": null
+        },
+        {
+          "title": "Walt Grace's Submarine Test, January 1967",
+          "youtube": null
+        },
+        {
+          "title": "Daughters",
+          "youtube": null
+        },
+        {
+          "title": "Split Screen Sadness",
+          "youtube": null
+        },
+        {
+          "title": "Free Fallin'",
+          "youtube": null
+        },
+        {
+          "title": "Rosie",
+          "youtube": null
+        },
+        {
+          "title": "Queen of California",
+          "youtube": null
+        },
+        {
+          "title": "In the Blood",
+          "youtube": null
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": null
+        },
+        {
+          "title": "If I Ever Get Around to Living",
+          "youtube": null
+        },
+        {
+          "title": "Vultures",
+          "youtube": null
+        },
+        {
+          "title": "Still Feel Like Your Man",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        },
+        {
+          "title": "Roll It on Home",
+          "youtube": null
+        },
+        {
+          "title": "New Light",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "Sob Rock",
+      "year": "2021",
+      "albumArt": "https://coverartarchive.org/release/f0e4703b-09f9-4141-939e-70b602cf8cf7/front",
+      "songs": [
+        {
+          "title": "Last Train Home",
+          "youtube": "https://www.youtube.com/watch?v=wtDhSX_77fg"
+        },
+        {
+          "title": "Shouldn’t Matter but It Does",
+          "youtube": "https://www.youtube.com/watch?v=wpnPwppZn54"
+        },
+        {
+          "title": "New Light",
+          "youtube": "https://www.youtube.com/watch?v=mQ055hHdxbE"
+        },
+        {
+          "title": "Why You No Love Me",
+          "youtube": "https://www.youtube.com/watch?v=pefM2f2dNQg"
+        },
+        {
+          "title": "Wild Blue",
+          "youtube": "https://www.youtube.com/watch?v=Yf46NsICdjA"
+        },
+        {
+          "title": "Shot in the Dark",
+          "youtube": "https://www.youtube.com/watch?v=Xf5dU50MSlA"
+        },
+        {
+          "title": "I Guess I Just Feel Like",
+          "youtube": "https://www.youtube.com/watch?v=82Bx4OfWQ_Q"
+        },
+        {
+          "title": "Til the Right One Comes",
+          "youtube": "https://www.youtube.com/watch?v=ciZcbvG8uro"
+        },
+        {
+          "title": "Carry Me Away",
+          "youtube": "https://www.youtube.com/watch?v=6YDwBktDthA"
+        },
+        {
+          "title": "All I Want Is to Be With You",
+          "youtube": "https://www.youtube.com/watch?v=vKXKnOEEpYo"
+        }
+      ]
+    },
+    {
+      "album": "Sob Rock: Live at Madison Square Garden 02/20/2022",
+      "year": "2022",
+      "albumArt": "https://coverartarchive.org/release/4ae420bd-3398-4c30-b0a1-d414c7b066a7/front",
+      "songs": [
+        {
+          "title": "Introduction",
+          "youtube": null
+        },
+        {
+          "title": "Last Train Home",
+          "youtube": null
+        },
+        {
+          "title": "Shot In The Dark",
+          "youtube": null
+        },
+        {
+          "title": "Intro To...",
+          "youtube": null
+        },
+        {
+          "title": "Belief",
+          "youtube": null
+        },
+        {
+          "title": "Something Like Olivia",
+          "youtube": null
+        },
+        {
+          "title": "I Guess I Just Feel Like",
+          "youtube": null
+        },
+        {
+          "title": "Who Says",
+          "youtube": null
+        },
+        {
+          "title": "Rosie",
+          "youtube": null
+        },
+        {
+          "title": "Shouldn't Matter But It Does",
+          "youtube": null
+        },
+        {
+          "title": "Helpless",
+          "youtube": null
+        },
+        {
+          "title": "Your Body Is A Wonderland",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You)",
+          "youtube": null
+        },
+        {
+          "title": "Wild Blue",
+          "youtube": null
+        },
+        {
+          "title": "Edge Of Desire",
+          "youtube": null
+        },
+        {
+          "title": "'Til The Right One Comes",
+          "youtube": null
+        },
+        {
+          "title": "The Beautiful Ones",
+          "youtube": null
+        },
+        {
+          "title": "Slow Dancing In A Burning Room",
+          "youtube": null
+        },
+        {
+          "title": "New Light",
+          "youtube": null
+        },
+        {
+          "title": "Waiting On The World To Change",
+          "youtube": null
+        },
+        {
+          "title": "\"Thank You...\"",
+          "youtube": null
+        },
+        {
+          "title": "All I Want Is To Be With You",
+          "youtube": null
+        },
+        {
+          "title": "Intro To...",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "John Mayer Live at MVP Arena on 2022-02-17",
+      "year": "2022",
+      "albumArt": "https://coverartarchive.org/release/56734e84-7a4e-413c-91f2-57388e34944a/front",
+      "songs": [
+        {
+          "title": "Last Train Home",
+          "youtube": null
+        },
+        {
+          "title": "Shot in the Dark",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Trust Myself With Loving You",
+          "youtube": null
+        },
+        {
+          "title": "Who Says",
+          "youtube": null
+        },
+        {
+          "title": "Love on the Weekend",
+          "youtube": null
+        },
+        {
+          "title": "Moving on and Getting Over",
+          "youtube": null
+        },
+        {
+          "title": "Shouldn't Matter but It Does",
+          "youtube": null
+        },
+        {
+          "title": "Rosie",
+          "youtube": null
+        },
+        {
+          "title": "I Guess I Just Feel Like",
+          "youtube": null
+        },
+        {
+          "title": "Helpless",
+          "youtube": null
+        },
+        {
+          "title": "Stop This Train",
+          "youtube": null
+        },
+        {
+          "title": "In the Blood",
+          "youtube": null
+        },
+        {
+          "title": "Carry Me Away",
+          "youtube": null
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": null
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": null
+        },
+        {
+          "title": "Wild Blue",
+          "youtube": null
+        },
+        {
+          "title": "All I Want Is to Be With You",
+          "youtube": null
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        },
+        {
+          "title": "Born and Raised",
+          "youtube": null
+        },
+        {
+          "title": "New Light",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "Unreleased & Acoustic",
+      "year": "2023",
+      "albumArt": "https://coverartarchive.org/release/327bda45-554c-4504-9704-86e43744c592/front",
+      "songs": [
+        {
+          "title": "Let The Boy",
+          "youtube": "https://www.youtube.com/watch?v=mQ055hHdxbE"
+        },
+        {
+          "title": "Can't Take That Plane",
+          "youtube": "https://www.youtube.com/watch?v=vnQ1S_XZFbA"
+        },
+        {
+          "title": "Good Love Is On The Way",
+          "youtube": "https://www.youtube.com/watch?v=JwbYY0eHYWY"
+        },
+        {
+          "title": "Lifelines",
+          "youtube": "https://www.youtube.com/watch?v=qKgPplAg5SE"
+        },
+        {
+          "title": "Can't Find My Way Home",
+          "youtube": "https://www.youtube.com/watch?v=mJqZTdyX2WY"
+        },
+        {
+          "title": "Level",
+          "youtube": "https://www.youtube.com/watch?v=ajO2z8NOx4c"
+        },
+        {
+          "title": "Clarity - Single Remix",
+          "youtube": "https://www.youtube.com/watch?v=ULrz-6CSmmM"
+        },
+        {
+          "title": "Kid-A (Acoustic)",
+          "youtube": "https://www.youtube.com/watch?v=kmfZXZronW8"
+        },
+        {
+          "title": "Great Indoors (Acoustic)",
+          "youtube": "https://www.youtube.com/watch?v=4nwc-8lsiK4"
+        },
+        {
+          "title": "City Love (Acoustic)",
+          "youtube": "https://www.youtube.com/watch?v=8akf1hGPJjI"
+        },
+        {
+          "title": "Not Myself (Acoustic)",
+          "youtube": "https://www.youtube.com/watch?v=e7kVng_3xHk"
+        },
+        {
+          "title": "War Of My Life (Acoustic)",
+          "youtube": "https://www.youtube.com/watch?v=E3ZAc6WlPYg"
+        },
+        {
+          "title": "Edge Of Desire (Acoustic)",
+          "youtube": "https://www.youtube.com/watch?v=Nt-jb5JHWB8"
+        },
+        {
+          "title": "Waitin' On The Day (Acoustic)",
+          "youtube": "https://www.youtube.com/watch?v=yVrMqvu2_fE"
+        },
+        {
+          "title": "St. Patrick's Day (Demo)",
+          "youtube": "https://www.youtube.com/watch?v=3LPEEb8iH9c"
+        }
+      ]
+    },
+    {
+      "album": "Lo-Fi Masters Demo",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/2bd929f0-86b7-47d6-bfc5-bbcdfaa7b2ba/front",
+      "songs": [
+        {
+          "title": "Love Soon",
+          "youtube": "https://www.youtube.com/watch?v=Lth0TL5fOgg"
+        },
+        {
+          "title": "Victoria",
+          "youtube": "https://www.youtube.com/watch?v=Nt-jb5JHWB8"
+        },
+        {
+          "title": "Man on the Side",
+          "youtube": "https://www.youtube.com/watch?v=6aTYYJEdggw"
+        },
+        {
+          "title": "Outside in the Underground",
+          "youtube": "https://www.youtube.com/watch?v=_PP1vs3FfWc"
+        },
+        {
+          "title": "Comfortable",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        }
+      ]
+    },
+    {
+      "album": "2004-09-17: Berklee College of Music Clinic",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/bed34a95-aafa-4c69-911a-6f0cd37f6305/front",
+      "songs": [
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "[Talking]",
+          "youtube": null
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "[Talking]",
+          "youtube": null
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        },
+        {
+          "title": "[Talking]",
+          "youtube": null
+        },
+        {
+          "title": "[Questions]",
+          "youtube": null
+        },
+        {
+          "title": "[Answers]",
+          "youtube": null
+        },
+        {
+          "title": "Come Back to Bed / Wheel",
+          "youtube": "https://www.youtube.com/watch?v=wzkEK5jc2jI"
+        }
+      ]
+    },
+    {
+      "album": "2002-02-17: 9:30 Club, Washington, DC, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/e2cd54cb-72b8-436e-a97b-34b0f67776ec/front",
+      "songs": [
+        {
+          "title": "Intro",
+          "youtube": "https://www.youtube.com/watch?v=mQ055hHdxbE"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "No Such Thing (Always on Time)",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Back to You",
+          "youtube": "https://www.youtube.com/watch?v=tCxAmfUeWpk"
+        },
+        {
+          "title": "Great Indoors",
+          "youtube": "https://www.youtube.com/watch?v=4nwc-8lsiK4"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "3x5",
+          "youtube": "https://www.youtube.com/watch?v=ucbHPYCUtek"
+        },
+        {
+          "title": "Lenny",
+          "youtube": "https://www.youtube.com/watch?v=mKWyHe5wY5Q"
+        },
+        {
+          "title": "Wind Cries Mary",
+          "youtube": "https://www.youtube.com/watch?v=GIb9Yd5AP1Q"
+        },
+        {
+          "title": "Love Soon",
+          "youtube": "https://www.youtube.com/watch?v=Lth0TL5fOgg"
+        },
+        {
+          "title": "Love Song for No One",
+          "youtube": "https://www.youtube.com/watch?v=UL2bseqhk2o"
+        },
+        {
+          "title": "St. Patrick's Day",
+          "youtube": "https://www.youtube.com/watch?v=3LPEEb8iH9c"
+        },
+        {
+          "title": "City Love",
+          "youtube": "https://www.youtube.com/watch?v=8akf1hGPJjI"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Intro to Neon",
+          "youtube": "https://www.youtube.com/watch?v=eXBNx9JL-_w"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        },
+        {
+          "title": "My Buddy",
+          "youtube": "https://www.youtube.com/watch?v=Nt-jb5JHWB8"
+        },
+        {
+          "title": "83 (Girls Just Wanna Have Fun / Break My Stride / Rock With You)",
+          "youtube": "https://www.youtube.com/watch?v=6kETRTVjiR8"
+        },
+        {
+          "title": "Comfortable",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        }
+      ]
+    },
+    {
+      "album": "2006-09-13: Live in New York: New York City, NY, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/3b329057-8c91-462f-b835-3536c2063fec/front",
+      "songs": [
+        {
+          "title": "Belief",
+          "youtube": null
+        },
+        {
+          "title": "Vultures",
+          "youtube": null
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": null
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": null
+        },
+        {
+          "title": "The Heart of Life",
+          "youtube": null
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": null
+        },
+        {
+          "title": "I Dont Trust Myself (With Loving You)",
+          "youtube": null
+        },
+        {
+          "title": "Dreaming With a Broken Heart",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": null
+        },
+        {
+          "title": "Gravity",
+          "youtube": null
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": null
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": null
+        },
+        {
+          "title": "Daughters",
+          "youtube": null
+        },
+        {
+          "title": "In Repair",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "2008-10-24: Berklee College of Music, Boston, MA, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/d394ee9b-2b91-47ba-961e-cf59deee06e4/front",
+      "songs": [
+        {
+          "title": "Who Did You Think I Was",
+          "youtube": "https://www.youtube.com/watch?v=U1dRKPhYbZ0"
+        },
+        {
+          "title": "Stop This Train",
+          "youtube": "https://www.youtube.com/watch?v=0hAmFAL1UR0"
+        },
+        {
+          "title": "Better Man",
+          "youtube": "https://www.youtube.com/watch?v=2Eo4XdzfpkQ"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Taking On Water",
+          "youtube": "https://www.youtube.com/watch?v=fkvkST67kFM"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        }
+      ]
+    },
+    {
+      "album": "2001-10-18: Continental Club, Houston, TX, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/04da4288-d0eb-42f2-b374-48d3ff9c24b2/front",
+      "songs": [
+        {
+          "title": "Intro",
+          "youtube": "https://www.youtube.com/watch?v=mQ055hHdxbE"
+        },
+        {
+          "title": "Why Georgia (try 1)",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "A Song That Doesn't Exist",
+          "youtube": "https://www.youtube.com/watch?v=2UiX4dUUjWc"
+        },
+        {
+          "title": "Why Georgia (continued)",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "City Love",
+          "youtube": "https://www.youtube.com/watch?v=8akf1hGPJjI"
+        },
+        {
+          "title": "Covered in Rain",
+          "youtube": "https://www.youtube.com/watch?v=O3MICvgXvHM"
+        },
+        {
+          "title": "Back to You",
+          "youtube": "https://www.youtube.com/watch?v=tCxAmfUeWpk"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Love Song for No One",
+          "youtube": "https://www.youtube.com/watch?v=UL2bseqhk2o"
+        },
+        {
+          "title": "Why Did You Mess With Forever",
+          "youtube": "https://www.youtube.com/watch?v=a-S9YXMYGLc"
+        },
+        {
+          "title": "Not Myself",
+          "youtube": "https://www.youtube.com/watch?v=e7kVng_3xHk"
+        },
+        {
+          "title": "3x5",
+          "youtube": "https://www.youtube.com/watch?v=ucbHPYCUtek"
+        },
+        {
+          "title": "No Such Thing Intro",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "Neon Intro",
+          "youtube": "https://www.youtube.com/watch?v=eXBNx9JL-_w"
+        },
+        {
+          "title": "Neon",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        }
+      ]
+    },
+    {
+      "album": "2000-02-25: Eddie's Attic, Decatur, GA, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/edd81512-dfd8-4677-8eaf-839cf48bbd57/front",
+      "songs": [
+        {
+          "title": "Love Song for No One",
+          "youtube": "https://www.youtube.com/watch?v=UL2bseqhk2o"
+        },
+        {
+          "title": "Lifelines",
+          "youtube": "https://www.youtube.com/watch?v=qKgPplAg5SE"
+        },
+        {
+          "title": "Man on the Side",
+          "youtube": "https://www.youtube.com/watch?v=6aTYYJEdggw"
+        },
+        {
+          "title": "Love Soon",
+          "youtube": "https://www.youtube.com/watch?v=Lth0TL5fOgg"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "No Woman, No Cry",
+          "youtube": "https://www.youtube.com/watch?v=Du2uJdDMflc"
+        },
+        {
+          "title": "Victoria / Karma Police / Victoria",
+          "youtube": "https://www.youtube.com/watch?v=HY4sb2_7iyQ"
+        },
+        {
+          "title": "My Stupid Mouth",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "Great Indoors",
+          "youtube": "https://www.youtube.com/watch?v=4nwc-8lsiK4"
+        },
+        {
+          "title": "Back to You",
+          "youtube": "https://www.youtube.com/watch?v=tCxAmfUeWpk"
+        },
+        {
+          "title": "Movie Phone",
+          "youtube": "https://www.youtube.com/watch?v=97JMs8hE-a8"
+        },
+        {
+          "title": "Comfortable",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        },
+        {
+          "title": "Neon / Tom's Diner / Wanna Be Startin' Somethin' / Neon",
+          "youtube": "https://www.youtube.com/watch?v=20Ov0cDPZy8"
+        }
+      ]
+    },
+    {
+      "album": "2008-02-04: Nassau, The Bahamas",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/9a4f97ce-ef40-4860-8947-5ee607137d65/front",
+      "songs": [
+        {
+          "title": "[introduction]",
+          "youtube": null
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "\"Presidents Club\" / \"Tide Stick\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "Belief",
+          "youtube": "https://www.youtube.com/watch?v=rhL534Q7ZCs"
+        },
+        {
+          "title": "Clarity Introduction",
+          "youtube": "https://www.youtube.com/watch?v=ULrz-6CSmmM"
+        },
+        {
+          "title": "Clarity",
+          "youtube": "https://www.youtube.com/watch?v=YKB034rWxOU"
+        },
+        {
+          "title": "\"This is a very cool room - I'm feeling very Storytellers\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": "https://www.youtube.com/watch?v=aEi646akxko"
+        },
+        {
+          "title": "\"Anyone here from Georgia?\" / \"I don't know anything about football\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "\"That's not the way to start this tune off\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "Heart of Life",
+          "youtube": "https://www.youtube.com/watch?v=J_ilp2Z9Jps"
+        },
+        {
+          "title": "\"This next song...\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "\"Youtube it will ya\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "Free Fallin'",
+          "youtube": "https://www.youtube.com/watch?v=20Ov0cDPZy8"
+        },
+        {
+          "title": "\"Famous songs\"",
+          "youtube": "https://www.youtube.com/watch?v=Nt-jb5JHWB8"
+        },
+        {
+          "title": "Daughters",
+          "youtube": "https://www.youtube.com/watch?v=rZLbUIa7exE"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "\"I feel bad for the guy who thought Lyle Lovett was coming out...\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "If I Had a Boat",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "\"They say don't get high off your own supply...\"",
+          "youtube": "https://www.youtube.com/watch?v=T1ukeZ5CuUg"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        }
+      ]
+    },
+    {
+      "album": "2013-07-12: The Cynthia Woods-Mitchell Pavilion, The Woodlands, TX, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/e53dd6c2-3ae6-45e2-b5ed-4625ff574ec9/front",
+      "songs": [
+        {
+          "title": "Intro",
+          "youtube": "https://www.youtube.com/watch?v=mQ055hHdxbE"
+        },
+        {
+          "title": "Queen of California",
+          "youtube": "https://www.youtube.com/watch?v=hJXcBN0vnk8"
+        },
+        {
+          "title": "Lay Down Sally",
+          "youtube": "https://www.youtube.com/watch?v=9BYyPok2O5k"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Who Says",
+          "youtube": "https://www.youtube.com/watch?v=akvu1AOnUIw"
+        },
+        {
+          "title": "Speak for Me",
+          "youtube": "https://www.youtube.com/watch?v=omeNvD8IddM"
+        },
+        {
+          "title": "Half of My Heart",
+          "youtube": "https://www.youtube.com/watch?v=zr6lp-45bOQ"
+        },
+        {
+          "title": "Something Like Olivia",
+          "youtube": "https://www.youtube.com/watch?v=izkqPdVAdL4"
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "\"If You Were to Run the Numbers...\"",
+          "youtube": "https://www.youtube.com/watch?v=9MmwJRVOGf0"
+        },
+        {
+          "title": "Your Body Is a Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "Free Falling",
+          "youtube": "https://www.youtube.com/watch?v=20Ov0cDPZy8"
+        },
+        {
+          "title": "Born and Raised",
+          "youtube": "https://www.youtube.com/watch?v=wwTK3vmNMos"
+        },
+        {
+          "title": "Wildfire",
+          "youtube": "https://www.youtube.com/watch?v=lK2kKg4ao2I"
+        },
+        {
+          "title": "I Gotta Get Drunk",
+          "youtube": "https://www.youtube.com/watch?v=zdus_PcfQ7Q"
+        },
+        {
+          "title": "Going Down the Road, Feeling Bad",
+          "youtube": "https://www.youtube.com/watch?v=GEa2rRHXxgU"
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": "https://www.youtube.com/watch?v=aEi646akxko"
+        },
+        {
+          "title": "Paper Doll",
+          "youtube": "https://www.youtube.com/watch?v=565tXd1UyYI"
+        },
+        {
+          "title": "Age of Worry",
+          "youtube": "https://www.youtube.com/watch?v=7oROeSNOe_o"
+        },
+        {
+          "title": "If I Ever Get Around to Living",
+          "youtube": "https://www.youtube.com/watch?v=9MmwJRVOGf0"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "Why Georgia / My Stupid Mouth / No Such Thing (tease)",
+          "youtube": "https://www.youtube.com/watch?v=0YownpGeQ1M"
+        },
+        {
+          "title": "A Face to Call Home",
+          "youtube": "https://www.youtube.com/watch?v=97JMs8hE-a8"
+        }
+      ]
+    },
+    {
+      "album": "Live Compilation",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/5faed422-369c-4ab3-ae17-a53231b251a1/front",
+      "songs": [
+        {
+          "title": "No Such Thing (live)",
+          "youtube": null
+        },
+        {
+          "title": "Why Georgia (live)",
+          "youtube": null
+        },
+        {
+          "title": "My Stupid Mouth (live)",
+          "youtube": null
+        },
+        {
+          "title": "Your Body Is a Wonderland (live)",
+          "youtube": null
+        },
+        {
+          "title": "Neon (live)",
+          "youtube": null
+        },
+        {
+          "title": "City Love",
+          "youtube": null
+        },
+        {
+          "title": "83",
+          "youtube": null
+        },
+        {
+          "title": "3x5 (live)",
+          "youtube": null
+        },
+        {
+          "title": "Love Song for No One (live)",
+          "youtube": null
+        },
+        {
+          "title": "Back to You",
+          "youtube": null
+        },
+        {
+          "title": "Great Indoors",
+          "youtube": null
+        },
+        {
+          "title": "Not Myself",
+          "youtube": null
+        },
+        {
+          "title": "St Patrick's Day (live)",
+          "youtube": null
+        },
+        {
+          "title": "Comfortable (live)",
+          "youtube": null
+        },
+        {
+          "title": "George's Blues (live)",
+          "youtube": null
+        },
+        {
+          "title": "Girl Next Door",
+          "youtube": null
+        },
+        {
+          "title": "Kid A",
+          "youtube": null
+        },
+        {
+          "title": "Quiet",
+          "youtube": null
+        },
+        {
+          "title": "Victoria",
+          "youtube": null
+        },
+        {
+          "title": "The Wind Cries Mary",
+          "youtube": null
+        }
+      ]
+    },
+    {
+      "album": "2006-04-10: The Hotel Cafe, Hollywood, CA, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/7aa30106-2841-414d-86ba-fe22c8a4035b/front",
+      "songs": [
+        {
+          "title": "[introduction]",
+          "youtube": null
+        },
+        {
+          "title": "I Don't Trust Myself (With Loving You)",
+          "youtube": "https://www.youtube.com/watch?v=4s1sKigA17c"
+        },
+        {
+          "title": "Waiting on the World to Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Slow Dancing in a Burning Room",
+          "youtube": "https://www.youtube.com/watch?v=aEi646akxko"
+        },
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "Dreaming With a Broken Heart",
+          "youtube": "https://www.youtube.com/watch?v=2P3L1HQc7n4"
+        },
+        {
+          "title": "Stop This Train",
+          "youtube": "https://www.youtube.com/watch?v=0hAmFAL1UR0"
+        },
+        {
+          "title": "Good Love Is on the Way",
+          "youtube": "https://www.youtube.com/watch?v=JwbYY0eHYWY"
+        },
+        {
+          "title": "In Repair",
+          "youtube": "https://www.youtube.com/watch?v=r-b6VKXQKVA"
+        },
+        {
+          "title": "The Heart of Life",
+          "youtube": "https://www.youtube.com/watch?v=eIDXbyobJTs"
+        },
+        {
+          "title": "I'm Gonna Find Another You",
+          "youtube": "https://www.youtube.com/watch?v=uGScLpU2I8k"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        }
+      ]
+    },
+    {
+      "album": "2007-10-24: Dallas Convention Center Arena, Dallas, TX, USA",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/26d03bc4-b4cc-4a70-a794-5687d6838943/front",
+      "songs": [
+        {
+          "title": "Vultures",
+          "youtube": "https://www.youtube.com/watch?v=JypDYRNZOj0"
+        },
+        {
+          "title": "No Such Thing",
+          "youtube": "https://www.youtube.com/watch?v=SBP5GMBzLRc"
+        },
+        {
+          "title": "I Don’t Trust Myself",
+          "youtube": "https://www.youtube.com/watch?v=4s1sKigA17c"
+        },
+        {
+          "title": "Waiting On The World To Change",
+          "youtube": "https://www.youtube.com/watch?v=cQpVupyHvvM"
+        },
+        {
+          "title": "Bigger Than My Body",
+          "youtube": "https://www.youtube.com/watch?v=Oz1lr5XbrYI"
+        },
+        {
+          "title": "Belief",
+          "youtube": "https://www.youtube.com/watch?v=rhL534Q7ZCs"
+        },
+        {
+          "title": "I Don’t Need No Doctor",
+          "youtube": "https://www.youtube.com/watch?v=Js6JHwHYFk4"
+        },
+        {
+          "title": "Why Georgia",
+          "youtube": "https://www.youtube.com/watch?v=aIwMeIQWPsk"
+        },
+        {
+          "title": "Gravity",
+          "youtube": "https://www.youtube.com/watch?v=0WOwfzlF51E"
+        },
+        {
+          "title": "Your Body Is A Wonderland",
+          "youtube": "https://www.youtube.com/watch?v=1fqnRlDtIFU"
+        },
+        {
+          "title": "I’m Gonna Find Another You",
+          "youtube": "https://www.youtube.com/watch?v=uGScLpU2I8k"
+        }
+      ]
+    },
+    {
+      "album": "1999-06-15: Eddies Attic",
+      "year": null,
+      "albumArt": "https://coverartarchive.org/release/e026b944-bb64-4dbb-b127-dbd5b9004fb7/front",
+      "songs": [
+        {
+          "title": "Comfortable",
+          "youtube": "https://www.youtube.com/watch?v=QYKFVgPVj3U"
+        },
+        {
+          "title": "John Talks About New Songs",
+          "youtube": "https://www.youtube.com/watch?v=Bq8SBDv7Wn4"
+        },
+        {
+          "title": "Calls Mom From Stage",
+          "youtube": "https://www.youtube.com/watch?v=FSQWFCq5fKU"
+        },
+        {
+          "title": "No Woman, No Cry",
+          "youtube": "https://www.youtube.com/watch?v=Du2uJdDMflc"
+        },
+        {
+          "title": "Back to You",
+          "youtube": "https://www.youtube.com/watch?v=tCxAmfUeWpk"
+        },
+        {
+          "title": "Breakaway",
+          "youtube": "https://www.youtube.com/watch?v=J24ETzqs2ZU"
+        },
+        {
+          "title": "Channeling Other Musicians",
+          "youtube": "https://www.youtube.com/watch?v=X2xBvsSFv_M"
+        },
+        {
+          "title": "Intro to Oitu",
+          "youtube": "https://www.youtube.com/watch?v=SpEE9iqLD10"
+        },
+        {
+          "title": "Outside in the Underground",
+          "youtube": "https://www.youtube.com/watch?v=_PP1vs3FfWc"
+        },
+        {
+          "title": "Intro to Love Soon",
+          "youtube": "https://www.youtube.com/watch?v=Lth0TL5fOgg"
+        },
+        {
+          "title": "Love Soon",
+          "youtube": "https://www.youtube.com/watch?v=Lth0TL5fOgg"
+        },
+        {
+          "title": "John Tuning",
+          "youtube": "https://www.youtube.com/watch?v=b_HSMYSsD-M"
+        },
+        {
+          "title": "The Wind Cries Mary",
+          "youtube": "https://www.youtube.com/watch?v=GIb9Yd5AP1Q"
+        }
+      ]
+    }
+  ]
+}

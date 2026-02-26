@@ -1,0 +1,35 @@
+diff --git a/node_modules/expo-foreground-actions/android/build.gradle b/node_modules/expo-foreground-actions/android/build.gradle
+index cac1c55..7697e53 100644
+--- a/node_modules/expo-foreground-actions/android/build.gradle
++++ b/node_modules/expo-foreground-actions/android/build.gradle
+@@ -54,12 +54,12 @@ android {
+   compileSdkVersion safeExtGet("compileSdkVersion", 33)
+ 
+   compileOptions {
+-    sourceCompatibility JavaVersion.VERSION_11
+-    targetCompatibility JavaVersion.VERSION_11
++    sourceCompatibility JavaVersion.VERSION_17
++    targetCompatibility JavaVersion.VERSION_17
+   }
+ 
+   kotlinOptions {
+-    jvmTarget = JavaVersion.VERSION_11.majorVersion
++    jvmTarget = JavaVersion.VERSION_17.majorVersion
+   }
+ 
+   namespace "expo.modules.foregroundactions"
+diff --git a/node_modules/expo-foreground-actions/android/src/main/java/expo/modules/foregroundactions/ExpoForegroundActionsService.kt b/node_modules/expo-foreground-actions/android/src/main/java/expo/modules/foregroundactions/ExpoForegroundActionsService.kt
+index 17a8e65..b306dc6 100644
+--- a/node_modules/expo-foreground-actions/android/src/main/java/expo/modules/foregroundactions/ExpoForegroundActionsService.kt
++++ b/node_modules/expo-foreground-actions/android/src/main/java/expo/modules/foregroundactions/ExpoForegroundActionsService.kt
+@@ -110,8 +110,8 @@ class ExpoForegroundActionsService : HeadlessJsTaskService() {
+         }
+     }
+ 
+-    override fun getTaskConfig(intent: Intent): HeadlessJsTaskConfig? {
+-        return intent.extras?.let {
++    override fun getTaskConfig(intent: Intent?): HeadlessJsTaskConfig? {
++        return intent?.extras?.let {
+             HeadlessJsTaskConfig(
+                     intent.extras?.getString("headlessTaskName")!!,
+                     Arguments.fromBundle(it),

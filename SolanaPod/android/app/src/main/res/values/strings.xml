@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SolanaPod</string>
+    <string name="title_activity_main">SolanaPod</string>
+    <string name="package_name">com.solanapod.app</string>
+    <string name="custom_url_scheme">com.solanapod.app</string>
+</resources>
