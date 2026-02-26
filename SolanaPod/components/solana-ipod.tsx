@@ -4,7 +4,7 @@ import { IPodDisplay } from "./ipod-display"
 import { SolanaClickWheel } from "./solana-click-wheel"
 import { BootLogoDisplay } from "./boot-screen"
 import type { BootPhase } from "./boot-screen"
-import { musicLibrary, type Artist, type Album, type Song } from "@/lib/music-library"
+import type { Artist, Album, Song } from "@/lib/music-library"
 import { useMusicPlayback } from "@/contexts/music-playback-context"
 import { useClickWheelSound } from "@/hooks/use-click-wheel-sound"
 import {
@@ -28,7 +28,7 @@ export function SolanaIPod({
   onPowerOnRequest?: () => void
 }) {
   const isActive = powerState === "on"
-  const { navigation, setNavigation, selectedIndex, setSelectedIndex, isPlaying, setIsPlaying, volume, setVolume, advanceToNext, advanceToPrevious } =
+  const { library, navigation, setNavigation, selectedIndex, setSelectedIndex, isPlaying, setIsPlaying, volume, setVolume, advanceToNext, advanceToPrevious } =
     useMusicPlayback()
   const { playClick } = useClickWheelSound()
   const [hideUI, setHideUI] = useState(false)
@@ -47,7 +47,7 @@ export function SolanaIPod({
   const getCurrentList = useCallback(() => {
     switch (navigation.level) {
       case "artists":
-        return musicLibrary
+        return library
       case "albums":
         return navigation.selectedArtist?.albums || []
       case "songs":
@@ -105,7 +105,7 @@ export function SolanaIPod({
     } else if (navigation.level === "albums") {
       trackMenuBack("albums", "artists", deviceName)
       setNavigation({ level: "artists", selectedArtist: null, selectedAlbum: null, selectedSong: null })
-      const idx = musicLibrary.findIndex((a) => a.name === navigation.selectedArtist?.name)
+      const idx = library.findIndex((a) => a.name === navigation.selectedArtist?.name)
       setSelectedIndex(idx >= 0 ? idx : 0)
     }
   }

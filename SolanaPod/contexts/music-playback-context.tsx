@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { createContext, useContext, useState, useRef, useCallback, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useRef, useCallback, useEffect, useMemo, type ReactNode } from "react"
 import type { Artist, Album, Song } from "@/lib/music-library"
 import { musicLibrary, getSongAudioUrl, getSongAudioUrlFallbacks } from "@/lib/music-library"
 import { r2Url } from "@/lib/r2"
@@ -11,10 +11,27 @@ import { trackAutoplay } from "@/lib/analytics"
 type NavigationLevel = "artists" | "albums" | "songs" | "nowPlaying"
 export type RepeatMode = "off" | "one" | "all"
 
+/** Build "Your uploads" artist from blob track list (from /api/audio/tracks). */
+function blobTracksToArtist(tracks: { pathname: string; url: string }[]): Artist | null {
+  if (!tracks.length) return null
+  const songs: Song[] = tracks.map((t) => {
+    const base = t.pathname.replace(/\.[^./]+$/, "").replace(/^.*\//, "")
+    return {
+      id: `blob-${t.pathname}`,
+      title: base || t.pathname,
+      audioUrl: t.url,
+    }
+  })
+  return {
+    name: "Your uploads",
+    albums: [{ name: "Blob", songs }],
+  }
+}
+
 /** Flat list of all songs in library for shuffle */
-function getAllSongs(): { artist: Artist; album: Album; song: Song }[] {
+function getAllSongs(library: Artist[]): { artist: Artist; album: Album; song: Song }[] {
   const list: { artist: Artist; album: Album; song: Song }[] = []
-  for (const artist of musicLibrary) {
+  for (const artist of library) {
     for (const album of artist.albums) {
       for (const song of album.songs) {
         list.push({ artist, album, song })
@@ -32,6 +49,8 @@ interface NavigationState {
 }
 
 interface MusicPlaybackContextType {
+  /** Static library + audio blobs from /api/audio/tracks (new uploads show here). */
+  library: Artist[]
   navigation: NavigationState
   setNavigation: (state: NavigationState) => void
   selectedIndex: number
@@ -60,6 +79,7 @@ interface MusicPlaybackContextType {
 const MusicPlaybackContext = createContext<MusicPlaybackContextType | undefined>(undefined)
 
 export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
+  const [blobTracks, setBlobTracks] = useState<{ pathname: string; url: string }[]>([])
   const [navigation, setNavigation] = useState<NavigationState>({
     level: "artists",
     selectedArtist: null,
@@ -79,6 +99,23 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
   const [playerReady, setPlayerReady] = useState(false)
   const shuffleRef = useRef(shuffle)
   const repeatRef = useRef(repeat)
+
+  useEffect(() => {
+    fetch("/api/audio/tracks")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { tracks?: { pathname: string; url: string }[] } | null) => {
+        if (data?.tracks?.length) setBlobTracks(data.tracks)
+      })
+      .catch(() => {})
+  }, [])
+
+  const blobArtist = useMemo(() => blobTracksToArtist(blobTracks), [blobTracks])
+  const effectiveLibrary = useMemo(
+    () => musicLibrary.concat(blobArtist ? [blobArtist] : []),
+    [blobArtist]
+  )
+  const libraryRef = useRef(effectiveLibrary)
+  libraryRef.current = effectiveLibrary
   useEffect(() => {
     shuffleRef.current = shuffle
     repeatRef.current = repeat
@@ -123,7 +160,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
     }
 
     if (shuffleRef.current) {
-      const allSongs = getAllSongs()
+      const allSongs = getAllSongs(libraryRef.current)
       if (allSongs.length > 0) {
         const idx = Math.floor(Math.random() * allSongs.length)
         const { artist, album, song } = allSongs[idx]
@@ -134,7 +171,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    const artistIndex = musicLibrary.findIndex((a) => a.name === currentArtist.name)
+    const artistIndex = libraryRef.current.findIndex((a) => a.name === currentArtist.name)
     const albumIndex = currentArtist.albums.findIndex((a) => a.name === currentAlbum.name)
     const songIndex = currentAlbum.songs.findIndex((s) => s.id === currentSong.id)
 
@@ -165,8 +202,8 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    if (artistIndex < musicLibrary.length - 1) {
-      const nextArtist = musicLibrary[artistIndex + 1]
+    if (artistIndex < libraryRef.current.length - 1) {
+      const nextArtist = libraryRef.current[artistIndex + 1]
       const nextAlbum = nextArtist.albums[0]
       const nextSong = nextAlbum.songs[0]
       console.log("[v0] Autoplay: Next artist -", nextArtist.name)
@@ -183,7 +220,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
 
     // Repeat all: loop back to first
     if (repeatRef.current === "all") {
-      const firstArtist = musicLibrary[0]
+      const firstArtist = libraryRef.current[0]
       const firstAlbum = firstArtist.albums[0]
       const firstSong = firstAlbum.songs[0]
       console.log("[v0] Autoplay: Repeat all -", firstArtist.name)
@@ -199,7 +236,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
     }
 
     // End of library, no repeat all: stop or loop once
-    const firstArtist = musicLibrary[0]
+    const firstArtist = libraryRef.current[0]
     const firstAlbum = firstArtist.albums[0]
     const firstSong = firstAlbum.songs[0]
     console.log("[v0] Autoplay: Looping to start -", firstArtist.name)
@@ -221,11 +258,11 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
     const nav = navigationRef.current
     if (!nav.selectedSong || !nav.selectedAlbum || !nav.selectedArtist) return
 
-    const allSongs = getAllSongs()
+    const allSongs = getAllSongs(libraryRef.current)
     const currentArtist = nav.selectedArtist
     const currentAlbum = nav.selectedAlbum
     const currentSong = nav.selectedSong
-    const artistIndex = musicLibrary.findIndex((a) => a.name === currentArtist.name)
+    const artistIndex = libraryRef.current.findIndex((a) => a.name === currentArtist.name)
     const albumIndex = currentArtist.albums.findIndex((a) => a.name === currentAlbum.name)
     const songIndex = currentAlbum.songs.findIndex((s) => s.id === currentSong.id)
 
@@ -259,8 +296,8 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
       setIsPlaying(true)
       return
     }
-    if (artistIndex < musicLibrary.length - 1) {
-      const nextArtist = musicLibrary[artistIndex + 1]
+    if (artistIndex < libraryRef.current.length - 1) {
+      const nextArtist = libraryRef.current[artistIndex + 1]
       const nextAlbum = nextArtist.albums[0]
       const nextSong = nextAlbum.songs[0]
       trackAutoplay(nextArtist.name, nextAlbum.name, nextSong.title, "Auto")
@@ -280,11 +317,11 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
     const nav = navigationRef.current
     if (!nav.selectedSong || !nav.selectedAlbum || !nav.selectedArtist) return
 
-    const allSongs = getAllSongs()
+    const allSongs = getAllSongs(libraryRef.current)
     const currentArtist = nav.selectedArtist
     const currentAlbum = nav.selectedAlbum
     const currentSong = nav.selectedSong
-    const artistIndex = musicLibrary.findIndex((a) => a.name === currentArtist.name)
+    const artistIndex = libraryRef.current.findIndex((a) => a.name === currentArtist.name)
     const albumIndex = currentArtist.albums.findIndex((a) => a.name === currentAlbum.name)
     const songIndex = currentAlbum.songs.findIndex((s) => s.id === currentSong.id)
 
@@ -319,7 +356,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
       return
     }
     if (artistIndex > 0) {
-      const prevArtist = musicLibrary[artistIndex - 1]
+      const prevArtist = libraryRef.current[artistIndex - 1]
       const prevAlbum = prevArtist.albums[prevArtist.albums.length - 1]
       const prevSong = prevAlbum.songs[prevAlbum.songs.length - 1]
       trackAutoplay(prevArtist.name, prevAlbum.name, prevSong.title, "Auto")
@@ -579,6 +616,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
   return (
     <MusicPlaybackContext.Provider
       value={{
+        library: effectiveLibrary,
         navigation,
         setNavigation,
         selectedIndex,

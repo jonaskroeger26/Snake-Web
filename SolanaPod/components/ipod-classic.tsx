@@ -2,7 +2,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { IPodDisplay } from "./ipod-display"
 import { ClickWheel } from "./click-wheel"
-import { musicLibrary, type Artist, type Album, type Song } from "@/lib/music-library"
+import type { Artist, Album, Song } from "@/lib/music-library"
 import { useMusicPlayback } from "@/contexts/music-playback-context"
 import { useClickWheelSound } from "@/hooks/use-click-wheel-sound"
 import {
@@ -18,7 +18,7 @@ export function IPodClassic({
   isActive = true,
   deviceName = "iPod Classic",
 }: { isActive?: boolean; deviceName?: string }) {
-  const { navigation, setNavigation, selectedIndex, setSelectedIndex, isPlaying, setIsPlaying, volume, setVolume, advanceToNext, advanceToPrevious } =
+  const { library, navigation, setNavigation, selectedIndex, setSelectedIndex, isPlaying, setIsPlaying, volume, setVolume, advanceToNext, advanceToPrevious } =
     useMusicPlayback()
 
   const { playClick } = useClickWheelSound()
@@ -48,7 +48,7 @@ export function IPodClassic({
 
     switch (navigation.level) {
       case "artists":
-        return musicLibrary
+        return library
       case "albums":
         const albums = navigation.selectedArtist?.albums || []
         console.log("[v0] Returning albums list, count:", albums.length)
@@ -171,7 +171,7 @@ export function IPodClassic({
         selectedAlbum: null,
         selectedSong: null,
       })
-      const artistIndex = musicLibrary.findIndex((a) => a.name === navigation.selectedArtist?.name)
+      const artistIndex = library.findIndex((a) => a.name === navigation.selectedArtist?.name)
       const newIndex = artistIndex >= 0 ? artistIndex : 0
       console.log("[v0] Going back to artists. Setting index to:", newIndex)
       setSelectedIndex(newIndex)

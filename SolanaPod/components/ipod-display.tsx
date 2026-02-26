@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useMusicPlayback } from "@/contexts/music-playback-context"
-import { musicLibrary, getSongAudioUrl, type Artist, type Album, type Song } from "@/lib/music-library"
+import { getSongAudioUrl, type Artist, type Album, type Song } from "@/lib/music-library"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Shuffle, Repeat, Repeat1 } from "lucide-react"
 
@@ -25,6 +25,7 @@ interface IPodDisplayProps {
 
 export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hideUI = false }: IPodDisplayProps) {
   const {
+    library,
     playerRef,
     shuffle,
     setShuffle,
@@ -105,7 +106,7 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
           <h2 className="text-xs font-bold text-black">Artists</h2>
         </div>
         <div className="space-y-0.5 overflow-y-auto h-[200px] scrollbar-hide pointer-events-none">
-          {musicLibrary.map((artist, index) => (
+          {library.map((artist, index) => (
             <div
               key={artist.name}
               ref={index === selectedIndex ? selectedItemRef : null}

@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect, useRef } from "react"
 import { useMusicPlayback } from "@/contexts/music-playback-context"
-import { musicLibrary, type Artist, type Album, type Song } from "@/lib/music-library"
+import type { Artist, Album, Song } from "@/lib/music-library"
 import { ChevronLeft, Play, Pause, SkipBack, SkipForward } from "lucide-react"
 import { useClickWheelSound } from "@/hooks/use-click-wheel-sound"
 import {
@@ -31,6 +31,7 @@ export function IPodNano6({
   deviceName = "iPod Nano 6th Gen",
 }: { isActive?: boolean; deviceName?: string }) {
   const {
+    library,
     navigation,
     setNavigation,
     selectedIndex,
@@ -303,7 +304,7 @@ export function IPodNano6({
   const getCurrentList = () => {
     switch (navigation.level) {
       case "artists":
-        return musicLibrary
+        return library
       case "albums":
         return navigation.selectedArtist?.albums || []
       case "songs":
