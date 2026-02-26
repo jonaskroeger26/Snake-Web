@@ -69,7 +69,7 @@ export function IPodClassic({
         console.log("[v0] Returning empty list")
         return []
     }
-  }, [navigation.level, navigation.selectedArtist, navigation.selectedAlbum])
+  }, [library, navigation.level, navigation.selectedArtist, navigation.selectedAlbum])
 
   const handleSelect = () => {
     playClick()

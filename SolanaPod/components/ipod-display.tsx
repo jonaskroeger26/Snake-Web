@@ -87,7 +87,7 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
     if (selectedItemRef.current) {
       selectedItemRef.current.scrollIntoView({
         behavior: "smooth",
-        block: "nearest",
+        block: "center",
       })
     }
   }, [selectedIndex])

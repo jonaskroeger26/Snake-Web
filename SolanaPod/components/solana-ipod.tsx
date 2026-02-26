@@ -55,7 +55,7 @@ export function SolanaIPod({
       default:
         return []
     }
-  }, [navigation.level, navigation.selectedArtist, navigation.selectedAlbum])
+  }, [library, navigation.level, navigation.selectedArtist, navigation.selectedAlbum])
 
   const handleSelect = () => {
     playClick()
