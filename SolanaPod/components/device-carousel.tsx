@@ -6,15 +6,13 @@ import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { IPodClassic } from "./ipod-classic"
 import { IPodNano6 } from "./ipod-nano-6"
-import { Nokia3310 } from "./nokia-3310"
-import { SonyWalkmanNWA1000 } from "./sony-walkman-nw-a1000"
 import { MusicPlaybackProvider } from "@/contexts/music-playback-context"
 import { useClickWheelSound } from "@/hooks/use-click-wheel-sound"
 import { trackDeviceSwitch } from "@/lib/analytics"
 
 const BASE_WIDTH = 500 // reference width that ALL devices render within
 
-type DeviceType = "ipod-classic" | "ipod-nano-6" | "nokia-3310" | "sony-walkman"
+type DeviceType = "ipod-classic" | "ipod-nano-6"
 
 interface Device {
   id: DeviceType
@@ -23,21 +21,15 @@ interface Device {
 }
 
 const devices: Device[] = [
-  { id: "nokia-3310", name: "Nokia 3310", component: Nokia3310 },
   { id: "ipod-nano-6", name: "iPod Nano", component: IPodNano6 },
   { id: "ipod-classic", name: "iPod Classic", component: IPodClassic },
-  {
-    id: "sony-walkman",
-    name: "Sony Walkman",
-    component: SonyWalkmanNWA1000,
-  },
 ]
 
 export function DeviceCarousel() {
-  const [currentDeviceIndex, setCurrentDeviceIndex] = useState(2) // Start with iPod Classic (now at index 2)
+  const [currentDeviceIndex, setCurrentDeviceIndex] = useState(1) // Start with iPod Classic
   const [previousDeviceIndex, setPreviousDeviceIndex] = useState<number | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const [scrollPosition, setScrollPosition] = useState(2)
+  const [scrollPosition, setScrollPosition] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
   const [isTablet, setIsTablet] = useState(false)
   const [vw, setVw] = useState<number | null>(null)

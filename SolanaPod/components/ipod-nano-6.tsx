@@ -170,13 +170,7 @@ export function IPodNano6({
     const currentList = getCurrentList()
 
     if (navigation.level === "artists") {
-      const item = currentList[index] as Artist & { id?: string }
-      if (item?.id === "__extras__") {
-        setNavigation({ level: "extras", selectedArtist: null, selectedAlbum: null, selectedSong: null })
-        setSelectedIndex(0)
-        return
-      }
-      const artist = item as Artist
+      const artist = currentList[index] as Artist
       trackNavigation("artists", artist.name, deviceName)
       setNavigation({
         level: "albums",
@@ -185,18 +179,6 @@ export function IPodNano6({
         selectedSong: null,
       })
       setSelectedIndex(0)
-    } else if (navigation.level === "extras") {
-      const extra = currentList[index] as { id: string; name: string }
-      if (extra?.id === "snake") {
-        setNavigation({
-          level: "extrasGame",
-          selectedArtist: null,
-          selectedAlbum: null,
-          selectedSong: null,
-          selectedExtraGame: "snake",
-        })
-        setSelectedIndex(0)
-      }
     } else if (navigation.level === "albums") {
       const album = currentList[index] as Album
       trackNavigation("albums", album.title || (album as any).name, deviceName)
@@ -227,13 +209,7 @@ export function IPodNano6({
 
   const handleBack = () => {
     trackButtonPress("back", deviceName)
-    if (navigation.level === "extrasGame") {
-      setNavigation({ level: "extras", selectedArtist: null, selectedAlbum: null, selectedSong: null, selectedExtraGame: null })
-      setSelectedIndex(0)
-    } else if (navigation.level === "extras") {
-      setNavigation({ level: "artists", selectedArtist: null, selectedAlbum: null, selectedSong: null })
-      setSelectedIndex(musicLibrary.length)
-    } else if (navigation.level === "nowPlaying") {
+    if (navigation.level === "nowPlaying") {
       trackMenuBack("nowPlaying", "songs", deviceName)
       setNavigation({
         ...navigation,
@@ -327,9 +303,7 @@ export function IPodNano6({
   const getCurrentList = () => {
     switch (navigation.level) {
       case "artists":
-        return [...musicLibrary, { name: "Extras", id: "__extras__" }]
-      case "extras":
-        return [{ name: "Snake", id: "snake" }]
+        return musicLibrary
       case "albums":
         return navigation.selectedArtist?.albums || []
       case "songs":
@@ -343,10 +317,6 @@ export function IPodNano6({
     switch (navigation.level) {
       case "artists":
         return "Artists"
-      case "extras":
-        return "Extras"
-      case "extrasGame":
-        return "Snake"
       case "albums":
         return navigation.selectedArtist?.name || "Albums"
       case "songs":
@@ -389,35 +359,7 @@ export function IPodNano6({
             <>
               {/* Touchscreen display */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#0f0f1e] to-[#1a1a2e]">
-                {navigation.level === "extrasGame" ? (
-                  <div className="absolute inset-0 bg-black rounded-[21px] overflow-hidden flex items-center justify-center">
-                    <div
-                      className="absolute left-1/2 top-1/2"
-                      style={{
-                        width: 800,
-                        height: 600,
-                        transform: "translate(-50%, -50%) scale(0.35)",
-                        transformOrigin: "center center",
-                      }}
-                    >
-                      <iframe
-                        src="https://solanasnake.app"
-                        title="Solana Snake"
-                        className="w-full h-full border-0"
-                        style={{ width: 800, height: 600 }}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope"
-                        allowFullScreen
-                      />
-                    </div>
-                    <button
-                      onClick={handleBack}
-                      className="absolute top-2 left-2 z-10 p-1.5 rounded-lg bg-black/60 text-white/90 hover:bg-black/80 active:scale-95 transition-all"
-                      aria-label="Back"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                  </div>
-                ) : navigation.level === "nowPlaying" ? (
+                {navigation.level === "nowPlaying" ? (
                   // Now Playing Screen
                   <div className="absolute inset-0 flex flex-col">
                     {/* Header with back button */}
@@ -541,7 +483,6 @@ export function IPodNano6({
                         const isArtist = navigation.level === "artists"
                         const isAlbum = navigation.level === "albums"
                         const isSong = navigation.level === "songs"
-                        const isExtras = navigation.level === "extras"
 
                         return (
                           <button
@@ -570,7 +511,6 @@ export function IPodNano6({
                                 {isArtist && (item as Artist).name}
                                 {isAlbum && albumLabel(item as Album)}
                                 {isSong && (item as Song).title}
-                                {isExtras && (item as { name: string }).name}
                               </div>
                               {isSong && (
                                 <div className="text-white/60 text-[11px] font-sans truncate mt-0.5 px-1">

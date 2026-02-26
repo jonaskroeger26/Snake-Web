@@ -5,6 +5,8 @@ import { useRef, useState, useEffect } from "react"
 import { SkipBack, SkipForward } from "lucide-react"
 import { useClickWheelSound } from "@/hooks/use-click-wheel-sound"
 
+const LONG_PRESS_MS = 3000
+
 interface SolanaClickWheelProps {
   onNext: () => void
   onPrevious: () => void
@@ -17,6 +19,10 @@ interface SolanaClickWheelProps {
   volume: number
   showPlaylist: boolean
   isPlaying: boolean
+  scrollThreshold?: number
+  invertScrollDirection?: boolean
+  /** When set, play/pause button requires long-press (e.g. 3s) to fire this instead of onPlayPause */
+  onPlayPauseLongPress?: () => void
 }
 
 export function SolanaClickWheel({
@@ -31,6 +37,9 @@ export function SolanaClickWheel({
   volume,
   showPlaylist,
   isPlaying,
+  scrollThreshold = 0.3,
+  invertScrollDirection = false,
+  onPlayPauseLongPress,
 }: SolanaClickWheelProps) {
   const wheelRef = useRef<HTMLDivElement>(null)
   const [isRotating, setIsRotating] = useState(false)
@@ -38,6 +47,8 @@ export function SolanaClickWheel({
   const [rotationDelta, setRotationDelta] = useState(0)
   const { playClick } = useClickWheelSound()
   const lastMoveTimeRef = useRef<number>(0)
+  const playLongPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const playLongPressHandledRef = useRef(false)
 
   const getAngle = (e: MouseEvent | TouchEvent) => {
     if (!wheelRef.current) return 0
@@ -75,15 +86,17 @@ export function SolanaClickWheel({
     const velocity = timeDelta > 0 ? Math.abs(normalizedDiff) / (timeDelta / 1000) : 0
     lastMoveTimeRef.current = now
 
-    const threshold = 0.3
+    const threshold = scrollThreshold
 
     if (showPlaylist) {
+      const scrollDown = invertScrollDirection ? onScrollUp : onScrollDown
+      const scrollUp = invertScrollDirection ? onScrollDown : onScrollUp
       if (newDelta > threshold) {
-        onScrollDown()
+        scrollDown()
         playClick(Math.min(1, velocity / 5))
         setRotationDelta(0)
       } else if (newDelta < -threshold) {
-        onScrollUp()
+        scrollUp()
         playClick(Math.min(1, velocity / 5))
         setRotationDelta(0)
       }
@@ -105,6 +118,32 @@ export function SolanaClickWheel({
   const handleWheelEnd = () => {
     setIsRotating(false)
     setRotationDelta(0)
+  }
+
+  const handlePlayPausePointerDown = () => {
+    if (!onPlayPauseLongPress) return
+    playLongPressHandledRef.current = false
+    playLongPressTimerRef.current = setTimeout(() => {
+      playLongPressTimerRef.current = null
+      playLongPressHandledRef.current = true
+      onPlayPauseLongPress()
+    }, LONG_PRESS_MS)
+  }
+
+  const handlePlayPausePointerUp = () => {
+    if (playLongPressTimerRef.current) {
+      clearTimeout(playLongPressTimerRef.current)
+      playLongPressTimerRef.current = null
+    }
+  }
+
+  const handlePlayPauseClick = () => {
+    if (playLongPressHandledRef.current) {
+      playLongPressHandledRef.current = false
+      return
+    }
+    if (onPlayPauseLongPress) return
+    onPlayPause()
   }
 
   useEffect(() => {
@@ -129,7 +168,7 @@ export function SolanaClickWheel({
       window.removeEventListener("mouseup", handleMouseUp)
       window.removeEventListener("touchend", handleTouchEnd)
     }
-  }, [isRotating, lastAngle, volume, showPlaylist, rotationDelta])
+  }, [isRotating, lastAngle, volume, showPlaylist, rotationDelta, scrollThreshold, invertScrollDirection])
 
   return (
     <div className="relative w-[240px] h-[240px]">
@@ -224,9 +263,13 @@ export function SolanaClickWheel({
 
           {/* Play/Pause Button */}
           <button
-            onClick={onPlayPause}
+            onClick={onPlayPauseLongPress ? handlePlayPauseClick : onPlayPause}
+            onPointerDown={onPlayPauseLongPress ? handlePlayPausePointerDown : undefined}
+            onPointerUp={onPlayPauseLongPress ? handlePlayPausePointerUp : undefined}
+            onPointerLeave={onPlayPauseLongPress ? handlePlayPausePointerUp : undefined}
             className="absolute bottom-4 left-1/2 -translate-x-1/2 hover:opacity-80 transition-opacity z-20"
             style={{ filter: "drop-shadow(0 0 4px rgba(20, 241, 149, 0.3))" }}
+            title={onPlayPauseLongPress ? "Hold 3s to turn on" : undefined}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="#14F195" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 5v14l11-7z" />

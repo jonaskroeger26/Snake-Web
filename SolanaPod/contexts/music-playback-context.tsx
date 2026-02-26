@@ -2,20 +2,33 @@
 
 import type React from "react"
 
-import { createContext, useContext, useState, useRef, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useRef, useCallback, useEffect, type ReactNode } from "react"
 import type { Artist, Album, Song } from "@/lib/music-library"
-import { musicLibrary } from "@/lib/music-library"
+import { musicLibrary, getSongAudioUrl, getSongAudioUrlFallbacks } from "@/lib/music-library"
+import { r2Url } from "@/lib/r2"
 import { trackAutoplay } from "@/lib/analytics"
 
-type NavigationLevel = "artists" | "albums" | "songs" | "nowPlaying" | "extras" | "extrasGame"
+type NavigationLevel = "artists" | "albums" | "songs" | "nowPlaying"
+export type RepeatMode = "off" | "one" | "all"
+
+/** Flat list of all songs in library for shuffle */
+function getAllSongs(): { artist: Artist; album: Album; song: Song }[] {
+  const list: { artist: Artist; album: Album; song: Song }[] = []
+  for (const artist of musicLibrary) {
+    for (const album of artist.albums) {
+      for (const song of album.songs) {
+        list.push({ artist, album, song })
+      }
+    }
+  }
+  return list
+}
 
 interface NavigationState {
   level: NavigationLevel
   selectedArtist: Artist | null
   selectedAlbum: Album | null
   selectedSong: Song | null
-  /** When level is extrasGame, which game is open (e.g. "snake") */
-  selectedExtraGame?: string | null
 }
 
 interface MusicPlaybackContextType {
@@ -28,12 +41,20 @@ interface MusicPlaybackContextType {
   volume: number
   setVolume: (volume: number) => void
   playerRef: React.MutableRefObject<any>
-  /** When in extrasGame, wheel scroll pans this container (set by IPodDisplay). */
-  gameScrollContainerRef: React.MutableRefObject<HTMLDivElement | null>
-  /** When in extrasGame with embedded Snake: iPod wheel sets direction. { x: 0, y: -1 } = up, etc. */
-  gameDirectionRef: React.MutableRefObject<{ x: number; y: number } | null>
-  /** Call to restart the embedded Snake game (e.g. on Select when game over). */
-  snakeRestartRef: React.MutableRefObject<(() => void) | null>
+  shuffle: boolean
+  setShuffle: (value: boolean) => void
+  repeat: RepeatMode
+  cycleRepeat: () => void
+  /** Advance to next track (respects shuffle/repeat). Call from Next button. */
+  advanceToNext: () => void
+  /** Advance to previous track (respects shuffle/repeat). Call from Previous button. */
+  advanceToPrevious: () => void
+  /** When using direct audio (Blob): current playback time in seconds */
+  directPlaybackCurrentTime: number
+  /** When using direct audio (Blob): total duration in seconds (from stream metadata) */
+  directPlaybackDuration: number
+  /** Seek direct audio to seconds. No-op if using YouTube. */
+  seekDirectPlayback: (seconds: number) => void
 }
 
 const MusicPlaybackContext = createContext<MusicPlaybackContextType | undefined>(undefined)
@@ -48,11 +69,20 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [volume, setVolume] = useState(50)
+  const [shuffle, setShuffle] = useState(false)
+  const [directPlaybackCurrentTime, setDirectPlaybackCurrentTime] = useState(0)
+  const [directPlaybackDuration, setDirectPlaybackDuration] = useState(0)
+  const [repeat, setRepeat] = useState<RepeatMode>("off")
   const playerRef = useRef<any>(null)
-  const gameScrollContainerRef = useRef<HTMLDivElement | null>(null)
-  const gameDirectionRef = useRef<{ x: number; y: number } | null>(null)
-  const snakeRestartRef = useRef<(() => void) | null>(null)
+  const directAudioRef = useRef<HTMLAudioElement | null>(null)
+  const directAudioFallbackIndexRef = useRef(0)
   const [playerReady, setPlayerReady] = useState(false)
+  const shuffleRef = useRef(shuffle)
+  const repeatRef = useRef(repeat)
+  useEffect(() => {
+    shuffleRef.current = shuffle
+    repeatRef.current = repeat
+  }, [shuffle, repeat])
   const previousSongRef = useRef<Song | null>(null)
   const isPlayingRef = useRef(isPlaying)
   const isLoadingRef = useRef(false)
@@ -66,6 +96,13 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
     isPlayingRef.current = isPlaying
   }, [isPlaying])
 
+  const seekDirectPlayback = useCallback((seconds: number) => {
+    if (directAudioRef.current) {
+      directAudioRef.current.currentTime = Math.max(0, seconds)
+      setDirectPlaybackCurrentTime(directAudioRef.current.currentTime)
+    }
+  }, [])
+
   const playNextSong = () => {
     const currentNavigation = navigationRef.current
 
@@ -77,12 +114,29 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
     const currentAlbum = currentNavigation.selectedAlbum
     const currentSong = currentNavigation.selectedSong
 
-    // Find current indices
+    isPlayingRef.current = true
+
+    if (repeatRef.current === "one") {
+      setNavigation({ ...currentNavigation, selectedSong: currentSong })
+      setIsPlaying(true)
+      return
+    }
+
+    if (shuffleRef.current) {
+      const allSongs = getAllSongs()
+      if (allSongs.length > 0) {
+        const idx = Math.floor(Math.random() * allSongs.length)
+        const { artist, album, song } = allSongs[idx]
+        trackAutoplay(artist.name, album.name, song.title, "Shuffle")
+        setNavigation({ level: "nowPlaying", selectedArtist: artist, selectedAlbum: album, selectedSong: song })
+        setIsPlaying(true)
+        return
+      }
+    }
+
     const artistIndex = musicLibrary.findIndex((a) => a.name === currentArtist.name)
     const albumIndex = currentArtist.albums.findIndex((a) => a.name === currentAlbum.name)
     const songIndex = currentAlbum.songs.findIndex((s) => s.id === currentSong.id)
-
-    isPlayingRef.current = true
 
     // Try to play next song in current album
     if (songIndex < currentAlbum.songs.length - 1) {
@@ -127,7 +181,24 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
       return
     }
 
-    // Loop back to first artist, first album, first song
+    // Repeat all: loop back to first
+    if (repeatRef.current === "all") {
+      const firstArtist = musicLibrary[0]
+      const firstAlbum = firstArtist.albums[0]
+      const firstSong = firstAlbum.songs[0]
+      console.log("[v0] Autoplay: Repeat all -", firstArtist.name)
+      trackAutoplay(firstArtist.name, firstAlbum.name, firstSong.title, "Auto")
+      setNavigation({
+        level: "nowPlaying",
+        selectedArtist: firstArtist,
+        selectedAlbum: firstAlbum,
+        selectedSong: firstSong,
+      })
+      setIsPlaying(true)
+      return
+    }
+
+    // End of library, no repeat all: stop or loop once
     const firstArtist = musicLibrary[0]
     const firstAlbum = firstArtist.albums[0]
     const firstSong = firstAlbum.songs[0]
@@ -141,6 +212,128 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
     })
     setIsPlaying(true)
   }
+
+  const cycleRepeat = useCallback(() => {
+    setRepeat((prev) => (prev === "off" ? "one" : prev === "one" ? "all" : "off"))
+  }, [])
+
+  const advanceToNext = useCallback(() => {
+    const nav = navigationRef.current
+    if (!nav.selectedSong || !nav.selectedAlbum || !nav.selectedArtist) return
+
+    const allSongs = getAllSongs()
+    const currentArtist = nav.selectedArtist
+    const currentAlbum = nav.selectedAlbum
+    const currentSong = nav.selectedSong
+    const artistIndex = musicLibrary.findIndex((a) => a.name === currentArtist.name)
+    const albumIndex = currentArtist.albums.findIndex((a) => a.name === currentAlbum.name)
+    const songIndex = currentAlbum.songs.findIndex((s) => s.id === currentSong.id)
+
+    if (repeatRef.current === "one") {
+      setNavigation({ ...nav, selectedSong: currentSong })
+      setIsPlaying(true)
+      return
+    }
+
+    if (shuffleRef.current && allSongs.length > 0) {
+      const idx = Math.floor(Math.random() * allSongs.length)
+      const { artist, album, song } = allSongs[idx]
+      trackAutoplay(artist.name, album.name, song.title, "Shuffle")
+      setNavigation({ level: "nowPlaying", selectedArtist: artist, selectedAlbum: album, selectedSong: song })
+      setIsPlaying(true)
+      return
+    }
+
+    if (songIndex < currentAlbum.songs.length - 1) {
+      const nextSong = currentAlbum.songs[songIndex + 1]
+      trackAutoplay(currentArtist.name, currentAlbum.name, nextSong.title, "Auto")
+      setNavigation({ ...nav, selectedSong: nextSong })
+      setIsPlaying(true)
+      return
+    }
+    if (albumIndex < currentArtist.albums.length - 1) {
+      const nextAlbum = currentArtist.albums[albumIndex + 1]
+      const nextSong = nextAlbum.songs[0]
+      trackAutoplay(currentArtist.name, nextAlbum.name, nextSong.title, "Auto")
+      setNavigation({ ...nav, selectedAlbum: nextAlbum, selectedSong: nextSong })
+      setIsPlaying(true)
+      return
+    }
+    if (artistIndex < musicLibrary.length - 1) {
+      const nextArtist = musicLibrary[artistIndex + 1]
+      const nextAlbum = nextArtist.albums[0]
+      const nextSong = nextAlbum.songs[0]
+      trackAutoplay(nextArtist.name, nextAlbum.name, nextSong.title, "Auto")
+      setNavigation({ level: "nowPlaying", selectedArtist: nextArtist, selectedAlbum: nextAlbum, selectedSong: nextSong })
+      setIsPlaying(true)
+      return
+    }
+    if (repeatRef.current === "all") {
+      const first = allSongs[0]
+      trackAutoplay(first.artist.name, first.album.name, first.song.title, "Auto")
+      setNavigation({ level: "nowPlaying", selectedArtist: first.artist, selectedAlbum: first.album, selectedSong: first.song })
+      setIsPlaying(true)
+    }
+  }, [])
+
+  const advanceToPrevious = useCallback(() => {
+    const nav = navigationRef.current
+    if (!nav.selectedSong || !nav.selectedAlbum || !nav.selectedArtist) return
+
+    const allSongs = getAllSongs()
+    const currentArtist = nav.selectedArtist
+    const currentAlbum = nav.selectedAlbum
+    const currentSong = nav.selectedSong
+    const artistIndex = musicLibrary.findIndex((a) => a.name === currentArtist.name)
+    const albumIndex = currentArtist.albums.findIndex((a) => a.name === currentAlbum.name)
+    const songIndex = currentAlbum.songs.findIndex((s) => s.id === currentSong.id)
+
+    if (repeatRef.current === "one") {
+      setNavigation({ ...nav, selectedSong: currentSong })
+      setIsPlaying(true)
+      return
+    }
+
+    if (shuffleRef.current && allSongs.length > 0) {
+      const idx = Math.floor(Math.random() * allSongs.length)
+      const { artist, album, song } = allSongs[idx]
+      trackAutoplay(artist.name, album.name, song.title, "Shuffle")
+      setNavigation({ level: "nowPlaying", selectedArtist: artist, selectedAlbum: album, selectedSong: song })
+      setIsPlaying(true)
+      return
+    }
+
+    if (songIndex > 0) {
+      const prevSong = currentAlbum.songs[songIndex - 1]
+      trackAutoplay(currentArtist.name, currentAlbum.name, prevSong.title, "Auto")
+      setNavigation({ ...nav, selectedSong: prevSong })
+      setIsPlaying(true)
+      return
+    }
+    if (albumIndex > 0) {
+      const prevAlbum = currentArtist.albums[albumIndex - 1]
+      const prevSong = prevAlbum.songs[prevAlbum.songs.length - 1]
+      trackAutoplay(currentArtist.name, prevAlbum.name, prevSong.title, "Auto")
+      setNavigation({ ...nav, selectedAlbum: prevAlbum, selectedSong: prevSong })
+      setIsPlaying(true)
+      return
+    }
+    if (artistIndex > 0) {
+      const prevArtist = musicLibrary[artistIndex - 1]
+      const prevAlbum = prevArtist.albums[prevArtist.albums.length - 1]
+      const prevSong = prevAlbum.songs[prevAlbum.songs.length - 1]
+      trackAutoplay(prevArtist.name, prevAlbum.name, prevSong.title, "Auto")
+      setNavigation({ level: "nowPlaying", selectedArtist: prevArtist, selectedAlbum: prevAlbum, selectedSong: prevSong })
+      setIsPlaying(true)
+      return
+    }
+    if (repeatRef.current === "all") {
+      const last = allSongs[allSongs.length - 1]
+      trackAutoplay(last.artist.name, last.album.name, last.song.title, "Auto")
+      setNavigation({ level: "nowPlaying", selectedArtist: last.artist, selectedAlbum: last.album, selectedSong: last.song })
+      setIsPlaying(true)
+    }
+  }, [])
 
   useEffect(() => {
     const tag = document.createElement("script")
@@ -193,25 +386,94 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const rnw = typeof window !== "undefined" && (window as any).ReactNativeWebView
-    if (rnw) return // Native app plays via expo-audio from R2; skip YouTube
-    if (playerReady && playerRef.current && navigation.selectedSong) {
-      const songChanged = previousSongRef.current?.id !== navigation.selectedSong.id
+    if (rnw) return
+    const song = navigation.selectedSong
+    if (!song) return
 
+    const primaryUrl = getSongAudioUrl(song)
+    const useDirectAudio = Boolean(primaryUrl)
+    if (useDirectAudio) {
+      if (!directAudioRef.current && typeof document !== "undefined") {
+        directAudioRef.current = document.createElement("audio")
+        directAudioRef.current.preload = "auto"
+        directAudioRef.current.onended = () => {
+          isPlayingRef.current = false
+          setIsPlaying(false)
+          playNextSong()
+        }
+        directAudioRef.current.onerror = () => {
+          const current = navigationRef.current.selectedSong
+          const fallbacks = current ? getSongAudioUrlFallbacks(current) : []
+          const idx = directAudioFallbackIndexRef.current
+          if (fallbacks && idx < fallbacks.length) {
+            const nextUrl = fallbacks[idx]
+            directAudioFallbackIndexRef.current = idx + 1
+            if (directAudioRef.current) {
+              directAudioRef.current.src = nextUrl
+              directAudioRef.current.load()
+            }
+          } else {
+            isLoadingRef.current = false
+            console.error("[SolanaPod] Direct audio failed to load:", directAudioRef.current?.src)
+          }
+        }
+      }
+      const audio = directAudioRef.current
+      if (audio) {
+        const songChanged = previousSongRef.current?.id !== song.id
+        if (songChanged) {
+          previousSongRef.current = song
+          directAudioFallbackIndexRef.current = 0
+          isLoadingRef.current = true
+          setDirectPlaybackCurrentTime(0)
+          setDirectPlaybackDuration(0)
+          const tryPlay = () => {
+            isLoadingRef.current = false
+            if (isPlayingRef.current) audio.play().catch((e) => console.warn("[SolanaPod] play failed:", e))
+          }
+          audio.onloadedmetadata = () => setDirectPlaybackDuration(audio.duration)
+          audio.ontimeupdate = () => setDirectPlaybackCurrentTime(audio.currentTime)
+          audio.oncanplay = tryPlay
+          audio.oncanplaythrough = tryPlay
+
+          const loadUrl = (url: string) => {
+            audio.src = url
+            audio.load()
+            if (isPlayingRef.current) audio.play().catch((e) => console.warn("[SolanaPod] play failed:", e))
+          }
+
+          if (song.id === "janji-heroes-tonight") {
+            const envPath =
+              typeof process !== "undefined" && process.env?.NEXT_PUBLIC_HEROES_TONIGHT_BLOB_PATH?.trim()
+            if (envPath) {
+              loadUrl(r2Url(envPath))
+            } else {
+              fetch("/api/audio/heroes-tonight")
+                .then((r) => (r.ok ? r.json() : null))
+                .then((data: { url?: string } | null) => {
+                  if (data?.url) loadUrl(data.url)
+                  else loadUrl(primaryUrl!)
+                })
+                .catch(() => loadUrl(primaryUrl!))
+            }
+          } else {
+            loadUrl(primaryUrl!)
+          }
+        }
+      }
+      return
+    }
+
+    if (playerReady && playerRef.current) {
+      const songChanged = previousSongRef.current?.id !== song.id
       if (songChanged && !isLoadingRef.current) {
-        previousSongRef.current = navigation.selectedSong
+        previousSongRef.current = song
         isLoadingRef.current = true
-
         try {
           if (isPlayingRef.current) {
-            playerRef.current.loadVideoById({
-              videoId: navigation.selectedSong.id,
-              startSeconds: 0,
-            })
+            playerRef.current.loadVideoById({ videoId: song.id, startSeconds: 0 })
           } else {
-            playerRef.current.cueVideoById({
-              videoId: navigation.selectedSong.id,
-              startSeconds: 0,
-            })
+            playerRef.current.cueVideoById({ videoId: song.id, startSeconds: 0 })
           }
         } catch (error) {
           console.error("Error loading video:", error)
@@ -223,33 +485,34 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const rnw = typeof window !== "undefined" && (window as any).ReactNativeWebView
-    if (rnw) return // Native app plays via expo-audio; skip YouTube
-    if (playerReady && playerRef.current && navigation.selectedSong) {
-      if (!isLoadingRef.current) {
-        if (isPlaying) {
-          try {
-            console.log("[v0] Playing")
-            playerRef.current.playVideo()
-          } catch (error) {
-            console.error("Error playing video:", error)
-          }
-        } else {
-          try {
-            playerRef.current.pauseVideo()
-          } catch (error) {
-            console.error("Error pausing video:", error)
-          }
-        }
+    if (rnw) return
+    const song = navigation.selectedSong
+    if (!song) return
+
+    if (getSongAudioUrl(song) && directAudioRef.current) {
+      if (isPlaying) directAudioRef.current.play().catch(() => {})
+      else directAudioRef.current.pause()
+      return
+    }
+
+    if (playerReady && playerRef.current && !isLoadingRef.current) {
+      if (isPlaying) {
+        try { playerRef.current.playVideo() } catch (e) { console.error("Error playing video:", e) }
+      } else {
+        try { playerRef.current.pauseVideo() } catch (e) { console.error("Error pausing video:", e) }
       }
     }
   }, [isPlaying, playerReady, navigation.selectedSong])
 
   useEffect(() => {
+    const vol = volume / 100
+    if (navigation.selectedSong && getSongAudioUrl(navigation.selectedSong) && directAudioRef.current) {
+      directAudioRef.current.volume = vol
+    }
     if (playerReady && playerRef.current) {
-      console.log("[v0] Volume:", volume)
       playerRef.current.setVolume(volume)
     }
-  }, [volume, playerReady])
+  }, [volume, playerReady, navigation.selectedSong])
 
   // Native app (Capacitor Android): enable background audio like Spotify — music continues when app is backgrounded or screen is off
   useEffect(() => {
@@ -297,7 +560,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
             title: navigation.selectedSong?.title ?? "",
             artist: navigation.selectedArtist?.name ?? "",
             album: navigation.selectedAlbum?.name ?? "",
-            audioUrl: navigation.selectedSong?.audioUrl ?? "",
+            audioUrl: (navigation.selectedSong && getSongAudioUrl(navigation.selectedSong)) ?? "",
             artwork: navigation.selectedAlbum?.coverUrl ?? navigation.selectedArtist?.photoUrl,
           })
         )
@@ -311,7 +574,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
 
     const interval = setInterval(send, 2000)
     return () => clearInterval(interval)
-  }, [isPlaying, navigation.selectedSong?.title, navigation.selectedSong?.audioUrl, navigation.selectedArtist?.name, navigation.selectedAlbum?.name, navigation.selectedAlbum?.coverUrl, navigation.selectedArtist?.photoUrl])
+  }, [isPlaying, navigation.selectedSong?.title, navigation.selectedSong?.id, navigation.selectedArtist?.name, navigation.selectedAlbum?.name, navigation.selectedAlbum?.coverUrl, navigation.selectedArtist?.photoUrl])
 
   return (
     <MusicPlaybackContext.Provider
@@ -325,9 +588,15 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
         volume,
         setVolume,
         playerRef,
-        gameScrollContainerRef,
-        gameDirectionRef,
-        snakeRestartRef,
+        shuffle,
+        setShuffle,
+        repeat,
+        cycleRepeat,
+        advanceToNext,
+        advanceToPrevious,
+        directPlaybackCurrentTime,
+        directPlaybackDuration,
+        seekDirectPlayback,
       }}
     >
       <div id="youtube-player" style={{ display: "none" }}></div>

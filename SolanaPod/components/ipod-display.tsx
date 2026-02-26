@@ -2,13 +2,11 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useMusicPlayback } from "@/contexts/music-playback-context"
-import { musicLibrary, type Artist, type Album, type Song } from "@/lib/music-library"
+import { musicLibrary, getSongAudioUrl, type Artist, type Album, type Song } from "@/lib/music-library"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { SnakeEmbedded } from "@/components/snake-embedded"
+import { Shuffle, Repeat, Repeat1 } from "lucide-react"
 
-type NavigationLevel = "artists" | "albums" | "songs" | "nowPlaying" | "extras" | "extrasGame"
-
-const EXTRAS_ITEMS = [{ id: "snake", name: "Snake", url: "https://solanasnake.app" }] as const
+type NavigationLevel = "artists" | "albums" | "songs" | "nowPlaying"
 
 interface NavigationState {
   level: NavigationLevel
@@ -26,7 +24,16 @@ interface IPodDisplayProps {
 }
 
 export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hideUI = false }: IPodDisplayProps) {
-  const { playerRef } = useMusicPlayback()
+  const {
+    playerRef,
+    shuffle,
+    setShuffle,
+    repeat,
+    cycleRepeat,
+    directPlaybackCurrentTime,
+    directPlaybackDuration,
+    seekDirectPlayback,
+  } = useMusicPlayback()
   const selectedItemRef = useRef<HTMLDivElement>(null)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -61,18 +68,19 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
       return () => clearInterval(interval)
     }
 
-    // Web: use YouTube player time
+    // Web: use YouTube player time only when not using direct audio (Blob)
+    const useDirect = navigation.selectedSong && getSongAudioUrl(navigation.selectedSong)
+    if (useDirect) {
+      return
+    }
     const interval = setInterval(() => {
-      if (playerRef.current && playerRef.current.getCurrentTime && playerRef.current.getDuration) {
-        const time = playerRef.current.getCurrentTime()
-        const dur = playerRef.current.getDuration()
-        setCurrentTime(time)
-        setDuration(dur)
+      if (playerRef.current?.getCurrentTime && playerRef.current?.getDuration) {
+        setCurrentTime(playerRef.current.getCurrentTime())
+        setDuration(playerRef.current.getDuration())
       }
     }, 100)
-
     return () => clearInterval(interval)
-  }, [playerRef, navigation.selectedSong, isPlaying, duration])
+  }, [playerRef, navigation.selectedSong, isPlaying])
 
   useEffect(() => {
     if (selectedItemRef.current) {
@@ -84,13 +92,13 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
   }, [selectedIndex])
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = Math.floor(seconds % 60)
+    const s = Math.max(0, Math.floor(seconds))
+    const mins = Math.floor(s / 60)
+    const secs = s % 60
     return `${mins}:${secs.toString().padStart(2, "0")}`
   }
 
   if (navigation.level === "artists") {
-    const artistsWithExtrasCount = musicLibrary.length + 1
     return (
       <div className="w-full h-full bg-gradient-to-b from-[#fafafa] to-[#f0f0f2] p-3 overflow-hidden">
         <div className="border-b border-gray-300 pb-1 mb-2 shadow-[0_1px_0_rgba(255,255,255,0.8)]">
@@ -120,50 +128,7 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
               <div className="font-semibold truncate flex-1">{artist.name}</div>
             </div>
           ))}
-          <div
-            ref={artistsWithExtrasCount - 1 === selectedIndex ? selectedItemRef : null}
-            className={`text-[11px] px-2 py-1.5 flex items-center gap-2 rounded ${
-              artistsWithExtrasCount - 1 === selectedIndex
-                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-[0_1px_3px_rgba(0,0,0,0.2)]"
-                : "text-black"
-            }`}
-          >
-            <div className="font-semibold truncate flex-1">Extras</div>
-          </div>
         </div>
-      </div>
-    )
-  }
-
-  if (navigation.level === "extras") {
-    return (
-      <div className="w-full h-full bg-gradient-to-b from-[#fafafa] to-[#f0f0f2] p-3 overflow-hidden">
-        <div className="border-b border-gray-300 pb-1 mb-2 shadow-[0_1px_0_rgba(255,255,255,0.8)]">
-          <h2 className="text-xs font-bold text-black">Extras</h2>
-        </div>
-        <div className="space-y-0.5 overflow-y-auto h-[200px] scrollbar-hide pointer-events-none">
-          {EXTRAS_ITEMS.map((item, index) => (
-            <div
-              key={item.id}
-              ref={index === selectedIndex ? selectedItemRef : null}
-              className={`text-[11px] px-2 py-1.5 flex items-center gap-2 rounded ${
-                index === selectedIndex
-                  ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-[0_1px_3px_rgba(0,0,0,0.2)]"
-                  : "text-black"
-              }`}
-            >
-              <div className="font-semibold truncate flex-1">{item.name}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  if (navigation.level === "extrasGame" && navigation.selectedExtraGame === "snake") {
-    return (
-      <div className="absolute inset-0 w-full h-full rounded-[14px] md:rounded-[11px] lg:rounded-[14px] overflow-hidden">
-        <SnakeEmbedded />
       </div>
     )
   }
@@ -245,8 +210,8 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
     const totalSongs = navigation.selectedAlbum?.songs.length ?? 0
 
     return (
-      <div className="w-full h-full bg-gradient-to-b from-white to-gray-50 relative overflow-hidden">
-        <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-gray-100 to-white border-b border-gray-300 px-3 py-1 z-10 shadow-sm">
+      <div className="w-full h-full bg-gradient-to-b from-[#f5f5f7] to-[#e8e8ec] relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-[#eeeef2] to-[#f5f5f7] border-b border-gray-200 px-3 py-1 z-10 shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-semibold text-black">Now Playing</span>
             <div className="flex items-center gap-1">
@@ -263,7 +228,7 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
           </div>
         </div>
 
-        <div className="absolute inset-0 pt-8 pb-12 px-4 flex items-end justify-start">
+        <div className="absolute inset-0 pt-8 pb-14 px-4 flex items-end justify-start">
           <div className="w-full flex items-end gap-3 pb-2">
             <div className="flex-shrink-0">
               {navigation.selectedAlbum?.coverUrl ? (
@@ -273,40 +238,86 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
                   onError={(e) => {
                     e.currentTarget.src = "/cd-fallback.png"
                   }}
-                  className="w-32 h-32 object-cover rounded shadow-lg border border-gray-200"
+                  className="w-32 h-32 object-cover rounded-lg shadow-md border border-gray-100"
                 />
               ) : (
-                <div className="w-32 h-32 bg-gradient-to-br from-gray-300 to-gray-400 rounded shadow-lg border border-gray-200"></div>
+                <div className="w-32 h-32 bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg shadow-md border border-gray-100"></div>
               )}
             </div>
 
             <div className="flex-1 min-w-0 pb-1">
-              <div className="text-sm font-bold text-black truncate leading-tight">{navigation.selectedSong.title}</div>
-              <div className="text-xs text-gray-700 truncate mt-0.5">{navigation.selectedArtist?.name}</div>
-              <div className="text-xs text-gray-600 truncate">{navigation.selectedAlbum?.name}</div>
+              <div className="text-sm font-bold text-gray-900 truncate leading-tight">{navigation.selectedSong.title}</div>
+              <div className="text-xs text-gray-600 truncate mt-0.5">{navigation.selectedArtist?.name}</div>
+              <div className="text-xs text-gray-500 truncate">{navigation.selectedAlbum?.name}</div>
 
               {navigation.selectedAlbum?.year && (
-                <div className="text-xs text-gray-600 mt-1">{navigation.selectedAlbum.year}</div>
+                <div className="text-xs text-gray-500 mt-1">{navigation.selectedAlbum.year}</div>
               )}
 
-              <div className="text-xs font-semibold text-black mt-1">
+              <div className="text-xs font-medium text-gray-600 mt-1">
                 {currentSongIndex + 1} of {totalSongs}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 px-4 py-2 bg-white border-t border-gray-200 z-10">
-          <div className="flex items-center gap-2">
-            <div className="text-[10px] text-black font-medium">{formatTime(currentTime)}</div>
-            <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner">
-              <div
-                className="h-full bg-gradient-to-r from-blue-400 to-blue-500 transition-all duration-100"
-                style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
-              ></div>
-            </div>
-            <div className="text-[10px] text-black font-medium">-{formatTime(duration - currentTime)}</div>
+        <div className="absolute bottom-0 left-0 right-0 px-3 py-1 bg-[#fafafb] border-t border-gray-100 z-10 space-y-1">
+          <div className="flex items-center justify-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShuffle(!shuffle)}
+              className={`p-0.5 rounded transition-colors ${shuffle ? "text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
+              title={shuffle ? "Shuffle on" : "Shuffle off"}
+              aria-label={shuffle ? "Shuffle on" : "Shuffle off"}
+            >
+              <Shuffle size={12} strokeWidth={2.5} />
+            </button>
+            <button
+              type="button"
+              onClick={cycleRepeat}
+              className={`p-0.5 rounded transition-colors ${repeat !== "off" ? "text-blue-600" : "text-gray-500 hover:text-gray-700"}`}
+              title={repeat === "off" ? "Repeat off" : repeat === "one" ? "Repeat one" : "Repeat all"}
+              aria-label={`Repeat ${repeat}`}
+            >
+              {repeat === "one" ? (
+                <Repeat1 size={12} strokeWidth={2.5} />
+              ) : (
+                <Repeat size={12} strokeWidth={2.5} />
+              )}
+            </button>
           </div>
+          {(() => {
+            const song = navigation.selectedSong
+            const useDirect = song && getSongAudioUrl(song)
+            const time = useDirect ? directPlaybackCurrentTime : currentTime
+            const dur = useDirect ? directPlaybackDuration : duration
+            const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
+              if (!useDirect || dur <= 0) return
+              const rect = e.currentTarget.getBoundingClientRect()
+              const x = e.clientX - rect.left
+              const pct = Math.max(0, Math.min(1, x / rect.width))
+              seekDirectPlayback(pct * dur)
+            }
+            return (
+              <div className="flex items-center gap-2">
+                <div className="text-[10px] text-black font-medium">{formatTime(time)}</div>
+                <div
+                  className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden shadow-inner cursor-pointer"
+                  onClick={handleProgressClick}
+                  role="progressbar"
+                  aria-valuenow={dur > 0 ? (time / dur) * 100 : 0}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                >
+                  <div
+                    className="h-full bg-gradient-to-r from-blue-400 to-blue-500 transition-all duration-100"
+                    style={{ width: `${dur > 0 ? (time / dur) * 100 : 0}%` }}
+                  />
+                </div>
+                <div className="text-[10px] text-black font-medium">{formatTime(Math.max(0, dur - time))}</div>
+              </div>
+            )
+          })()}
         </div>
       </div>
     )

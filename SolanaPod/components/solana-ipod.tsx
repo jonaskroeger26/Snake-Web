@@ -2,12 +2,13 @@
 import { useState, useEffect, useCallback } from "react"
 import { IPodDisplay } from "./ipod-display"
 import { SolanaClickWheel } from "./solana-click-wheel"
+import { BootLogoDisplay } from "./boot-screen"
+import type { BootPhase } from "./boot-screen"
 import { musicLibrary, type Artist, type Album, type Song } from "@/lib/music-library"
 import { useMusicPlayback } from "@/contexts/music-playback-context"
 import { useClickWheelSound } from "@/hooks/use-click-wheel-sound"
 import {
   trackSongPlay,
-  trackSongSkip,
   trackNavigation,
   trackMenuBack,
   trackVolumeChange,
@@ -16,13 +17,18 @@ import {
 } from "@/lib/analytics"
 
 export function SolanaIPod({
-  isActive = true,
   deviceName = "Solana iPod",
+  powerState = "on",
+  bootPhase = "fadeIn",
+  onPowerOnRequest,
 }: {
-  isActive?: boolean
   deviceName?: string
+  powerState?: "off" | "booting" | "on"
+  bootPhase?: BootPhase
+  onPowerOnRequest?: () => void
 }) {
-  const { navigation, setNavigation, selectedIndex, setSelectedIndex, isPlaying, setIsPlaying, volume, setVolume, gameDirectionRef, snakeRestartRef } =
+  const isActive = powerState === "on"
+  const { navigation, setNavigation, selectedIndex, setSelectedIndex, isPlaying, setIsPlaying, volume, setVolume, advanceToNext, advanceToPrevious } =
     useMusicPlayback()
   const { playClick } = useClickWheelSound()
   const [hideUI, setHideUI] = useState(false)
@@ -41,9 +47,7 @@ export function SolanaIPod({
   const getCurrentList = useCallback(() => {
     switch (navigation.level) {
       case "artists":
-        return [...musicLibrary, { name: "Extras", id: "__extras__" }]
-      case "extras":
-        return [{ name: "Snake", id: "snake" }]
+        return musicLibrary
       case "albums":
         return navigation.selectedArtist?.albums || []
       case "songs":
@@ -57,38 +61,16 @@ export function SolanaIPod({
     playClick()
     trackButtonPress("select", deviceName)
     showUI()
-    if (navigation.level === "extrasGame") {
-      snakeRestartRef.current?.()
-      return
-    }
     if (navigation.level === "nowPlaying") {
       setIsPlaying((prev) => !prev)
       return
     }
     const currentList = getCurrentList()
     if (navigation.level === "artists") {
-      const item = currentList[selectedIndex] as Artist & { id?: string }
-      if (item?.id === "__extras__") {
-        setNavigation({ level: "extras", selectedArtist: null, selectedAlbum: null, selectedSong: null })
-        setSelectedIndex(0)
-        return
-      }
-      const artist = item as Artist
+      const artist = currentList[selectedIndex] as Artist
       trackNavigation("artists", artist.name, deviceName)
       setNavigation({ level: "albums", selectedArtist: artist, selectedAlbum: null, selectedSong: null })
       setSelectedIndex(0)
-    } else if (navigation.level === "extras") {
-      const extra = currentList[selectedIndex] as { id: string; name: string }
-      if (extra?.id === "snake") {
-        setNavigation({
-          level: "extrasGame",
-          selectedArtist: null,
-          selectedAlbum: null,
-          selectedSong: null,
-          selectedExtraGame: "snake",
-        })
-        setSelectedIndex(0)
-      }
     } else if (navigation.level === "albums") {
       const album = currentList[selectedIndex] as Album
       trackNavigation("albums", album.name, deviceName)
@@ -107,13 +89,7 @@ export function SolanaIPod({
     playClick()
     trackButtonPress("menu", deviceName)
     showUI()
-    if (navigation.level === "extrasGame") {
-      setNavigation({ level: "extras", selectedArtist: null, selectedAlbum: null, selectedSong: null, selectedExtraGame: null })
-      setSelectedIndex(0)
-    } else if (navigation.level === "extras") {
-      setNavigation({ level: "artists", selectedArtist: null, selectedAlbum: null, selectedSong: null })
-      setSelectedIndex(musicLibrary.length)
-    } else if (navigation.level === "nowPlaying") {
+    if (navigation.level === "nowPlaying") {
       trackMenuBack("nowPlaying", "songs", deviceName)
       setNavigation({ level: "songs", selectedArtist: navigation.selectedArtist, selectedAlbum: navigation.selectedAlbum, selectedSong: navigation.selectedSong })
       const songs = navigation.selectedAlbum?.songs || []
@@ -136,19 +112,11 @@ export function SolanaIPod({
 
   const handleScrollUp = () => {
     showUI()
-    if (navigation.level === "extrasGame") {
-      gameDirectionRef.current = { x: 0, y: -1 }
-      return
-    }
     if (navigation.level !== "nowPlaying") setSelectedIndex((prev) => Math.max(0, prev - 1))
   }
 
   const handleScrollDown = () => {
     showUI()
-    if (navigation.level === "extrasGame") {
-      gameDirectionRef.current = { x: 0, y: 1 }
-      return
-    }
     if (navigation.level !== "nowPlaying") {
       const currentList = getCurrentList()
       setSelectedIndex((prev) => Math.min(currentList.length - 1, prev + 1))
@@ -159,19 +127,8 @@ export function SolanaIPod({
     playClick()
     trackButtonPress("next", deviceName)
     showUI()
-    if (navigation.level === "extrasGame") {
-      gameDirectionRef.current = { x: 1, y: 0 }
-      return
-    }
-    if (navigation.level === "nowPlaying" && navigation.selectedAlbum) {
-      const songs = navigation.selectedAlbum.songs
-      const idx = songs.findIndex((s) => s.id === navigation.selectedSong?.id)
-      if (idx < songs.length - 1) {
-        const nextSong = songs[idx + 1]
-        trackSongSkip("next", navigation.selectedArtist?.name || "Unknown", navigation.selectedAlbum?.name || "Unknown", nextSong.title, deviceName)
-        setNavigation({ ...navigation, selectedSong: nextSong })
-        setIsPlaying(true)
-      }
+    if (navigation.level === "nowPlaying") {
+      advanceToNext()
     }
   }
 
@@ -179,19 +136,8 @@ export function SolanaIPod({
     playClick()
     trackButtonPress("previous", deviceName)
     showUI()
-    if (navigation.level === "extrasGame") {
-      gameDirectionRef.current = { x: -1, y: 0 }
-      return
-    }
-    if (navigation.level === "nowPlaying" && navigation.selectedAlbum) {
-      const songs = navigation.selectedAlbum.songs
-      const idx = songs.findIndex((s) => s.id === navigation.selectedSong?.id)
-      if (idx > 0) {
-        const prevSong = songs[idx - 1]
-        trackSongSkip("previous", navigation.selectedArtist?.name || "Unknown", navigation.selectedAlbum?.name || "Unknown", prevSong.title, deviceName)
-        setNavigation({ ...navigation, selectedSong: prevSong })
-        setIsPlaying(true)
-      }
+    if (navigation.level === "nowPlaying") {
+      advanceToPrevious()
     }
   }
 
@@ -329,7 +275,15 @@ export function SolanaIPod({
               boxShadow: "0 4px 12px rgba(0,0,0,0.8), 0 0 0 1px rgba(153,69,255,0.08)",
             }}
           >
-            {isActive ? (
+            {powerState === "off" && (
+              <div className="absolute inset-[3px] md:inset-[2px] lg:inset-[3px] bg-black rounded-[14px] md:rounded-[11px] lg:rounded-[14px]" />
+            )}
+            {powerState === "booting" && (
+              <div className="absolute inset-[3px] md:inset-[2px] lg:inset-[3px] bg-black rounded-[14px] md:rounded-[11px] lg:rounded-[14px] overflow-hidden">
+                <BootLogoDisplay phase={bootPhase} />
+              </div>
+            )}
+            {powerState === "on" && (
               <div
                 className="absolute inset-[3px] md:inset-[2px] lg:inset-[3px] rounded-[14px] md:rounded-[11px] lg:rounded-[14px] overflow-hidden"
                 style={{
@@ -337,7 +291,6 @@ export function SolanaIPod({
                   boxShadow: "0 2px 8px rgba(0,0,0,0.3) inset, 0 -1px 0 rgba(255,255,255,0.5) inset",
                 }}
               >
-                {/* Screen glass reflection with Solana tint */}
                 <div
                   className="absolute top-0 left-0 right-0 h-[60px] md:h-[46px] lg:h-[60px] pointer-events-none z-10"
                   style={{
@@ -352,12 +305,6 @@ export function SolanaIPod({
                   volume={volume}
                   hideUI={hideUI}
                 />
-              </div>
-            ) : (
-              <div className="absolute inset-[3px] md:inset-[2px] lg:inset-[3px] bg-[#06060c] rounded-[14px] md:rounded-[11px] lg:rounded-[14px] flex items-center justify-center">
-                <div className="text-2xl md:text-lg lg:text-2xl font-sans tracking-tight" style={{ color: "#9945FF" }}>
-                  {deviceName}
-                </div>
               </div>
             )}
           </div>
@@ -377,6 +324,7 @@ export function SolanaIPod({
             volume={volume}
             showPlaylist={isInMenu}
             isPlaying={isPlaying}
+            onPlayPauseLongPress={powerState === "off" ? onPowerOnRequest : undefined}
           />
         </div>
 

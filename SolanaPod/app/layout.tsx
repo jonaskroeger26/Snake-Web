@@ -1,11 +1,18 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { Amiri, Fragment_Mono as Bitcount_Mono_Single, Rokkitt } from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
 import { ClickWheelSoundProvider } from "@/hooks/use-click-wheel-sound"
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 const amiri = Amiri({
   weight: ["400", "700"],

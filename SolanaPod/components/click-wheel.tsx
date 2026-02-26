@@ -18,6 +18,10 @@ interface ClickWheelProps {
   volume: number
   showPlaylist: boolean
   isPlaying: boolean
+  /** Lower = more sensitive (e.g. 0.15 for snake game). Default 0.3 */
+  scrollThreshold?: number
+  /** When true (e.g. in snake game), positive rotation = scroll up, negative = scroll down (iPod-style). */
+  invertScrollDirection?: boolean
 }
 
 export function ClickWheel({
@@ -32,6 +36,8 @@ export function ClickWheel({
   volume,
   showPlaylist,
   isPlaying,
+  scrollThreshold = 0.3,
+  invertScrollDirection = false,
 }: ClickWheelProps) {
   const wheelRef = useRef<HTMLDivElement>(null)
   const [isRotating, setIsRotating] = useState(false)
@@ -86,17 +92,18 @@ export function ClickWheel({
     const velocity = timeDelta > 0 ? Math.abs(normalizedDiff) / (timeDelta / 1000) : 0
     lastMoveTimeRef.current = now
 
-    // Scroll/volume threshold
-    const threshold = 0.3
+    const threshold = scrollThreshold
 
     if (showPlaylist) {
       // Scroll when rotation exceeds threshold
+      const scrollDown = invertScrollDirection ? onScrollUp : onScrollDown
+      const scrollUp = invertScrollDirection ? onScrollDown : onScrollUp
       if (newDelta > threshold) {
-        onScrollDown()
+        scrollDown()
         playClick(Math.min(1, velocity / 5))
         setRotationDelta(0)
       } else if (newDelta < -threshold) {
-        onScrollUp()
+        scrollUp()
         playClick(Math.min(1, velocity / 5))
         setRotationDelta(0)
       }
@@ -143,7 +150,7 @@ export function ClickWheel({
       window.removeEventListener("mouseup", handleMouseUp)
       window.removeEventListener("touchend", handleTouchEnd)
     }
-  }, [isRotating, lastAngle, volume, showPlaylist, rotationDelta])
+  }, [isRotating, lastAngle, volume, showPlaylist, rotationDelta, scrollThreshold, invertScrollDirection])
 
   return (
     <div className="relative w-[240px] h-[240px]">
