@@ -69,7 +69,7 @@ export function IPodDisplay({ navigation, selectedIndex, isPlaying, volume, hide
       return () => clearInterval(interval)
     }
 
-    // Web: use YouTube player time only when not using direct audio (Blob)
+    // Web: use YouTube player time only when not using direct audio
     const useDirect = navigation.selectedSong && getSongAudioUrl(navigation.selectedSong)
     if (useDirect) {
       return

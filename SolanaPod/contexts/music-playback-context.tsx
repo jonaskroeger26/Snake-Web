@@ -49,10 +49,10 @@ function artistNameMatch(a: string, b: string): boolean {
 }
 
 /**
- * Merge new blob tracks into the library. No "New from Blob" section.
+ * Merge new tracks from the store into the library. No UI section is ever labeled "blob".
  * - Tracks already in the library (by r2Key/pathname) are skipped (no duplicates).
  * - For each new track, parse artist from filename ("Artist - Song.ext").
- * - If that artist already exists on the pod, add the song to that artist (one album "From Blob").
+ * - If that artist already exists on the pod, add the song to that artist (one album "Tracks").
  * - If the artist is new (e.g. Lost Sky), add the artist and the song there.
  */
 function mergeBlobTracksIntoLibrary(
@@ -86,7 +86,7 @@ function mergeBlobTracksIntoLibrary(
   const artists = Array.from(library)
   for (const { displayName, songs } of byArtist.values()) {
     const existingIndex = artists.findIndex((a) => artistNameMatch(a.name, displayName))
-    const album: Album = { name: "From Blob", songs }
+    const album: Album = { name: "Tracks", songs }
     if (existingIndex !== -1) {
       artists[existingIndex] = {
         ...artists[existingIndex],
@@ -120,7 +120,7 @@ interface NavigationState {
 }
 
 interface MusicPlaybackContextType {
-  /** Library from music-library.ts; new blob-only tracks are merged as one album on the first artist. */
+  /** Library from music-library.ts; new store tracks are merged by artist (no blob-labeled sections). */
   library: Artist[]
   navigation: NavigationState
   setNavigation: (state: NavigationState) => void
@@ -139,9 +139,9 @@ interface MusicPlaybackContextType {
   advanceToNext: () => void
   /** Advance to previous track (respects shuffle/repeat). Call from Previous button. */
   advanceToPrevious: () => void
-  /** When using direct audio (Blob): current playback time in seconds */
+  /** When using direct audio: current playback time in seconds */
   directPlaybackCurrentTime: number
-  /** When using direct audio (Blob): total duration in seconds (from stream metadata) */
+  /** When using direct audio: total duration in seconds (from stream metadata) */
   directPlaybackDuration: number
   /** Seek direct audio to seconds. No-op if using YouTube. */
   seekDirectPlayback: (seconds: number) => void
@@ -180,7 +180,7 @@ export function MusicPlaybackProvider({ children }: { children: ReactNode }) {
       .catch(() => {})
   }, [])
 
-  // Blob tracks already in the library are served via r2Key; new blob files are merged as one album on first artist
+  // Store tracks already in the library are served via r2Key; new files are merged by artist (album "Tracks", no blob in UI)
   const effectiveLibrary = useMemo(
     () => mergeBlobTracksIntoLibrary(Array.isArray(musicLibrary) ? [...musicLibrary] : [], blobTracks),
     [blobTracks]
