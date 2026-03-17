@@ -7,12 +7,19 @@ skip-lint = false
 
 [programs.localnet]
 snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
+kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
 
 [programs.devnet]
 snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
+kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
+
+[programs.testnet]
+snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
+kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
 
 [programs.mainnet]
 snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
+kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
 
 [registry]
 url = "https://api.apr.dev"
