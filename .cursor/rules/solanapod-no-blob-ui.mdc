@@ -1,0 +1,11 @@
+---
+description: SolanaPod — no blob in UI; album naming; no duplicate songs
+globs: SolanaPod/**/*
+alwaysApply: false
+---
+
+# SolanaPod: UI and library rules
+
+- **No blob in UI**: Never add any menu item, section title, album name, or other user-visible label that contains the word "blob". New tracks from the store are merged by artist with a neutral or song-derived album name.
+- **No duplicate songs**: When merging store tracks, skip any track that is already in the library (same artist+title or same path/fallback). Do not add the same song twice (e.g. Janji Heroes Tonight is already in NCS Release).
+- **Album naming when adding from store**: When you add a song to the library after the user adds it to the store, try to pick an album name (e.g. "NCS" for NCS-style tracks). If you have no better idea, name the album after the song. The merge logic already uses the song title as album name when there is only one track.

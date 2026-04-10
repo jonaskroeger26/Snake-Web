@@ -5,23 +5,36 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:coinpusher": "vite coin-pusher --port 5175",
+    "dev:kids-vault": "vite kids-vault-web --port 5174",
+    "dev:fatherhood": "cd fatherhood && npm run dev",
     "build": "vite build",
+    "generate:creatures": "node scripts/generate-creature-portraits.mjs",
+    "android:sync": "npm run build && npx cap sync android",
+    "android:open": "npx cap open android",
     "preview": "vite preview",
     "pvp-server": "node server/server.cjs",
     "build:mwa": "node build-mwa.cjs",
     "fetch-skr-domains": "node fetch-all-skr-domains-simple.js",
-    "convert-csv": "node convert-csv-to-lookup.js"
+    "convert-csv": "node convert-csv-to-lookup.js",
+    "token:devnet": "node scripts/create-arcade-token-devnet.mjs"
   },
   "dependencies": {
     "@onsol/tldparser": "^0.5.2",
     "@solana-mobile/wallet-standard-mobile": "^0.4.1",
     "@solana/wallet-adapter-base": "^0.9.23",
-    "@solana/wallet-adapter-wallets": "^0.16.1",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
     "@solana/web3.js": "^1.87.6",
+    "@supabase/supabase-js": "^2.99.2",
     "@wallet-standard/core": "^1.0.3",
+    "leaflet": "^1.9.4",
     "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.3.0",
+    "@capacitor/cli": "^8.3.0",
+    "@capacitor/core": "^8.3.0",
+    "@solana/spl-token": "^0.4.14",
     "esbuild": "^0.27.0",
     "vite": "^7.3.1"
   }

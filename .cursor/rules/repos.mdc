@@ -1,0 +1,19 @@
+---
+description: Git repos — Solpod, Snake, Seeker Crush; default push = Solpod when working on SolanaPod
+alwaysApply: true
+---
+
+# Repos: Solpod vs Snake vs Seeker Crush
+
+- **Solpod (SolanaPod)** = `SolanaPod/` in this workspace. Remote: Solpod repo (e.g. `jonaskroeger26/Solpod`). **This is the main project we work on.** Push SolanaPod changes here.
+- **Snake dapp** = this workspace root. Remote: Snake-Web (e.g. `jonaskroeger26/Snake-Web`). Contains app/, game code, etc. Do **not** push SolanaPod changes to Snake-Web.
+- **Seeker Crush dapp** = the candy-crush game. Code lives in `candy-crush-dapp/` but must **never** be committed or pushed to the Snake repo.
+
+## Rules
+
+1. **Default "push"**: When the user says "push" and we have been working on SolanaPod/Solpod, run git **inside `SolanaPod/`** and push to the **Solpod** remote. Do **not** push to Snake-Web.
+2. **Never** add, commit, or push `candy-crush-dapp/` or seeker-crush–specific files to the Snake repository.
+3. **Always** push Seeker Crush / candy-crush changes to the **Seeker Crush dapp** repository (e.g. Seeker-crush on GitHub), not to Snake-Web.
+4. When the user says "push" in the context of the candy-crush game or "seeker crush", run git commands only inside `candy-crush-dapp/` with the Seeker Crush remote (ensure `candy-crush-dapp` has its own git repo and correct remote).
+5. If the user explicitly says "push to Snake" or "push Snake", then push from the workspace root to Snake-Web. Otherwise, when working on SolanaPod, push to Solpod.
+6. If unsure which repo to use, ask: "Push to Solpod, Snake, or Seeker Crush?"

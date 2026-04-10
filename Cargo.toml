@@ -1,0 +1,10 @@
+[workspace]
+members = ["programs/kids-vault", "programs/snake-game"]
+resolver = "2"
+
+[profile.release]
+overflow-checks = true
+
+# Force blake3 1.8.2 from git so Cargo 1.84 (no edition2024) can build
+[patch.crates-io]
+blake3 = { git = "https://github.com/BLAKE3-team/BLAKE3", tag = "1.8.2" }

@@ -1,0 +1,43 @@
+Creature Collect — Android (Capacitor)
+========================================
+
+This wraps the Vite web app in a native Android WebView. GPS uses the same
+browser Geolocation API inside the WebView (with manifest permissions below).
+
+Prerequisites
+-------------
+- Node.js (same as for the web app)
+- Android Studio (latest stable) with Android SDK + platform tools
+- A phone with USB debugging enabled (for on-device testing), or an emulator
+
+One-time / after web code changes
+---------------------------------
+From the repo root:
+
+  npm install
+  npm run android:sync
+
+`android:sync` runs `vite build` and copies `dist/` into the Android project.
+
+Open in Android Studio
+------------------------
+
+  npm run android:open
+
+Then: Run ▶ on a device or emulator. Grant location when prompted.
+
+Release APK / AAB
+-----------------
+In Android Studio: Build → Generate Signed Bundle / APK, or use Gradle:
+
+  cd android
+  ./gradlew assembleDebug
+
+APK output path is typically:
+  android/app/build/outputs/apk/debug/app-debug.apk
+
+Notes
+-----
+- App id: com.creaturecollect.app (change in android/app/build.gradle + capacitor.config.json if you ship)
+- Mixed content: map tiles use HTTPS; Capacitor uses https scheme for the WebView
+- For background GPS / push, you’d add Capacitor plugins and more native work later
