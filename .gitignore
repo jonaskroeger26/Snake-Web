@@ -1,3 +1,5 @@
+.cache/
+.venv-rembg/
 node_modules
 dapp-store-app/*.apk
 .DS_Store
@@ -5,3 +7,9 @@ target/
 *.log
 .env
 .env.local
+
+# Local JARVIS assistant venv
+jarvis/.venv/
+
+# Separate repo: github.com/jonaskroeger26/Wallet
+Wallet/
