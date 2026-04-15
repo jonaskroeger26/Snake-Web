@@ -1,9 +1,0 @@
-/Users/jonaskroeger/Downloads/snake-dapp 2/programs/snake-game/target/debug/deps/solana_system_interface-869aa79d2024d112.d: /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/lib.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/error.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/instruction.rs
-
-/Users/jonaskroeger/Downloads/snake-dapp 2/programs/snake-game/target/debug/deps/libsolana_system_interface-869aa79d2024d112.rlib: /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/lib.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/error.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/instruction.rs
-
-/Users/jonaskroeger/Downloads/snake-dapp 2/programs/snake-game/target/debug/deps/libsolana_system_interface-869aa79d2024d112.rmeta: /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/lib.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/error.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/instruction.rs
-
-/Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/lib.rs:
-/Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/error.rs:
-/Users/jonaskroeger/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/solana-system-interface-1.0.0/src/instruction.rs:

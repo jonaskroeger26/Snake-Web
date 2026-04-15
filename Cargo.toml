@@ -1,5 +1,10 @@
 [workspace]
-members = ["programs/kids-vault", "programs/snake-game"]
+members = [
+    "programs/kids-vault",
+    "programs/snake-game",
+    "programs/p2e-quest",
+    "programs/skr-marketplace",
+]
 resolver = "2"
 
 [profile.release]

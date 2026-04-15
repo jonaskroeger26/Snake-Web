@@ -1,1846 +1,335 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- CRITICAL: Load these FIRST before any other scripts -->
-    <script src="https://unpkg.com/@solana/web3.js@1.87.6/lib/index.iife.min.js"></script>
-    <script src="https://unpkg.com/@onsol/tldparser@0.5.2/lib/index.iife.js"></script>
-    
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Snake">
-    <title>Snake - Solana</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="icons/icon.svg">
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/@bonfida/spl-name-service@2.1.0/dist/index.umd.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Mobile Wallet Adapter (Seeker / Seed Vault) - bundled for WebView/Expo -->
-    <script src="mwa-bundle.js"></script>
-    <script>
-        if (typeof window.__snakeWalletAdapter === 'undefined') {
-            window.__snakeWalletAdapter = { ready: false, connect: null, disconnect: null };
-        }
-        
-        // Debug helper - run window.checkMWA() in console
-        window.checkMWA = function() {
-            const adapter = window.__snakeWalletAdapter;
-            const info = {
-                adapterExists: !!adapter,
-                ready: adapter?.ready,
-                hasConnect: typeof adapter?.connect === 'function',
-                hasDisconnect: typeof adapter?.disconnect === 'function',
-                connected: adapter?.connected || !!adapter?.connectedAccount,
-                connectedAccount: adapter?.connectedAccount?.address || null,
-                inApp: window.__SNAKE_IN_APP,
-                userAgent: navigator.userAgent,
-                mwaBundleLoaded: typeof window.SeekerMWA !== 'undefined'
-            };
-            console.table(info);
-            return info;
-        };
-        console.log('💡 Run window.checkMWA() to debug MWA adapter state');
-    </script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Space Grotesk', monospace;
-            background: #000;
-            height: 100vh;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-        }
-        .fullscreen {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .menu-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 40px;
-            text-align: center;
-        }
-        .logo-big {
-            font-size: 5em;
-            font-weight: 700;
-            margin-bottom: 10px;
-            letter-spacing: -3px;
-        }
-        .logo-accent { color: #14F195; }
-        .tagline {
-            color: #666;
-            font-size: 1em;
-            margin-bottom: 60px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-        }
-        .menu-button {
-            width: 100%;
-            max-width: 400px;
-            padding: 20px 40px;
-            margin: 15px auto;
-            display: block;
-            background: #fff;
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: 'Space Grotesk';
-        }
-        .menu-button:hover {
-            background: #14F195;
-            transform: translateY(-2px);
-        }
-        .menu-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .menu-button.secondary {
-            background: #1a1a1a;
-            color: #fff;
-            border: 1px solid #2a2a2a;
-        }
-        .menu-button.secondary:hover {
-            background: #222;
-        }
-        .wallet-display {
-            margin-top: 40px;
-            padding: 15px 25px;
-            background: rgba(20, 241, 149, 0.1);
-            border: 1px solid #14F195;
-            border-radius: 8px;
-            font-size: 0.9em;
-            color: #14F195;
-        }
-        .copyright-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            padding: 10px 14px;
-            color: #fff;
-            font-size: 12px;
-            font-family: 'Space Grotesk', monospace;
-            z-index: 9999;
-            pointer-events: none;
-        }
-        .game-screen {
-            width: 100%;
-            height: 100%;
-            max-width: 100vw;
-            max-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            touch-action: none;
-            position: relative;
-        }
-        .game-hud {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .hud-left { display: flex; gap: 15px; }
-        .stat-pill {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.95em;
-            color: #14F195;
-            font-weight: 600;
-        }
-        .stat-pill .label {
-            color: #666;
-            font-size: 0.8em;
-            margin-right: 10px;
-            text-transform: uppercase;
-        }
-        .pause-btn {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #1a1a1a;
-            padding: 10px 20px;
-            border-radius: 25px;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            pointer-events: all;
-            font-family: 'Space Grotesk';
-            font-size: 0.9em;
-        }
-        .pause-btn:hover { background: #14F195; color: #000; }
-        .game-canvas-wrap {
-            width: min(85vmin, 85vmin);
-            height: min(85vmin, 85vmin);
-            max-width: min(85vw, 85vh);
-            max-height: min(85vw, 85vh);
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 1;
-        }
-        .game-canvas-wrap canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        canvas {
-            border: 2px solid #1a1a1a;
-            border-radius: 12px;
-            background: #000;
-            box-shadow: 0 0 80px rgba(20, 241, 149, 0.2);
-        }
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 30px;
-            z-index: 100;
-        }
-        .overlay-title {
-            font-size: 4em;
-            font-weight: 700;
-            letter-spacing: -2px;
-        }
-        .overlay-score {
-            font-size: 1.5em;
-            color: #666;
-        }
-        .overlay-score span {
-            color: #14F195;
-            font-size: 2em;
-            font-weight: 700;
-            display: block;
-            margin-top: 10px;
-        }
-        .overlay-buttons { display: flex; gap: 15px; }
-        .overlay-button {
-            padding: 18px 40px;
-            background: #fff;
-            color: #000;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Space Grotesk';
-            transition: all 0.2s;
-        }
-        .overlay-button:hover {
-            background: #14F195;
-            transform: translateY(-2px);
-        }
-        .overlay-button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .overlay-button.secondary {
-            background: #1a1a1a;
-            color: #fff;
-            border: 1px solid #2a2a2a;
-        }
-        .overlay-button.secondary:hover { background: #222; }
-        .settings-container {
-            width: 100%;
-            max-width: 500px;
-            padding: 40px;
-        }
-        .settings-title {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid #1a1a1a;
-        }
-        .setting-name {
-            font-size: 1.1em;
-            font-weight: 500;
-        }
-        .toggle {
-            width: 56px;
-            height: 30px;
-            background: #1a1a1a;
-            border-radius: 15px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.3s;
-            border: 1px solid #2a2a2a;
-        }
-        .toggle.active { background: #14F195; }
-        .toggle-knob {
-            width: 24px;
-            height: 24px;
-            background: #666;
-            border-radius: 50%;
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            transition: all 0.3s;
-        }
-        .toggle.active .toggle-knob {
-            left: 28px;
-            background: #000;
-        }
-        .select-box {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            padding: 12px 20px;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1em;
-            cursor: pointer;
-            font-family: 'Space Grotesk';
-            font-weight: 500;
-            min-width: 140px;
-        }
-        .skin-swatches {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .skin-swatch {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border: 3px solid transparent;
-            cursor: pointer;
-            padding: 0;
-            transition: transform 0.15s, border-color 0.15s;
-        }
-        .skin-swatch:hover {
-            transform: scale(1.1);
-        }
-        .skin-swatch.active {
-            border-color: #fff;
-            box-shadow: 0 0 0 1px #333;
-        }
-        .leaderboard-container {
-            width: 100%;
-            max-width: 600px;
-            padding: 40px;
-        }
-        .leaderboard-title {
-            font-size: 2.5em;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .leaderboard-subtitle {
-            color: #666;
-            font-size: 0.9em;
-            text-align: center;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .leaderboard-filters {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            justify-content: center;
-        }
-        .filter-select {
-            background: #1a1a1a;
-            border: 1px solid #2a2a2a;
-            padding: 10px 16px;
-            border-radius: 6px;
-            color: #fff;
-            font-size: 0.9em;
-            cursor: pointer;
-            font-family: 'Space Grotesk';
-            font-weight: 500;
-        }
-        .leaderboard-list {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 30px;
-        }
-        .leaderboard-entry {
-            display: flex;
-            align-items: center;
-            padding: 18px 0;
-            border-bottom: 1px solid #1a1a1a;
-        }
-        .entry-rank {
-            width: 40px;
-            font-weight: 700;
-            color: #14F195;
-            font-size: 1.1em;
-        }
-        .entry-name {
-            flex: 1;
-            font-size: 1.05em;
-        }
-        .entry-score {
-            color: #666;
-            font-weight: 600;
-            font-size: 1.05em;
-        }
-        .loading-message {
-            color: #14F195;
-            font-size: 0.9em;
-            margin-top: 15px;
-        }
-        /* Wallet Selection Modal */
-        .wallet-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        .wallet-modal {
-            background: #fff;
-            border-radius: 16px;
-            width: 100%;
-            max-width: 400px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-        .wallet-modal-header {
-            padding: 24px 24px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #e5e5e5;
-        }
-        .wallet-modal-title {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: #000;
-            margin: 0;
-        }
-        .wallet-modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5em;
-            color: #666;
-            cursor: pointer;
-            padding: 0;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s;
-        }
-        .wallet-modal-close:hover {
-            background: #f0f0f0;
-        }
-        .wallet-modal-icon {
-            text-align: center;
-            padding: 20px 0;
-            font-size: 3em;
-        }
-        .wallet-modal-subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 0.9em;
-            padding: 0 24px 20px;
-            margin: 0;
-        }
-        .wallet-modal-search {
-            padding: 0 24px 16px;
-        }
-        .wallet-modal-search input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e5e5e5;
-            border-radius: 8px;
-            font-size: 0.9em;
-            font-family: 'Space Grotesk';
-            color: #000;
-        }
-        .wallet-modal-search input:focus {
-            outline: none;
-            border-color: #14F195;
-        }
-        .wallet-modal-list {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 16px 16px;
-        }
-        .wallet-item {
-            display: flex;
-            align-items: center;
-            padding: 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-bottom: 8px;
-            border: 1px solid transparent;
-            position: relative;
-        }
-        .wallet-item:hover {
-            background: #f5f5f5;
-        }
-        .wallet-item-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            margin-right: 12px;
-            flex-shrink: 0;
-        }
-        .wallet-item-icon.phantom {
-            background: linear-gradient(135deg, #AB9FF2 0%, #8C6CF7 100%);
-            color: #fff;
-        }
-        .wallet-item-icon.mwa {
-            background: #fff;
-            border: 2px solid #AB9FF2;
-            color: #8C6CF7;
-        }
-        .wallet-item-info {
-            flex: 1;
-        }
-        .wallet-item-name {
-            font-weight: 600;
-            color: #000;
-            font-size: 1em;
-            margin-bottom: 4px;
-        }
-        .wallet-item-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .wallet-item-status {
-            font-size: 0.85em;
-            color: #666;
-        }
-        .wallet-item-status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #14F195;
-            display: inline-block;
-        }
-        .wallet-modal-footer {
-            padding: 16px 24px;
-            text-align: center;
-            border-top: 1px solid #e5e5e5;
-            color: #999;
-            font-size: 0.85em;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#070f1a">
+    <title>Creature Collect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Sora:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-    <div id="root"></div>
-    <div class="copyright-footer">© solanasnake.app</div>
-
-    <script type="text/babel">
-        const { useState, useEffect, useRef, useCallback } = React;
-        const { Connection, PublicKey, Transaction, TransactionInstruction } = window.solanaWeb3;
-
-        // Supabase credentials
-        const SUPABASE_URL = 'https://aukbtnujqzilrqxgelxq.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF1a2J0bnVqcXppbHJxeGdlbHhxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMTc1NjQsImV4cCI6MjA4NTY5MzU2NH0.PGwNORkCQn_EztvA4EKoWYQZ3xlhS1a9g-NGPSTL6d4';
-        
-        // Initialize Supabase client
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
-
-        // SKR token purchase (mainnet) – uses /api/skr-config for RPC (set SKR_RPC in Vercel)
-        const SKR_MINT = new PublicKey('SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3');
-        const SKR_RECEIVER_WALLET = 'G5ooU48sKpV7zamLQ5SZDnaZxkDPDzbMBK3MsTyAKwBW';
-        const SKR_DECIMALS = 6;
-        const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
-        const ASSOCIATED_TOKEN_PROGRAM_ID = new PublicKey('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL');
-        const SKR_RPC_DEFAULT = 'https://rpc.ankr.com/solana';
-        let _skrRpcCache = null;
-        async function getSKRRpc() {
-            if (_skrRpcCache) return _skrRpcCache;
-            try {
-                const base = window.location.origin;
-                const r = await fetch(base + '/api/skr-config', { cache: 'default' });
-                if (r.ok) {
-                    const j = await r.json();
-                    if (j && j.SKR_RPC) { _skrRpcCache = j.SKR_RPC; return _skrRpcCache; }
-                }
-            } catch (e) { /* ignore */ }
-            _skrRpcCache = SKR_RPC_DEFAULT;
-            return _skrRpcCache;
-        }
-        function getAssociatedTokenAddress(owner, mint) {
-            const [ata] = PublicKey.findProgramAddressSync(
-                [owner.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.toBuffer()],
-                ASSOCIATED_TOKEN_PROGRAM_ID
-            );
-            return ata;
-        }
-        function createTransferInstruction(source, destination, owner, amount) {
-            const data = new Uint8Array(9);
-            data[0] = 3;
-            new DataView(data.buffer, data.byteOffset, data.byteLength).setBigUint64(1, BigInt(amount), true);
-            return new TransactionInstruction({
-                keys: [
-                    { pubkey: source, isSigner: false, isWritable: true },
-                    { pubkey: destination, isSigner: false, isWritable: true },
-                    { pubkey: owner, isSigner: true, isWritable: false }
-                ],
-                programId: TOKEN_PROGRAM_ID,
-                data: data
-            });
-        }
-        async function sendSKRTransfer(walletAddress, amountUnits) {
-            const rpcUrl = await getSKRRpc();
-            const conn = new Connection(rpcUrl, 'confirmed');
-            const owner = new PublicKey(walletAddress);
-            const receiver = new PublicKey(SKR_RECEIVER_WALLET);
-            const amountRaw = BigInt(amountUnits) * BigInt(10 ** SKR_DECIMALS);
-            if (amountRaw > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error('Amount too large');
-            const fromATA = getAssociatedTokenAddress(owner, SKR_MINT);
-            const toATA = getAssociatedTokenAddress(receiver, SKR_MINT);
-            const ix = createTransferInstruction(fromATA, toATA, owner, Number(amountRaw));
-            const tx = new Transaction().add(ix);
-            let blockhash, lastValidBlockHeight;
-            try {
-                const latest = await conn.getLatestBlockhash('confirmed');
-                blockhash = latest.blockhash;
-                lastValidBlockHeight = latest.lastValidBlockHeight;
-            } catch (e) {
-                const msg = (e && e.message) || String(e);
-                if (msg.includes('403') || msg.includes('forbidden')) {
-                    throw new Error('RPC access blocked. Set the SKR_RPC env var in your Vercel project (e.g. Helius).');
-                }
-                throw e;
-            }
-            tx.recentBlockhash = blockhash;
-            tx.feePayer = owner;
-            let signed;
-            if (window.solana && window.solana.signTransaction) {
-                signed = await window.solana.signTransaction(tx);
-            } else if (window.__snakeWalletAdapter && window.__snakeWalletAdapter.signTransaction) {
-                signed = await window.__snakeWalletAdapter.signTransaction(tx);
-            } else {
-                throw new Error('Wallet cannot sign transactions');
-            }
-            const sig = await conn.sendRawTransaction(signed.serialize(), { skipPreflight: false });
-            await conn.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, 'confirmed');
-            return sig;
-        }
-
-        const GRID_SIZE = 20;
-        const CELL_SIZE = 16;
-        const INITIAL_SNAKE = [{x: 10, y: 10}];
-        const INITIAL_DIRECTION = {x: 1, y: 0};
-
-        const SNAKE_SKINS = {
-            blue: '#3B82F6',
-            orange: '#F97316',
-            yellow: '#EAB308',
-            green: '#14F195',
-            indigo: '#6366F1',
-            violet: '#8B5CF6',
-            skr_exclusive: '#14F195',
-            skr_legend: '#A855F7'
-        };
-        const SNAKE_SKIN_IDS = ['blue', 'orange', 'yellow', 'green', 'indigo', 'violet'];
-        const SHOP_SKINS_SKR = [
-            { id: 'skr_exclusive', name: 'SKR Exclusive', skrPrice: 25, rarity: 'legendary' },
-            { id: 'skr_legend', name: 'SKR Legend', skrPrice: 10, rarity: 'epic' }
-        ];
-        const UNLOCKED_SKINS_KEY = 'snakeUnlockedSkins';
-
-        const audioContext = typeof AudioContext !== 'undefined' ? new AudioContext() : null;
-
-        function playSound(frequency, duration, volume) {
-            if (!audioContext) return;
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            oscillator.frequency.value = frequency;
-            oscillator.type = 'square';
-            gainNode.gain.setValueAtTime(volume, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + duration);
-        }
-
-        // Fetch .skr domain name using Vercel API route (server-side)
-        async function getDisplayName(walletAddress) {
-            console.log('[SNS Lookup] Starting lookup for:', walletAddress);
-            
-            try {
-                // Use Vercel API route for server-side .skr domain lookup
-                console.log('[SNS Lookup] 🔍 Calling Vercel API route...');
-                const response = await fetch(`/api/get-skr-domain?wallet=${walletAddress}`);
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('[SNS Lookup] API response:', data);
-                    
-                    if (data.success && data.domain) {
-                        console.log('[SNS Lookup] ✅ Found .skr domain:', data.domain);
-                        return data.domain; // Return string for compatibility
-                    } else {
-                        console.log('[SNS Lookup] No .skr domain found via API');
-                    }
-                } else {
-                    console.log('[SNS Lookup] API error:', response.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('[SNS Lookup] Error calling API:', error);
-                console.error('[SNS Lookup] Error details:', error.message, error.stack);
-            }
-            
-            // Fallback to shortened wallet address
-            console.log('[SNS Lookup] ⚠️ No .skr domain found, using fallback');
-            return `${walletAddress.slice(0, 4)}...${walletAddress.slice(-4)}`;
-        }
-
-        function SnakeGame() {
-            const [screen, setScreen] = useState('menu');
-            const [snake, setSnake] = useState(INITIAL_SNAKE);
-            const [direction, setDirection] = useState(INITIAL_DIRECTION);
-            const [food, setFood] = useState({x: 15, y: 15});
-            const [foodEaten, setFoodEaten] = useState(0);
-            // High score per (mode, difficulty) – different leaderboard and high score for each combination
-            const HIGH_SCORE_KEY = 'snakeHighScores';
-            const getHighScoreKey = (mode, difficulty) => `${mode}_${difficulty}`;
-            const [highScores, setHighScores] = useState(() => {
-                try {
-                    const raw = localStorage.getItem(HIGH_SCORE_KEY);
-                    if (raw) {
-                        const obj = JSON.parse(raw);
-                        if (obj && typeof obj === 'object') {
-                            const migrated = {};
-                            for (const k of Object.keys(obj)) {
-                                const v = Number(obj[k]);
-                                if (v >= 10) migrated[k] = Math.round(v / 10);
-                                else migrated[k] = v;
-                            }
-                            try { localStorage.setItem(HIGH_SCORE_KEY, JSON.stringify(migrated)); } catch (_) {}
-                            return migrated;
-                        }
-                    }
-                    const legacy = localStorage.getItem('snakeHighScore');
-                    if (legacy) {
-                        const n = parseInt(legacy, 10);
-                        const val = n >= 10 ? Math.round(n / 10) : n;
-                        return { classic_medium: val };
-                    }
-                    return {};
-                } catch (_) { return {}; }
-            });
-            const getHighScore = (mode, difficulty) => highScores[getHighScoreKey(mode, difficulty)] || 0;
-            const setHighScoreFor = (mode, difficulty, score) => {
-                const key = getHighScoreKey(mode, difficulty);
-                setHighScores(prev => {
-                    const next = { ...prev, [key]: Math.max(prev[key] || 0, score) };
-                    try { localStorage.setItem(HIGH_SCORE_KEY, JSON.stringify(next)); } catch (_) {}
-                    return next;
-                });
-            };
-            const [obstacles, setObstacles] = useState([]);
-            const [speedBoost, setSpeedBoost] = useState(false);
-            const [timer, setTimer] = useState(60);
-            
-            const [settings, setSettings] = useState(() => {
-                const defaults = { sound: true, vibration: true, difficulty: 'medium', gameMode: 'classic', snakeColor: 'green' };
-                try {
-                    const s = localStorage.getItem('snakeSettings');
-                    if (s) return { ...defaults, ...JSON.parse(s) };
-                } catch (_) {}
-                return defaults;
-            });
-            useEffect(() => {
-                try { localStorage.setItem('snakeSettings', JSON.stringify(settings)); } catch (_) {}
-            }, [settings]);
-
-            const [wallet, setWallet] = useState(null);
-            const [snsName, setSnsName] = useState(null);
-            const [showWalletModal, setShowWalletModal] = useState(false);
-            const [walletSearch, setWalletSearch] = useState('');
-            const [availableWallets, setAvailableWallets] = useState([]);
-            const [leaderboard, setLeaderboard] = useState([]);
-            const [leaderboardFilter, setLeaderboardFilter] = useState({ mode: 'classic', difficulty: 'medium' });
-            const [submittingScore, setSubmittingScore] = useState(false);
-            const [loadingLeaderboard, setLoadingLeaderboard] = useState(false);
-            const [unlockedSkins, setUnlockedSkins] = useState(() => {
-                try {
-                    const raw = localStorage.getItem(UNLOCKED_SKINS_KEY);
-                    if (raw) {
-                        const arr = JSON.parse(raw);
-                        if (Array.isArray(arr)) return arr;
-                    }
-                } catch (_) {}
-                return [];
-            });
-            const [purchasingSKRId, setPurchasingSKRId] = useState(null);
-
-            useEffect(() => { try { localStorage.setItem(UNLOCKED_SKINS_KEY, JSON.stringify(unlockedSkins)); } catch (_) {} }, [unlockedSkins]);
-
-            const canvasRef = useRef(null);
-            const gameLoopRef = useRef(null);
-            const directionRef = useRef(INITIAL_DIRECTION);
-            const snakeRef = useRef(INITIAL_SNAKE);
-            // Capture mode/difficulty at game start so submitted score is never stored under wrong mode
-            const gameSessionRef = useRef({ gameMode: 'classic', difficulty: 'medium' });
-            const [gameScale, setGameScale] = useState(1);
-
-            const GAME_SPEEDS = { easy: 200, medium: 150, hard: 100 };
-
-            useEffect(() => {
-                const updateScale = () => {
-                    const w = window.innerWidth || document.documentElement.clientWidth || 400;
-                    const h = window.innerHeight || document.documentElement.clientHeight || 600;
-                    const minSide = Math.min(w, h);
-                    let refSize = 420;
-                    if (window.__SNAKE_IN_APP) {
-                        refSize = 580;
-                    }
-                    const s = Math.max(0.45, Math.min(1, w / refSize, h / refSize));
-                    setGameScale(s);
-                };
-                updateScale();
-                const t = setTimeout(updateScale, 100);
-                const t2 = setTimeout(updateScale, 500);
-                window.addEventListener('resize', updateScale);
-                return () => {
-                    clearTimeout(t);
-                    clearTimeout(t2);
-                    window.removeEventListener('resize', updateScale);
-                };
-            }, []);
-
-            // Display: 1 point per apple. Old DB rows may be stored ×10, so convert for display only.
-            // Only divide if score is clearly old format (>= 100), otherwise return as-is
-            const scoreToApples = (s) => {
-                const n = Number(s);
-                // Old format: scores were stored as 10x (e.g., 160 for 16 apples)
-                // New format: scores are stored as-is (e.g., 16 for 16 apples)
-                // Only convert if score is >= 100 (clearly old format)
-                return n >= 100 ? Math.round(n / 10) : n;
-            };
-
-            // Load leaderboard from Supabase
-            const loadLeaderboard = async () => {
-                try {
-                    setLoadingLeaderboard(true);
-                    
-                    // Get best score per wallet for this mode/difficulty
-                    const { data, error } = await supabase
-                        .rpc('get_best_scores', {
-                            p_game_mode: leaderboardFilter.mode,
-                            p_difficulty: leaderboardFilter.difficulty
-                        });
-
-                    if (error) {
-                        // Fallback if RPC doesn't exist - get all and dedupe client-side
-                        const { data: allData, error: fallbackError } = await supabase
-                            .from('leaderboards')
-                            .select('*')
-                            .eq('game_mode', leaderboardFilter.mode)
-                            .eq('difficulty', leaderboardFilter.difficulty)
-                            .order('score', { ascending: false });
-
-                        if (fallbackError) throw fallbackError;
-
-                        // Keep only best score per wallet (deduplicate by wallet_address only)
-                        const bestScores = {};
-                        allData.forEach(entry => {
-                            const wallet = entry.wallet_address.toLowerCase(); // Normalize to lowercase
-                            if (!bestScores[wallet] || entry.score > bestScores[wallet].score) {
-                                bestScores[wallet] = entry;
-                            }
-                        });
-
-                        // Look up domains for all entries
-                        const entriesWithDomains = await Promise.all(
-                            Object.values(bestScores)
-                                .sort((a, b) => scoreToApples(b.score) - scoreToApples(a.score))
-                                .slice(0, 100)
-                                .map(async (entry, idx) => {
-                                    // Look up domain name for this wallet
-                                    const displayInfo = await getDisplayName(entry.wallet_address);
-                                    const displayName = displayInfo.hasDomain 
-                                        ? displayInfo.displayName 
-                                        : (entry.skr_name || `${entry.wallet_address.slice(0, 4)}...${entry.wallet_address.slice(-4)}`);
-                                    
-                                    return {
-                                        rank: idx + 1,
-                                        name: displayName,
-                                        score: scoreToApples(entry.score),
-                                        wallet: entry.wallet_address
-                                    };
-                                })
-                        );
-
-                        setLeaderboard(entriesWithDomains);
-                    } else {
-                        // RPC returns best_score already calculated
-                        // Deduplicate by wallet_address (in case get_best_scores returns duplicates)
-                        const uniqueEntries = {};
-                        data.forEach(entry => {
-                            const wallet = entry.wallet_address.toLowerCase(); // Normalize to lowercase
-                            if (!uniqueEntries[wallet] || entry.best_score > uniqueEntries[wallet].best_score) {
-                                uniqueEntries[wallet] = entry;
-                            }
-                        });
-
-                        // Look up domains for all entries
-                        const entriesWithDomains = await Promise.all(
-                            Object.values(uniqueEntries)
-                                .sort((a, b) => scoreToApples(b.best_score) - scoreToApples(a.best_score))
-                                .slice(0, 100)
-                                .map(async (entry, idx) => {
-                                    // Look up domain name for this wallet
-                                    const displayInfo = await getDisplayName(entry.wallet_address);
-                                    const displayName = displayInfo.hasDomain 
-                                        ? displayInfo.displayName 
-                                        : (entry.skr_name || `${entry.wallet_address.slice(0, 4)}...${entry.wallet_address.slice(-4)}`);
-                                    
-                                    return {
-                                        rank: idx + 1,
-                                        name: displayName,
-                                        score: scoreToApples(entry.best_score),
-                                        wallet: entry.wallet_address
-                                    };
-                                })
-                        );
-
-                        setLeaderboard(entriesWithDomains);
-                    }
-                } catch (err) {
-                    console.error('Failed to load leaderboard:', err);
-                    // Show empty leaderboard on error
-                    setLeaderboard([]);
-                } finally {
-                    setLoadingLeaderboard(false);
-                }
-            };
-
-            useEffect(() => {
-                loadLeaderboard();
-            }, [leaderboardFilter]);
-
-            // Detect available wallets
-            const detectWallets = async () => {
-                const wallets = [];
-                
-                // Check for Mobile Wallet Adapter (Seeker / Seed Vault)
-                let adapter = window.__snakeWalletAdapter;
-                console.log('[Snake] Checking for MWA adapter:', {
-                    exists: !!adapter,
-                    ready: adapter?.ready,
-                    hasConnect: typeof adapter?.connect === 'function',
-                    inApp: window.__SNAKE_IN_APP,
-                    userAgent: navigator.userAgent
-                });
-                
-                if (/android/i.test(navigator.userAgent) && adapter && !adapter.connect) {
-                    // Wait for MWA to initialize
-                    console.log('[Snake] Waiting for MWA to initialize...');
-                    for (let i = 0; i < 15 && (!adapter.connect || !adapter.ready); i++) {
-                        await new Promise(r => setTimeout(r, 200));
-                        adapter = window.__snakeWalletAdapter;
-                        if (adapter?.connect) break;
-                    }
-                }
-                
-                if (adapter && typeof adapter.connect === 'function') {
-                    console.log('[Snake] ✅ MWA adapter found and ready');
-                    wallets.push({
-                        id: 'mwa',
-                        name: 'Mobile Wallet Adapter',
-                        icon: 'mwa',
-                        available: true,
-                        description: 'Seeker / Seed Vault'
-                    });
-                } else {
-                    console.warn('[Snake] ⚠️ MWA adapter not available:', {
-                        adapter: !!adapter,
-                        connect: typeof adapter?.connect,
-                        ready: adapter?.ready
-                    });
-                }
-                
-                // Check for Phantom
-                if (window.solana?.isPhantom) {
-                    wallets.push({
-                        id: 'phantom',
-                        name: 'Phantom',
-                        icon: 'phantom',
-                        available: true,
-                        description: 'Browser extension'
-                    });
-                }
-                
-                return wallets;
-            };
-
-            const openWalletModal = async () => {
-                const wallets = await detectWallets();
-                setAvailableWallets(wallets);
-                if (wallets.length === 0) {
-                    alert('No wallets available. Please install Phantom from phantom.app or use Seeker device wallet.');
-                    return;
-                }
-                setShowWalletModal(true);
-            };
-
-            const connectWallet = async (walletId) => {
-                try {
-                    setShowWalletModal(false);
-                    let pubkey = null;
-                    
-                    if (walletId === 'mwa') {
-                        let adapter = window.__snakeWalletAdapter;
-                        const isAndroid = /android/i.test(navigator.userAgent);
-                        const isInApp = window.__SNAKE_IN_APP || window.ReactNativeWebView;
-                        
-                        console.log('[Snake] MWA connect attempt:', {
-                            adapter: !!adapter,
-                            hasConnect: typeof adapter?.connect === 'function',
-                            ready: adapter?.ready,
-                            isAndroid,
-                            isInApp
-                        });
-                        
-                        // Wait for adapter to initialize if needed
-                        if ((isAndroid || isInApp) && (!adapter?.connect || typeof adapter.connect !== 'function')) {
-                            console.log('[Snake] Waiting for MWA adapter to initialize...');
-                            for (let i = 0; i < 30; i++) { // Wait up to 6 seconds
-                                adapter = window.__snakeWalletAdapter;
-                                if (adapter && adapter.connect && typeof adapter.connect === 'function') {
-                                    console.log('[Snake] ✅ MWA adapter ready after', i * 200, 'ms');
-                                    break;
-                                }
-                                await new Promise(r => setTimeout(r, 200));
-                            }
-                        }
-                        
-                        if (adapter && typeof adapter.connect === 'function') {
-                            console.log('[Snake] Calling adapter.connect()...');
-                            try {
-                                const result = await adapter.connect();
-                                // Handle both string and object responses
-                                pubkey = typeof result === 'string' ? result : (result?.publicKey?.toString() || result?.address || result);
-                                if (pubkey) {
-                                    console.log('[Snake] ✅ MWA connected, pubkey:', pubkey);
-                                } else {
-                                    console.warn('[Snake] MWA connect returned unexpected format:', result);
-                                    throw new Error('MWA connection returned invalid response');
-                                }
-                            } catch (connectErr) {
-                                console.error('[Snake] ❌ MWA connect error:', connectErr);
-                                throw connectErr;
-                            }
-                        } else {
-                            const errorMsg = `Mobile Wallet Adapter not available. Adapter: ${!!adapter}, Connect: ${typeof adapter?.connect}, Ready: ${adapter?.ready}`;
-                            console.error('[Snake]', errorMsg);
-                            throw new Error(errorMsg);
-                        }
-                    } else if (walletId === 'phantom') {
-                        if (window.solana?.isPhantom) {
-                            const response = await window.solana.connect();
-                            pubkey = response.publicKey.toString();
-                        } else {
-                            throw new Error('Phantom wallet not installed');
-                        }
-                    } else {
-                        throw new Error('Unknown wallet');
-                    }
-
-                    if (!pubkey) {
-                        throw new Error('Failed to connect');
-                    }
-
-                    setWallet(pubkey);
-                    const displayName = await getDisplayName(pubkey);
-                    setSnsName(displayName);
-                    console.log('✅ Wallet connected:', displayName);
-                } catch (err) {
-                    console.error('Connection error:', err);
-                    alert('Connection failed: ' + (err.message || String(err)));
-                }
-            };
-
-            const disconnectWallet = async () => {
-                const adapter = window.__snakeWalletAdapter;
-                if (adapter && adapter.disconnect) {
-                    try { await adapter.disconnect(); } catch (_) {}
-                }
-                if (window.solana) {
-                    try { window.solana.disconnect(); } catch (_) {}
-                }
-                setWallet(null);
-                setSnsName(null);
-            };
-
-            const generateFood = useCallback(() => {
-                let newFood;
-                let attempts = 0;
-                do {
-                    newFood = {
-                        x: Math.floor(Math.random() * GRID_SIZE),
-                        y: Math.floor(Math.random() * GRID_SIZE)
-                    };
-                    attempts++;
-                } while (
-                    attempts < 100 &&
-                    (obstacles.some(obs => obs.x === newFood.x && obs.y === newFood.y) ||
-                     snake.some(seg => seg.x === newFood.x && seg.y === newFood.y))
-                );
-                return newFood;
-            }, [obstacles, snake]);
-
-            const generateObstacles = useCallback(() => {
-                const numObstacles = settings.gameMode === 'walls' ? 10 : 0;
-                const newObstacles = [];
-                for (let i = 0; i < numObstacles; i++) {
-                    let obstacle;
-                    let attempts = 0;
-                    do {
-                        obstacle = {
-                            x: Math.floor(Math.random() * GRID_SIZE),
-                            y: Math.floor(Math.random() * GRID_SIZE)
-                        };
-                        attempts++;
-                    } while (
-                        attempts < 100 &&
-                        (newObstacles.some(obs => obs.x === obstacle.x && obs.y === obstacle.y) ||
-                         INITIAL_SNAKE.some(seg => seg.x === obstacle.x && seg.y === obstacle.y) ||
-                         (obstacle.x === 15 && obstacle.y === 15))
-                    );
-                    newObstacles.push(obstacle);
-                }
-                return newObstacles;
-            }, [settings.gameMode]);
-
-            const vibrate = (pattern) => {
-                if (settings.vibration && navigator.vibrate) {
-                    navigator.vibrate(pattern);
-                }
-            };
-
-            const handleDirectionChange = (newDirection) => {
-                if (screen !== 'playing') return;
-                const currentDir = directionRef.current;
-                if (newDirection.x === -currentDir.x && newDirection.y === -currentDir.y) return;
-                directionRef.current = newDirection;
-                setDirection(newDirection);
-                vibrate(10);
-            };
-
-            const startGame = () => {
-                // Lock in mode/difficulty for this round so leaderboard submission is always correct
-                gameSessionRef.current = {
-                    gameMode: settings.gameMode,
-                    difficulty: settings.difficulty
-                };
-                setSnake(INITIAL_SNAKE);
-                snakeRef.current = INITIAL_SNAKE;
-                setDirection(INITIAL_DIRECTION);
-                directionRef.current = INITIAL_DIRECTION;
-                setFood(generateFood());
-                setFoodEaten(0);
-                setSpeedBoost(false);
-                setTimer(60);
-                
-                if (settings.gameMode === 'walls') {
-                    setObstacles(generateObstacles());
-                } else {
-                    setObstacles([]);
-                }
-                
-                setScreen('playing');
-            };
-
-            const submitScore = async (finalFoodCount) => {
-                const apples = finalFoodCount;
-                const session = gameSessionRef.current;
-
-                if (wallet && apples > getHighScore(session.gameMode, session.difficulty)) {
-                    setHighScoreFor(session.gameMode, session.difficulty, apples);
-                }
-
-                if (apples === 0 || !wallet) {
-                    console.log('No score to submit or no wallet connected');
-                    return;
-                }
-
-                setSubmittingScore(true);
-
-                try {
-                    const { error } = await supabase
-                        .from('leaderboards')
-                        .insert({
-                            wallet_address: wallet,
-                            skr_name: snsName,
-                            score: apples,
-                            game_mode: session.gameMode,
-                            difficulty: session.difficulty
-                        });
-
-                    if (error) {
-                        console.error('Supabase insert error:', error);
-                        throw error;
-                    }
-
-                    console.log('✅ Score submitted successfully!', {
-                        wallet: wallet.slice(0, 8) + '...',
-                        score: apples,
-                        mode: session.gameMode,
-                        difficulty: session.difficulty
-                    });
-                    
-                    setLeaderboardFilter({ mode: session.gameMode, difficulty: session.difficulty });
-                } catch (err) {
-                    console.error('❌ Failed to submit score:', err);
-                    alert('Failed to submit score: ' + (err.message || String(err)));
-                } finally {
-                    setSubmittingScore(false);
-                }
-            };
-
-            const checkCollision = useCallback((head) => {
-                if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-                    if (settings.gameMode !== 'portal') return true;
-                }
-                if (obstacles.some(obs => obs.x === head.x && obs.y === head.y)) return true;
-                return false;
-            }, [obstacles, settings.gameMode]);
-
-            const gameLoop = useCallback(() => {
-                const body = snakeRef.current;
-                if (!body || body.length === 0) return;
-                
-                let head = {
-                    x: body[0].x + directionRef.current.x,
-                    y: body[0].y + directionRef.current.y
-                };
-
-                if (settings.gameMode === 'portal') {
-                    if (head.x < 0) head.x = GRID_SIZE - 1;
-                    if (head.x >= GRID_SIZE) head.x = 0;
-                    if (head.y < 0) head.y = GRID_SIZE - 1;
-                    if (head.y >= GRID_SIZE) head.y = 0;
-                }
-
-                // Self-collision: check new head against ALL body segments
-                // This works for ALL game modes including portal
-                for (let i = 0; i < body.length; i++) {
-                    if (head.x === body[i].x && head.y === body[i].y) {
-                        if (gameLoopRef.current) {
-                            clearInterval(gameLoopRef.current);
-                            gameLoopRef.current = null;
-                        }
-                        setScreen('gameOver');
-                        submitScore(foodEaten);
-                        if (settings.sound) playSound(100, 0.3, 0.3);
-                        vibrate([200, 100, 200]);
-                        return;
-                    }
-                }
-                if (checkCollision(head)) {
-                    if (gameLoopRef.current) {
-                        clearInterval(gameLoopRef.current);
-                        gameLoopRef.current = null;
-                    }
-                    setScreen('gameOver');
-                    submitScore(foodEaten);
-                    if (settings.sound) playSound(100, 0.3, 0.3);
-                    vibrate([200, 100, 200]);
-                    return;
-                }
-
-                let newSnake = [head, ...body];
-
-                if (head.x === food.x && head.y === food.y) {
-                    setFoodEaten(f => f + 1);
-                    setFood(generateFood());
-                    if (settings.sound) playSound(800, 0.1, 0.2);
-                    vibrate(50);
-                    if (settings.gameMode === 'speed') {
-                        setSpeedBoost(true);
-                        setTimeout(() => setSpeedBoost(false), 3000);
-                    }
-                } else {
-                    newSnake.pop();
-                }
-
-                snakeRef.current = newSnake;
-                setSnake(newSnake);
-            }, [food, checkCollision, foodEaten, generateFood, settings.sound, settings.vibration, settings.gameMode]);
-
-            useEffect(() => {
-                if (screen === 'playing') {
-                    let speed = GAME_SPEEDS[settings.difficulty];
-                    if (settings.gameMode === 'speed' && speedBoost) {
-                        speed = Math.max(speed - 50, 50);
-                    }
-                    gameLoopRef.current = setInterval(gameLoop, speed);
-                    return () => clearInterval(gameLoopRef.current);
-                }
-            }, [screen, gameLoop, settings.difficulty, settings.gameMode, speedBoost]);
-
-            useEffect(() => {
-                if (screen === 'playing' && settings.gameMode === 'survival') {
-                    const timerInterval = setInterval(() => {
-                        setTimer(t => {
-                            if (t <= 1) {
-                                setScreen('gameOver');
-                                submitScore(foodEaten);
-                                return 0;
-                            }
-                            return t - 1;
-                        });
-                    }, 1000);
-                    return () => clearInterval(timerInterval);
-                }
-            }, [screen, settings.gameMode, foodEaten]);
-
-            useEffect(() => {
-                const inApp = !!window.__SNAKE_IN_APP;
-                const isMobileOrWebView = inApp || /Android|iPhone|iPad|iPod|wv|WebView/i.test(navigator.userAgent);
-                const handleKeyPress = (e) => {
-                    if (screen === 'playing') {
-                        const currentDir = directionRef.current;
-                        if (e.key === 'ArrowUp' && currentDir.y === 0) {
-                            e.preventDefault();
-                            handleDirectionChange({x: 0, y: -1});
-                        } else if (e.key === 'ArrowDown' && currentDir.y === 0) {
-                            e.preventDefault();
-                            handleDirectionChange({x: 0, y: 1});
-                        } else if (e.key === 'ArrowLeft' && currentDir.x === 0) {
-                            e.preventDefault();
-                            handleDirectionChange({x: -1, y: 0});
-                        } else if (e.key === 'ArrowRight' && currentDir.x === 0) {
-                            e.preventDefault();
-                            handleDirectionChange({x: 1, y: 0});
-                        } else if (e.key === 'Escape' || e.key === ' ') {
-                            e.preventDefault();
-                            setScreen('paused');
-                        }
-                    } else if (screen === 'paused' && (e.key === 'Escape' || e.key === ' ')) {
-                        e.preventDefault();
-                        setScreen('playing');
-                    }
-                };
-                if (!isMobileOrWebView) {
-                    window.addEventListener('keydown', handleKeyPress);
-                    return () => window.removeEventListener('keydown', handleKeyPress);
-                }
-            }, [screen]);
-
-            useEffect(() => {
-                if (screen !== 'playing') return;
-                let touchStartX = 0, touchStartY = 0;
-                const handleTouchStart = (e) => {
-                    touchStartX = e.changedTouches[0].screenX;
-                    touchStartY = e.changedTouches[0].screenY;
-                };
-                const handleTouchEnd = (e) => {
-                    const deltaX = e.changedTouches[0].screenX - touchStartX;
-                    const deltaY = e.changedTouches[0].screenY - touchStartY;
-                    if (Math.abs(deltaX) < 30 && Math.abs(deltaY) < 30) return;
-                    const currentDir = directionRef.current;
-                    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                        if (deltaX > 0 && currentDir.x === 0) handleDirectionChange({x: 1, y: 0});
-                        else if (deltaX < 0 && currentDir.x === 0) handleDirectionChange({x: -1, y: 0});
-                    } else {
-                        if (deltaY > 0 && currentDir.y === 0) handleDirectionChange({x: 0, y: 1});
-                        else if (deltaY < 0 && currentDir.y === 0) handleDirectionChange({x: 0, y: -1});
-                    }
-                };
-                window.addEventListener('touchstart', handleTouchStart, {passive: true});
-                window.addEventListener('touchend', handleTouchEnd, {passive: true});
-                return () => {
-                    window.removeEventListener('touchstart', handleTouchStart);
-                    window.removeEventListener('touchend', handleTouchEnd);
-                };
-            }, [screen]);
-
-            useEffect(() => {
-                const canvas = canvasRef.current;
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#000';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                if (obstacles.length > 0) {
-                    ctx.fillStyle = '#1a1a1a';
-                    obstacles.forEach(obs => {
-                        ctx.fillRect(obs.x * CELL_SIZE, obs.y * CELL_SIZE, CELL_SIZE - 1, CELL_SIZE - 1);
-                    });
-                }
-
-                const snakeColor = SNAKE_SKINS[settings.snakeColor] || SNAKE_SKINS.green;
-                const segW = CELL_SIZE - 2;
-                snake.forEach((segment, i) => {
-                    const x = segment.x * CELL_SIZE + 1, y = segment.y * CELL_SIZE + 1;
-                    if (speedBoost) {
-                        ctx.fillStyle = '#FFD700';
-                    } else if (settings.snakeColor === 'skr_exclusive') {
-                        const g = ctx.createLinearGradient(x, y, x + segW, y + segW);
-                        g.addColorStop(0, '#FEF3C7');
-                        g.addColorStop(0.3, '#F59E0B');
-                        g.addColorStop(0.6, '#14F195');
-                        g.addColorStop(1, '#059669');
-                        ctx.fillStyle = g;
-                    } else if (settings.snakeColor === 'skr_legend') {
-                        const g = ctx.createLinearGradient(x, y, x + segW, y + segW);
-                        g.addColorStop(0, '#C4B5FD');
-                        g.addColorStop(0.4, '#A855F7');
-                        g.addColorStop(0.7, '#7C3AED');
-                        g.addColorStop(1, '#5B21B6');
-                        ctx.fillStyle = g;
-                    } else {
-                        ctx.fillStyle = snakeColor;
-                    }
-                    ctx.fillRect(x, y, segW, segW);
-                });
-
-                const foodCenterX = food.x * CELL_SIZE + CELL_SIZE / 2;
-                const foodCenterY = food.y * CELL_SIZE + CELL_SIZE / 2;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = `${CELL_SIZE - 2}px sans-serif`;
-                ctx.fillText('🍎', foodCenterX, foodCenterY);
-            }, [snake, food, obstacles, speedBoost, settings.snakeColor]);
-
-            if (screen === 'menu') {
-                return (
-                    <div className="fullscreen">
-                        <div className="menu-container">
-                            <div className="logo-big">
-                                <span className="logo-accent">◢</span> SNAKE
-                            </div>
-                            <div className="tagline">SOLANA SEEKER</div>
-                            
-                            <button className="menu-button" onClick={startGame}>
-                                START GAME
-                            </button>
-                            <button className="menu-button secondary" onClick={() => setScreen('shop')}>
-                                SHOP
-                            </button>
-                            <button className="menu-button secondary" onClick={() => setScreen('settings')}>
-                                SETTINGS
-                            </button>
-                            <button className="menu-button secondary" onClick={() => setScreen('leaderboard')}>
-                                LEADERBOARD
-                            </button>
-                            {!wallet ? (
-                                <button className="menu-button secondary" onClick={openWalletModal}>
-                                    CONNECT WALLET
-                                </button>
-                            ) : (
-                                <button className="menu-button secondary" onClick={disconnectWallet}>
-                                    DISCONNECT
-                                </button>
-                            )}
-
-                            {wallet && (
-                                <div className="wallet-display">
-                                    {snsName || '...loading'}
-                                </div>
-                            )}
-
-                            {showWalletModal && (
-                                <div className="wallet-modal-overlay" onClick={() => setShowWalletModal(false)}>
-                                    <div className="wallet-modal" onClick={(e) => e.stopPropagation()}>
-                                        <div className="wallet-modal-header">
-                                            <h2 className="wallet-modal-title">Select your wallet</h2>
-                                            <button className="wallet-modal-close" onClick={() => setShowWalletModal(false)}>×</button>
-                                        </div>
-                                        <div className="wallet-modal-icon">💼</div>
-                                        <p className="wallet-modal-subtitle">Connect a wallet to your Snake account</p>
-                                        <div className="wallet-modal-search">
-                                            <input
-                                                type="text"
-                                                placeholder={`Search through ${availableWallets.length} wallet${availableWallets.length !== 1 ? 's' : ''}`}
-                                                value={walletSearch}
-                                                onChange={(e) => setWalletSearch(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="wallet-modal-list">
-                                            {availableWallets
-                                                .filter(w => w.name.toLowerCase().includes(walletSearch.toLowerCase()))
-                                                .map((wallet) => (
-                                                    <div
-                                                        key={wallet.id}
-                                                        className="wallet-item"
-                                                        onClick={() => connectWallet(wallet.id)}
-                                                    >
-                                                        <div className={`wallet-item-icon ${wallet.icon}`}>
-                                                            {wallet.icon === 'phantom' ? '👻' : '📱'}
-                                                        </div>
-                                                        <div className="wallet-item-info">
-                                                            <div className="wallet-item-name">{wallet.name}</div>
-                                                            <div className="wallet-item-badge">
-                                                                <span className="wallet-item-status-dot"></span>
-                                                                <span className="wallet-item-status">{wallet.description}</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                        </div>
-                                        <div className="wallet-modal-footer">
-                                            Protected by Solana
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                );
-            }
-
-            if (screen === 'shop') {
-                const skrConfigured = typeof SKR_RECEIVER_WALLET === 'string' && !SKR_RECEIVER_WALLET.includes('REPLACE');
-                return (
-                    <div className="fullscreen">
-                        <div className="settings-container" style={{ maxWidth: 360 }}>
-                            <div className="settings-title">SHOP — SKR Skins</div>
-                            <p style={{ fontSize: '0.85em', color: '#888', marginBottom: 20 }}>
-                                Buy skins with SKR token. Connect wallet first.
-                            </p>
-                            {SHOP_SKINS_SKR.map((item) => {
-                                const owned = unlockedSkins.includes(item.id);
-                                const canBuy = !owned && wallet && skrConfigured && !purchasingSKRId;
-                                return (
-                                    <div key={item.id} style={{
-                                        background: '#1a1a1a',
-                                        border: '1px solid #2a2a2a',
-                                        borderRadius: 14,
-                                        padding: 16,
-                                        marginBottom: 12,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'space-between',
-                                        gap: 12
-                                    }}>
-                                        <div>
-                                            <div style={{ fontWeight: 700, color: '#14F195', marginBottom: 4 }}>{item.name}</div>
-                                            <div style={{ fontSize: '0.85em', color: '#888' }}>{item.rarity}</div>
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                                            {owned ? (
-                                                <span style={{ color: '#14F195', fontWeight: 600 }}>Owned</span>
-                                            ) : (
-                                                <>
-                                                    <span style={{ fontSize: '0.9em' }}>{item.skrPrice} SKR</span>
-                                                    <button
-                                                        className="menu-button"
-                                                        style={{ padding: '10px 18px', fontSize: '0.9rem' }}
-                                                        disabled={!canBuy}
-                                                        onClick={async () => {
-                                                            if (!wallet || !skrConfigured || purchasingSKRId) return;
-                                                            setPurchasingSKRId(item.id);
-                                                            try {
-                                                                await sendSKRTransfer(wallet, item.skrPrice);
-                                                                setUnlockedSkins(prev => prev.includes(item.id) ? prev : [...prev, item.id]);
-                                                                alert('Purchase complete! Skin unlocked.');
-                                                            } catch (err) {
-                                                                alert(err?.message || 'SKR purchase failed');
-                                                            } finally {
-                                                                setPurchasingSKRId(null);
-                                                            }
-                                                        }}
-                                                    >
-                                                        {purchasingSKRId === item.id ? '…' : 'Buy with SKR'}
-                                                    </button>
-                                                </>
-                                            )}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            <button className="menu-button secondary" style={{ marginTop: 24 }} onClick={() => setScreen('menu')}>
-                                BACK TO MENU
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (screen === 'settings') {
-                return (
-                    <div className="fullscreen">
-                        <div className="settings-container">
-                            <div className="settings-title">SETTINGS</div>
-                            
-                            <div className="setting-row">
-                                <div className="setting-name">Sound</div>
-                                <div 
-                                    className={`toggle ${settings.sound ? 'active' : ''}`}
-                                    onClick={() => setSettings({...settings, sound: !settings.sound})}
-                                >
-                                    <div className="toggle-knob"></div>
-                                </div>
-                            </div>
-
-                            <div className="setting-row">
-                                <div className="setting-name">Vibration</div>
-                                <div 
-                                    className={`toggle ${settings.vibration ? 'active' : ''}`}
-                                    onClick={() => setSettings({...settings, vibration: !settings.vibration})}
-                                >
-                                    <div className="toggle-knob"></div>
-                                </div>
-                            </div>
-
-                            <div className="setting-row">
-                                <div className="setting-name">Difficulty</div>
-                                <select 
-                                    className="select-box"
-                                    value={settings.difficulty}
-                                    onChange={(e) => setSettings({...settings, difficulty: e.target.value})}
-                                >
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
-                                </select>
-                            </div>
-
-                            <div className="setting-row">
-                                <div className="setting-name">Game Mode</div>
-                                <select 
-                                    className="select-box"
-                                    value={settings.gameMode}
-                                    onChange={(e) => setSettings({...settings, gameMode: e.target.value})}
-                                >
-                                    <option value="classic">Classic</option>
-                                    <option value="walls">Walls</option>
-                                    <option value="portal">Portal</option>
-                                    <option value="speed">Speed</option>
-                                    <option value="survival">Survival</option>
-                                </select>
-                            </div>
-
-                            <div className="setting-row">
-                                <div className="setting-name">Snake color</div>
-                                <div className="skin-swatches">
-                                    {[...SNAKE_SKIN_IDS, ...unlockedSkins].filter((id, i, a) => a.indexOf(id) === i).map((id) => (
-                                        <button
-                                            key={id}
-                                            type="button"
-                                            className={`skin-swatch ${settings.snakeColor === id ? 'active' : ''}`}
-                                            style={{ backgroundColor: SNAKE_SKINS[id] || '#14F195' }}
-                                            title={id}
-                                            onClick={() => setSettings({...settings, snakeColor: id})}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-
-                            <button className="menu-button" style={{marginTop: '40px'}} onClick={() => setScreen('menu')}>
-                                BACK TO MENU
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (screen === 'leaderboard') {
-                return (
-                    <div className="fullscreen">
-                        <div className="leaderboard-container">
-                            <div className="leaderboard-title">LEADERBOARD</div>
-                            <div className="leaderboard-subtitle">
-                                {leaderboardFilter.mode.toUpperCase()} • {leaderboardFilter.difficulty.toUpperCase()}
-                            </div>
-                            <p style={{ fontSize: '0.85em', color: '#888', marginTop: 4 }}>
-                                Global rankings from Supabase. Each mode + difficulty has its own board.
-                            </p>
-                            <div className="leaderboard-filters">
-                                <select 
-                                    className="filter-select"
-                                    value={leaderboardFilter.mode}
-                                    onChange={(e) => setLeaderboardFilter({...leaderboardFilter, mode: e.target.value})}
-                                >
-                                    <option value="classic">Classic</option>
-                                    <option value="walls">Walls</option>
-                                    <option value="portal">Portal</option>
-                                    <option value="speed">Speed</option>
-                                    <option value="survival">Survival</option>
-                                </select>
-                                
-                                <select 
-                                    className="filter-select"
-                                    value={leaderboardFilter.difficulty}
-                                    onChange={(e) => setLeaderboardFilter({...leaderboardFilter, difficulty: e.target.value})}
-                                >
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
-                                </select>
-                            </div>
-                            
-                            <div key={`leaderboard-${leaderboardFilter.mode}-${leaderboardFilter.difficulty}`} className="leaderboard-list">
-                                {loadingLeaderboard ? (
-                                    <div style={{textAlign: 'center', color: '#666', padding: '40px 20px'}}>
-                                        Loading...
-                                    </div>
-                                ) : leaderboard.length === 0 ? (
-                                    <div style={{textAlign: 'center', color: '#666', padding: '40px 20px', fontSize: '1.1em'}}>
-                                        No scores yet.<br/>
-                                        Be the first!
-                                    </div>
-                                ) : (
-                                    leaderboard.map((entry) => (
-                                        <div key={`${entry.rank}-${entry.wallet}`} className="leaderboard-entry">
-                                            <div className="entry-rank">#{entry.rank}</div>
-                                            <div className="entry-name">{entry.name}</div>
-                                            <div className="entry-score">{entry.score} 🍎</div>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-
-                            <button className="menu-button" onClick={() => setScreen('menu')}>
-                                BACK TO MENU
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            return (
-                <div className="fullscreen">
-                    <div className="game-screen" style={{ transform: `scale(${gameScale})`, transformOrigin: 'center center' }}>
-                        <div className="game-hud">
-                            <div className="hud-left">
-                                <div className="stat-pill" data-score-type="apples">
-                                    <span className="label">SCORE</span>
-                                    <span>{Number(foodEaten)}</span>
-                                </div>
-                                <div className="stat-pill">
-                                    <span className="label">HIGH SCORE</span>
-                                    {getHighScore(settings.gameMode, settings.difficulty)}
-                                </div>
-                                {settings.gameMode === 'survival' && (
-                                    <div className="stat-pill">
-                                        <span className="label">TIME</span>
-                                        {timer}s
-                                    </div>
-                                )}
-                            </div>
-                            {screen === 'playing' && (
-                                <button className="pause-btn" onClick={() => setScreen('paused')}>
-                                    PAUSE
-                                </button>
-                            )}
-                        </div>
-
-                        <div className="game-canvas-wrap">
-                            <canvas
-                                ref={canvasRef}
-                                width={GRID_SIZE * CELL_SIZE}
-                                height={GRID_SIZE * CELL_SIZE}
-                            />
-                        </div>
-
-                        {screen === 'paused' && (
-                            <div className="overlay">
-                                <div className="overlay-title">PAUSED</div>
-                                <div className="overlay-buttons">
-                                    <button className="overlay-button" onClick={() => setScreen('playing')}>
-                                        RESUME
-                                    </button>
-                                    <button className="overlay-button secondary" onClick={() => setScreen('menu')}>
-                                        MENU
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        {screen === 'gameOver' && (
-                            <div className="overlay">
-                                <div className="overlay-title">GAME OVER</div>
-                                <div className="overlay-score">
-                                    FINAL SCORE
-                                    <span>{Number(foodEaten)}</span>
-                                </div>
-                                {submittingScore && (
-                                    <div className="loading-message">
-                                        Submitting score...
-                                    </div>
-                                )}
-                                {!wallet && !submittingScore && (
-                                    <div style={{ fontSize: '0.9em', color: '#888', marginTop: 8 }}>
-                                        Connect wallet to save your score to the leaderboard.
-                                    </div>
-                                )}
-                                <div className="overlay-buttons">
-                                    <button 
-                                        className="overlay-button" 
-                                        onClick={startGame}
-                                        disabled={submittingScore}
-                                    >
-                                        PLAY AGAIN
-                                    </button>
-                                    <button 
-                                        className="overlay-button secondary" 
-                                        onClick={() => setScreen('menu')}
-                                        disabled={submittingScore}
-                                    >
-                                        MENU
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
+    <div id="app" class="app">
+        <header class="top-bar">
+            <div class="top-bar__title">
+                <div class="logo-row">
+                    <span class="logo-mark" aria-hidden="true"></span>
+                    <span class="logo">Creature Collect</span>
                 </div>
-            );
-        }
+                <button type="button" id="refreshGpsBtn" class="link-btn">Refresh GPS</button>
+            </div>
+            <div class="top-bar__right">
+                <div class="walk-tracker" title="Distance walked today">
+                    <svg class="walk-tracker__icon" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M13.5 5.5a2 2 0 11-4 0 2 2 0 014 0zM9.8 8.9L7 23h2.5l1.5-7 2 2v5h2v-7l-2-2 .6-3A7.3 7.3 0 0019 14v-2a5.4 5.4 0 00-4.5-2.5L12 9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span id="walkDist" class="walk-tracker__val">0 m</span>
+                    <span id="walkGoal" class="walk-tracker__goal">Next: 250 m</span>
+                </div>
+                <div id="gpsPill" class="gps-pill gps-pill--pending" title="Location trust for anti-spoof">
+                    <span class="gps-pill__dot"></span>
+                    <span id="gpsPillText">Waiting for GPS…</span>
+                </div>
+            </div>
+        </header>
 
-        ReactDOM.render(<SnakeGame />, document.getElementById('root'));
+        <div id="locBanner" class="loc-banner hidden" role="status"></div>
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js', { scope: './' }).catch(() => {});
-            });
-        }
-    </script>
+        <div id="effectHud" class="effect-hud hidden"></div>
+
+        <main class="map-wrap">
+            <div class="map-frame">
+                <div id="map" class="map" role="application" aria-label="World map"></div>
+            </div>
+            <div id="eggHud" class="egg-hud hidden">
+                <span id="eggHudText" class="egg-hud__text">🥚 0 m / 1 km</span>
+                <div class="egg-hud__track"><div id="eggHudBar" class="egg-hud__fill" style="width:0%"></div></div>
+            </div>
+            <button type="button" id="recenterBtn" class="fab fab--recenter" aria-label="Center map on me">
+                <span class="fab__glyph" aria-hidden="true">◎</span>
+            </button>
+        </main>
+
+        <!-- XP bar -->
+        <div class="xp-bar-wrap">
+            <div class="xp-bar-track"><div id="xpBar" class="xp-bar-fill" style="width:0%"></div></div>
+            <span id="xpText" class="xp-bar-text">Lv 1 · 0/100 XP</span>
+        </div>
+
+        <nav class="bottom-nav" aria-label="Main">
+            <button type="button" class="bottom-nav__btn is-active" data-view="map">
+                <span class="bottom-nav__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="9" r="2.2" stroke="currentColor" stroke-width="1.6"/></svg></span>
+                <span>Map</span>
+            </button>
+            <button type="button" class="bottom-nav__btn" data-view="quests">
+                <span class="bottom-nav__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <span>Quests</span>
+            </button>
+            <button type="button" class="bottom-nav__btn" data-view="items">
+                <span class="bottom-nav__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M20 7H4a1 1 0 00-1 1v11a2 2 0 002 2h14a2 2 0 002-2V8a1 1 0 00-1-1z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 7V5a4 4 0 00-8 0v2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                <span>Items</span>
+            </button>
+            <button type="button" class="bottom-nav__btn" data-view="collection">
+                <span class="bottom-nav__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 5a2 2 0 012-2h12a2 2 0 012 2v14l-8-4-8 4V5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 10h8M8 14h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+                <span>Dex</span>
+            </button>
+            <button type="button" class="bottom-nav__btn" data-view="pass">
+                <span class="bottom-nav__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l3 6h6l-5 4 2 6-6-4-6 4 2-6-5-4h6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+                <span>Pass</span>
+            </button>
+            <button type="button" class="bottom-nav__btn" data-view="market">
+                <span class="bottom-nav__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 7h18l-2 13H5L3 7z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7 7l2-3h6l2 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 11.5h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                <span>Market</span>
+            </button>
+            <button type="button" class="bottom-nav__btn" data-view="profile">
+                <span class="bottom-nav__icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.6"/><path d="M20 21c0-3.3-3.6-6-8-6s-8 2.7-8 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
+                <span>Profile</span>
+            </button>
+        </nav>
+
+        <section id="sheetCollection" class="sheet hidden" aria-hidden="true">
+            <div class="sheet__handle"></div>
+            <h2 class="sheet__title">Collection</h2>
+            <p class="sheet__meta" id="collectionProgress">0 / 0</p>
+            <ul id="collectionList" class="collection-list"></ul>
+        </section>
+
+        <section id="sheetSettings" class="sheet hidden" aria-hidden="true">
+            <div class="sheet__handle"></div>
+            <h2 class="sheet__title">Location trust</h2>
+            <p class="prose">
+                We can’t read “mock location” flags in the browser. Instead we <strong>score your GPS</strong>:
+                impossible speed, teleport jumps, or very poor accuracy lower trust and <strong>lock catches</strong>.
+            </p>
+            <div class="trust-meter">
+                <div class="trust-meter__bar">
+                    <div id="trustBar" class="trust-meter__fill" style="width: 0%"></div>
+                </div>
+                <p id="trustDetail" class="trust-detail">—</p>
+            </div>
+            <ul class="bullet-list">
+                <li>Map and spawns use <strong>GPS only</strong> (device location), not IP lookup</li>
+                <li>Uses high-accuracy mode when the device allows it</li>
+                <li>Turn off VPN, enable OS location services, and allow precise location if prompted</li>
+                <li>Blocks catches if movement looks spoofed</li>
+            </ul>
+        </section>
+
+        <section id="sheetQuests" class="sheet hidden" aria-hidden="true">
+            <div class="sheet__handle"></div>
+            <h2 class="sheet__title">Daily Quests</h2>
+            <p class="sheet__meta">Complete quests for XP &amp; items</p>
+            <div id="questList" class="quest-list"></div>
+        </section>
+
+        <section id="sheetItems" class="sheet hidden" aria-hidden="true">
+            <div class="sheet__handle"></div>
+            <h2 class="sheet__title">Inventory</h2>
+            <p class="sheet__meta">Tap an item to activate it</p>
+            <div id="itemGrid" class="item-grid"></div>
+            <h3 class="sheet__subtitle">Shop</h3>
+            <p class="sheet__meta">Purchase item packs with SOL</p>
+            <div id="shopGrid" class="shop-grid"></div>
+        </section>
+
+        <section id="sheetProfile" class="sheet hidden" aria-hidden="true">
+            <div class="sheet__handle"></div>
+            <h2 class="sheet__title">Profile</h2>
+            <div class="wallet-section">
+                <button type="button" id="walletConnectBtn" class="btn btn--primary btn--sm">Connect Wallet</button>
+                <div id="walletInfo" class="wallet-info hidden">
+                    <span id="walletAddr" class="wallet-addr"></span>
+                    <span id="walletBalance" class="wallet-balance">0 SOL</span>
+                </div>
+            </div>
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <span class="profile-stat__label">Level</span>
+                    <span id="profileLevel" class="profile-stat__value">1</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="profile-stat__label">XP</span>
+                    <span id="profileXP" class="profile-stat__value">0 / 100</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="profile-stat__label">Streak</span>
+                    <span id="profileStreak" class="profile-stat__value">0 days</span>
+                </div>
+                <div class="profile-stat">
+                    <span class="profile-stat__label">Stardust</span>
+                    <span id="profileStardust" class="profile-stat__value">0</span>
+                </div>
+            </div>
+            <h3 class="sheet__subtitle">Achievements</h3>
+            <div id="profileAchievements" class="achievement-grid"></div>
+            <h3 class="sheet__subtitle">Location Trust</h3>
+            <div class="trust-meter">
+                <div class="trust-meter__bar">
+                    <div id="profileTrustBar" class="trust-meter__fill" style="width: 0%"></div>
+                </div>
+                <p id="profileTrustDetail" class="trust-detail">—</p>
+            </div>
+        </section>
+
+        <section id="sheetPass" class="sheet hidden" aria-hidden="true">
+            <div class="sheet__handle"></div>
+            <div class="bp-header">
+                <h2 class="sheet__title">Battle Pass</h2>
+                <span class="bp-season-badge">Season 1</span>
+            </div>
+            <p id="bpProgressText" class="sheet__meta">Tier 0 / 30</p>
+            <div class="bp-progress-track"><div id="bpProgressBar" class="bp-progress-fill" style="width:0%"></div></div>
+            <button type="button" id="bpUpgradeBtn" class="btn btn--primary btn--shine bp-upgrade-btn">Upgrade — 0.1 SOL</button>
+            <div id="bpTierList" class="bp-tier-list"></div>
+        </section>
+
+        <section id="sheetMarket" class="sheet hidden" aria-hidden="true">
+            <div class="sheet__handle"></div>
+            <div class="bp-header">
+                <h2 class="sheet__title">Marketplace</h2>
+                <span class="bp-season-badge">SKR</span>
+            </div>
+            <p class="sheet__meta">Buy/sell NFTs and cNFTs priced in SKR.</p>
+
+            <div class="card" style="margin-top: 12px;">
+                <div class="card__row">
+                    <strong>Config</strong>
+                    <button type="button" id="marketRefreshBtn" class="btn btn--ghost btn--sm">Refresh</button>
+                </div>
+                <div class="prose" style="margin-top: 8px;">
+                    <div><span class="muted">Program</span> <span id="marketProgramId">—</span></div>
+                    <div><span class="muted">SKR mint</span> <span id="marketSkrMint">—</span></div>
+                    <div><span class="muted">Fee</span> <span id="marketFeeBps">—</span></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 12px;">
+                <strong>Listings</strong>
+                <div id="marketListings" class="prose" style="margin-top: 8px;">—</div>
+            </div>
+
+            <div class="card" style="margin-top: 12px;">
+                <strong>Create listing</strong>
+                <div class="prose" style="margin-top: 8px;">
+                    <label class="muted">NFT mint (fixed price)</label>
+                    <input id="marketMintInput" class="input" placeholder="Mint address (base58)" />
+                    <label class="muted" style="margin-top: 8px; display:block;">Price (SKR smallest units)</label>
+                    <input id="marketPriceInput" class="input" placeholder="e.g. 1000000" />
+                    <button type="button" id="marketCreateListingBtn" class="btn btn--primary btn--sm" style="margin-top:10px;">Create NFT listing</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 12px;">
+                <strong>cNFT helper</strong>
+                <div class="prose" style="margin-top: 8px;">
+                    <label class="muted">Asset id</label>
+                    <input id="marketAssetIdInput" class="input" placeholder="cNFT asset id (base58)" />
+                    <button type="button" id="marketLoadCnftProofBtn" class="btn btn--ghost btn--sm" style="margin-top:10px;">Load proof bundle</button>
+                    <div id="marketCnftProofOut" class="muted" style="margin-top:8px; font-size:12px;">—</div>
+                </div>
+            </div>
+        </section>
+
+        <div id="permGate" class="gate">
+            <div class="gate__card">
+                <div class="gate__art" aria-hidden="true">
+                    <img src="/creatures/solwyrm.png" alt="" class="gate__art-img gate__art-img--a" width="72" height="72"/>
+                    <img src="/creatures/sproutle.png" alt="" class="gate__art-img gate__art-img--b" width="56" height="56"/>
+                    <img src="/creatures/brookfin.png" alt="" class="gate__art-img gate__art-img--c" width="48" height="48"/>
+                </div>
+                <p class="gate__eyebrow">Creature Collect</p>
+                <h1 class="gate__title">Location required</h1>
+                <p class="gate__text">This game needs your real position on the map. We don’t upload it to our servers in this MVP.</p>
+                <button type="button" id="grantLocationBtn" class="btn btn--primary">Allow location</button>
+                <p id="permError" class="gate__error hidden"></p>
+            </div>
+        </div>
+
+        <div id="catchModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="catchTitle">
+            <div class="modal__backdrop"></div>
+            <div class="modal__card modal__card--catch">
+                <div class="catch-hero" id="catchHero">
+                    <div class="catch-hero__ring" aria-hidden="true"></div>
+                    <div id="catchRing" class="catch-ring hidden" aria-hidden="true"></div>
+                    <img id="catchCreatureArt" class="catch-hero__img" src="" alt="" width="160" height="160"/>
+                </div>
+                <h2 id="catchTitle" class="modal__title">Catch</h2>
+                <p id="catchMeta" class="catch-meta"></p>
+                <p id="catchBody" class="modal__body"></p>
+                <div class="modal__actions">
+                    <button type="button" id="catchTryBtn" class="btn btn--primary btn--shine">Attempt catch</button>
+                    <button type="button" id="catchCloseBtn" class="btn btn--ghost">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Reward Modal -->
+        <div id="dailyModal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal__backdrop"></div>
+            <div class="modal__card modal__card--daily">
+                <div class="daily-reward__header">🎁</div>
+                <h2 class="modal__title">Daily Reward</h2>
+                <p id="dailyStreakCount" class="daily-reward__streak">Day 1</p>
+                <div id="dailyRewardList" class="daily-reward__list"></div>
+                <button type="button" id="dailyClaimBtn" class="btn btn--primary btn--shine">Claim</button>
+            </div>
+        </div>
+
+        <!-- Combo Overlay -->
+        <div id="comboOverlay" class="combo-overlay hidden" role="status">
+            <span id="comboCount" class="combo-overlay__text">x2 COMBO</span>
+        </div>
+
+        <!-- Hatch Modal -->
+        <div id="hatchModal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal__backdrop"></div>
+            <div class="modal__card modal__card--hatch">
+                <div class="hatch-anim" aria-hidden="true">🥚</div>
+                <img id="hatchCreatureArt" class="hatch-hero__img" src="" alt="" width="120" height="120"/>
+                <h2 id="hatchTitle" class="modal__title">Hatched!</h2>
+                <p id="hatchMeta" class="catch-meta"></p>
+                <button type="button" id="hatchCloseBtn" class="btn btn--primary">Awesome!</button>
+            </div>
+        </div>
+
+        <!-- Creature Detail Modal -->
+        <div id="detailModal" class="modal hidden" role="dialog" aria-modal="true">
+            <div class="modal__backdrop"></div>
+            <div class="modal__card modal__card--detail">
+                <img id="detailArt" class="detail-hero__img" src="" alt="" width="140" height="140"/>
+                <h2 id="detailName" class="modal__title">Creature</h2>
+                <p id="detailMeta" class="catch-meta"></p>
+                <p id="detailCP" class="detail-cp"></p>
+                <div class="detail-stats">
+                    <span id="detailCatches" class="detail-stat"></span>
+                    <span id="detailDate" class="detail-stat"></span>
+                </div>
+                <p id="detailEvolveInfo" class="detail-evolve-info hidden"></p>
+                <button type="button" id="detailEvolveBtn" class="btn btn--primary btn--shine hidden">Evolve</button>
+                <button type="button" id="detailCloseBtn" class="btn btn--ghost">Close</button>
+            </div>
+        </div>
+
+        <!-- Tutorial Overlay -->
+        <div id="tutorialOverlay" class="tutorial-overlay hidden">
+            <div class="tutorial-card">
+                <p id="tutorialText" class="tutorial-card__text"></p>
+                <button type="button" id="tutorialNextBtn" class="btn btn--primary">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash">
+        <img src="/creatures/sproutle.png" alt="" class="splash__logo" width="80" height="80"/>
+        <span class="splash__title">Creature Collect</span>
+        <div class="splash__spinner"></div>
+        <span class="splash__hint">Acquiring GPS...</span>
+    </div>
+    <div id="milestoneToast" class="milestone-toast hidden" role="status">
+        <span class="milestone-toast__icon">⚡</span>
+        <span id="milestoneText" class="milestone-toast__text"></span>
+    </div>
+    <script type="module" src="/main.js"></script>
 </body>
 </html>

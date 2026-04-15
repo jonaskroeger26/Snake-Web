@@ -8,18 +8,26 @@ skip-lint = false
 [programs.localnet]
 snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
 kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
+p2e_quest = "GJWzPSG4YEqSSrxukH2Bvs8wFw4zdQ2NnHQdJsd7MjKv"
+skr_marketplace = "HbRyVNAr81scT4PC5XSpauGGrg2hgi34R255TBLMt3gt"
 
 [programs.devnet]
 snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
 kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
+p2e_quest = "GJWzPSG4YEqSSrxukH2Bvs8wFw4zdQ2NnHQdJsd7MjKv"
+skr_marketplace = "HbRyVNAr81scT4PC5XSpauGGrg2hgi34R255TBLMt3gt"
 
 [programs.testnet]
 snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
 kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
+p2e_quest = "GJWzPSG4YEqSSrxukH2Bvs8wFw4zdQ2NnHQdJsd7MjKv"
+skr_marketplace = "HbRyVNAr81scT4PC5XSpauGGrg2hgi34R255TBLMt3gt"
 
 [programs.mainnet]
 snake_game = "86KbYQVcxA2DDj3VGXwfPA65GZNoGKqoQB8KwKsA8zCH"
 kids_vault = "3be5xtB1AUiCxQ3dPn8bEt95VrzzEEW2cJym2wXo4rnN"
+p2e_quest = "GJWzPSG4YEqSSrxukH2Bvs8wFw4zdQ2NnHQdJsd7MjKv"
+skr_marketplace = "HbRyVNAr81scT4PC5XSpauGGrg2hgi34R255TBLMt3gt"
 
 [registry]
 url = "https://api.apr.dev"
@@ -29,4 +37,4 @@ cluster = "Devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+test = "npx ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"

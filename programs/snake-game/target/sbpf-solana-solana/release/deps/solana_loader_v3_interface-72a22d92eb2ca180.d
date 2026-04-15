@@ -1,9 +1,0 @@
-/Users/jonaskroeger/Downloads/snake-dapp 2/programs/snake-game/target/sbpf-solana-solana/release/deps/libsolana_loader_v3_interface-72a22d92eb2ca180.rmeta: /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/lib.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/instruction.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/state.rs
-
-/Users/jonaskroeger/Downloads/snake-dapp 2/programs/snake-game/target/sbpf-solana-solana/release/deps/libsolana_loader_v3_interface-72a22d92eb2ca180.rlib: /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/lib.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/instruction.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/state.rs
-
-/Users/jonaskroeger/Downloads/snake-dapp 2/programs/snake-game/target/sbpf-solana-solana/release/deps/solana_loader_v3_interface-72a22d92eb2ca180.d: /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/lib.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/instruction.rs /Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/state.rs
-
-/Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/lib.rs:
-/Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/instruction.rs:
-/Users/jonaskroeger/.cargo/registry/src/index.crates.io-6f17d22bba15001f/solana-loader-v3-interface-3.0.0/src/state.rs:

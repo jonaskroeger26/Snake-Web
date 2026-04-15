@@ -4,6 +4,8 @@ node_modules
 dapp-store-app/*.apk
 .DS_Store
 target/
+!target/idl/
+!target/idl/skr_marketplace.json
 *.log
 .env
 .env.local
