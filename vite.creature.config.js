@@ -3,18 +3,21 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
 /**
- * Default build: classic Snake PWA for solanasnake.app (root index.html).
+ * Creature Collect (GPS game) — use for Capacitor android:sync, not solanasnake.app.
  */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const appDir = path.resolve(__dirname, 'app');
 
 export default defineConfig({
-  root: '.',
+  root: 'app',
   publicDir: 'public',
   build: {
-    outDir: 'dist',
+    outDir: '../dist-creature',
     emptyOutDir: true,
     rollupOptions: {
-      input: path.resolve(__dirname, 'index.html'),
+      input: {
+        main: path.resolve(appDir, 'index.html'),
+      },
     },
   },
 });

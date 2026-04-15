@@ -1,6 +1,7 @@
 .cache/
 .venv-rembg/
 node_modules
+dist-creature/
 dapp-store-app/*.apk
 .DS_Store
 target/

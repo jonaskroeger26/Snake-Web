@@ -1,7 +1,7 @@
 {
   "appId": "com.creaturecollect.app",
   "appName": "Creature Collect",
-  "webDir": "dist",
+  "webDir": "dist-creature",
   "server": {
     "androidScheme": "https"
   }
